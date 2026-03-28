@@ -31,10 +31,12 @@ set_desktop_mode() {
         dark)
             gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'  2>/dev/null || true
             gsettings set org.gnome.desktop.interface gtk-theme    'adw-gtk3-dark' 2>/dev/null || true
+            gsettings set org.gnome.desktop.interface icon-theme   'Papirus-Dark'  2>/dev/null || true
             ;;
         light)
             gsettings set org.gnome.desktop.interface color-scheme 'prefer-light' 2>/dev/null || true
             gsettings set org.gnome.desktop.interface gtk-theme    'adw-gtk3'      2>/dev/null || true
+            gsettings set org.gnome.desktop.interface icon-theme   'Papirus-Light' 2>/dev/null || true
             ;;
     esac
 }
