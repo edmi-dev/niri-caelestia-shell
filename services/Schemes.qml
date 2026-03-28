@@ -265,7 +265,7 @@ Searcher {
             }
 
             const colorSource = Wallpapers.getColorSource(wallpaper);
-            command = ["matugen", "image", colorSource, "--dry-run", "--json", "hex", "--mode", mode, "--type", matugenType, "--source-color-index", "0"];
+            command = ["matugen", "image", colorSource, "--dry-run", "--json", "hex", "--mode", mode, "--type", matugenType];
             
             // If it's a video and the frame might not exist yet, we should check/retry
             if (Wallpapers.isPathVideo(wallpaper)) {
