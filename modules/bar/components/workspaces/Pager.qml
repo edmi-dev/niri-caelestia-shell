@@ -12,10 +12,10 @@ StyledRect {
 
     Component.onCompleted: active = true
     property bool active: false
-    property bool entered: Config.bar.workspaces.shown < Niri.getWorkspaceCount() && active
-
-    readonly property int wsCount: Niri.getWorkspaceCount()
-    readonly property int focusedIdx: Niri.focusedWorkspaceIndex
+    // задаются из Workspaces — по воркспейсам монитора этого бара
+    property int wsCount: 0
+    property int focusedIdx: -1
+    property bool entered: Config.bar.workspaces.shown < wsCount && active
 
     color: Colours.palette.m3surfaceContainer
     radius: entered ? Appearance.rounding.small / 2 : Appearance.rounding.full
