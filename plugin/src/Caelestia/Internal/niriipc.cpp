@@ -285,23 +285,34 @@ void NiriIpc::onEvent(const QJsonObject& event) {
         // but may still arrive separately - handle it
         const auto data = event.value(QStringLiteral("WorkspaceActivated")).toObject();
         const int id = data.value(QStringLiteral("id")).toInt();
+        // focused=false: воркспейс стал активным на НЕсфокусированном мониторе
+        // (хотплаг, open-on-output, перенос окна на другой монитор). Фокус
+        // niri при этом не меняется — трогаем только is_active на том выходе.
         const bool focused = data.value(QStringLiteral("focused")).toBool();
-        Q_UNUSED(focused);
-        m_focusedWorkspaceId = id;
-        
+
         QVariantList currentWs = m_workspacesModel->items();
         for (int i = 0; i < currentWs.size(); ++i) {
             auto ws = currentWs.at(i).toMap();
             if (ws.value(QStringLiteral("id")).toInt() == id) {
-                m_focusedWorkspaceIndex = i;
-                m_focusedMonitorName = ws.value(QStringLiteral("output")).toString();
-                // Update active/focused flags on same output
-                const QString output = m_focusedMonitorName;
+                const QString output = ws.value(QStringLiteral("output")).toString();
+                if (focused) {
+                    m_focusedWorkspaceId = id;
+                    m_focusedWorkspaceIndex = i;
+                    m_focusedMonitorName = output;
+                }
                 for (int j = 0; j < currentWs.size(); ++j) {
                     auto w = currentWs.at(j).toMap();
+                    bool changed = false;
                     if (w.value(QStringLiteral("output")).toString() == output) {
                         w[QStringLiteral("is_active")] = (j == i);
+                        changed = true;
+                    }
+                    if (focused) {
+                        // is_focused — глобальный, а не per-output
                         w[QStringLiteral("is_focused")] = (j == i);
+                        changed = true;
+                    }
+                    if (changed) {
                         currentWs[j] = w;
                         m_workspacesModel->setItem(j, w);
                     }

@@ -112,6 +112,11 @@ Variants {
                 property bool novel
 
                 Component.onCompleted: Visibilities.screens[scope.modelData.name] = this
+                // при отключении монитора не оставляем ссылку на уничтоженный объект
+                Component.onDestruction: {
+                    if (Visibilities.screens[scope.modelData.name] === this)
+                        delete Visibilities.screens[scope.modelData.name];
+                }
             }
 
             Interactions {
