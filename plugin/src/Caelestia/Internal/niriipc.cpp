@@ -149,7 +149,20 @@ bool NiriIpc::action(const QString& actionName, const QVariantList& args) {
     QJsonObject actionObj;
     QJsonValue innerValue;
 
-    if (args.size() >= 2 && args.at(0).toString() == QStringLiteral("--id")) {
+    if (args.size() == 2 && args.at(0).toString() == QStringLiteral("--id") &&
+        (pascalName == QStringLiteral("FocusWorkspace") || pascalName == QStringLiteral("MoveWindowToWorkspace"))) {
+        // Ссылка на воркспейс по id. {"Index": N} niri трактует как индекс на
+        // мониторе С ФОКУСОМ — при нескольких мониторах это не тот воркспейс.
+        QJsonObject ref;
+        ref[QStringLiteral("Id")] = args.at(1).toLongLong();
+        QJsonObject inner;
+        inner[QStringLiteral("reference")] = ref;
+        if (pascalName == QStringLiteral("MoveWindowToWorkspace")) {
+            inner[QStringLiteral("window_id")] = QJsonValue::Null;
+            inner[QStringLiteral("focus")] = true;
+        }
+        innerValue = inner;
+    } else if (args.size() >= 2 && args.at(0).toString() == QStringLiteral("--id")) {
         // Actions with --id: FocusWindow, CloseWindow, ToggleWindowFloating
         // Format: {"ActionName": {"id": N}}
         QJsonObject inner;
@@ -321,6 +334,9 @@ void NiriIpc::onEvent(const QJsonObject& event) {
             }
         }
         updateCurrentOutputWorkspaces();
+        // is_active/is_focused поменялись в модели — без этого сигнала
+        // QML-привязки к Niri.allWorkspaces видят старое состояние.
+        emit workspacesChanged();
         emit focusedWorkspaceChanged();
     } else if (event.contains(QStringLiteral("WindowsChanged"))) {
         handleWindowsChanged(event.value(QStringLiteral("WindowsChanged")).toObject());

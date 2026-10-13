@@ -22,7 +22,8 @@ Item {
         let count = 0;
         const start = groupOffset;
         const end = start + Config.bar.workspaces.shown;
-        for (const [ws, occ] of Object.entries(occupied)) {
+        for (const [key, occ] of Object.entries(occupied)) {
+            const ws = Number(key); // ключи — строки: "1" + 1 === "11"
             if (ws > start && ws <= end && occ) {
                 if (!occupied[ws - 1]) {
                     if (pills[count])

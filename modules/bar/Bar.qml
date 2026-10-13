@@ -133,6 +133,7 @@ ColumnLayout {
                 roleValue: "workspaces"
                 delegate: WrappedLoader {
                     sourceComponent: Workspaces {
+                        outputName: root.screen?.name ?? ""
 
                         property var anchorItem: Niri.wsContextAnchor && Niri.wsContextType !== "none" ? Niri.wsContextAnchor : null
 

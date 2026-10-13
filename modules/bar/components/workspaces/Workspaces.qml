@@ -11,11 +11,15 @@ import "context"
 StyledRect {
     id: root
 
-    // required property ShellScreen screen
+    // Имя монитора, на котором стоит этот бар. Все номера/подсветка/занятость
+    // считаются по воркспейсам ЭТОГО монитора, а не по общему списку niri
+    // (в нём воркспейсы всех мониторов вперемешку).
+    required property string outputName
 
-    readonly property int activeWsId: Niri.focusedWorkspaceIndex + 1
-    readonly property var occupied: Niri.workspaceHasWindows
-    readonly property int groupOffset: Math.floor((Niri.focusedWorkspaceIndex) / Config.bar.workspaces.shown) * Config.bar.workspaces.shown
+    readonly property var outputWorkspaces: Niri.workspacesForOutput(outputName)
+    readonly property int activeWsId: Niri.activeWorkspacePosForOutput(outputName) + 1
+    readonly property var occupied: Niri.occupiedForOutput(outputName)
+    readonly property int groupOffset: Math.floor(Math.max(0, activeWsId - 1) / Config.bar.workspaces.shown) * Config.bar.workspaces.shown
 
     readonly property int focusedWindowId: Niri.focusedWindow?.id ?? -1
 
@@ -104,6 +108,7 @@ StyledRect {
 
             Workspace {
                 activeWsId: root.activeWsId
+                outputWorkspaces: root.outputWorkspaces
                 occupied: root.occupied
                 groupOffset: root.groupOffset
                 focusedWindowId: root.focusedWindowId
@@ -137,6 +142,8 @@ StyledRect {
 
         sourceComponent: Pager {
             groupOffset: root.groupOffset
+            wsCount: root.outputWorkspaces.length
+            focusedIdx: root.activeWsId - 1
         }
     }
 }

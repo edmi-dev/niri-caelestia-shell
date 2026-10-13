@@ -204,9 +204,47 @@ Singleton {
         return NiriIpc.action("focus-workspace-" + direction, []);
     }
 
+    // Фокус по id: однозначно при любом числе мониторов (Index — относительно
+    // монитора с фокусом).
+    function focusWorkspaceById(id) {
+        if (!niriAvailable || id === undefined || id === null) return false;
+        return NiriIpc.action("focus-workspace", ["--id", id]);
+    }
+
+    function moveWindowToWorkspaceById(id) {
+        if (!niriAvailable || id === undefined || id === null) return false;
+        return NiriIpc.action("move-window-to-workspace", ["--id", id]);
+    }
+
+    // --- Per-output helpers (бар на каждом мониторе показывает свои воркспейсы) ---
+    function workspacesForOutput(output) {
+        if (!allWorkspaces || !output) return [];
+        return allWorkspaces.filter(w => w.output === output).sort((a, b) => a.idx - b.idx);
+    }
+
+    // 0-based позиция активного воркспейса в workspacesForOutput(output), -1 если нет
+    function activeWorkspacePosForOutput(output) {
+        const ws = workspacesForOutput(output);
+        for (let i = 0; i < ws.length; i++)
+            if (ws[i].is_active) return i;
+        return -1;
+    }
+
+    // { 1-based позиция: есть ли окна }
+    function occupiedForOutput(output) {
+        const ws = workspacesForOutput(output);
+        const busy = {};
+        for (const w of (windows || []))
+            busy[w.workspace_id] = true;
+        const res = {};
+        for (let i = 0; i < ws.length; i++)
+            res[i + 1] = !!busy[ws[i].id];
+        return res;
+    }
+
     function switchToWorkspaceByIndex(index) {
         if (!niriAvailable || index < 0 || index >= allWorkspaces.length) return false;
-        return switchToWorkspace(allWorkspaces[index].idx);
+        return focusWorkspaceById(allWorkspaces[index].id);
     }
 
     function switchToWorkspaceByNumber(number, output) {
@@ -220,7 +258,7 @@ Singleton {
             .filter(w => w.output === targetOutput)
             .sort((a, b) => a.idx - b.idx);
         if (number >= 1 && number <= outputWorkspaces.length) {
-            return switchToWorkspace(outputWorkspaces[number - 1].idx);
+            return focusWorkspaceById(outputWorkspaces[number - 1].id);
         }
         console.warn("NiriService: No workspace", number, "found on output", targetOutput);
         return false;

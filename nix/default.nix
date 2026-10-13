@@ -15,6 +15,7 @@
   fftw,
   bash,
   ffmpeg,
+  python3,
 
   gst_all_1,
   material-symbols,
@@ -52,6 +53,18 @@
     ]
     ++ extraRuntimeDeps
     ++ lib.optional withCli caelestia-cli;
+
+  # Бэкенды manga/novel и скрипты обоев ждут $CAELESTIA_VIRTUAL_ENV/bin/python3
+  # (на не-Nix системах его создаёт scripts/setup/setup.sh через uv).
+  pythonEnv = python3.withPackages (ps:
+    with ps; [
+      requests
+      curl-cffi
+      beautifulsoup4
+      lxml
+      materialyoucolor
+      pillow
+    ]);
 
   fontconfig = makeFontsConf {
     fontDirectories = [material-symbols rubik nerd-fonts.caskaydia-cove];
@@ -134,6 +147,7 @@ in
         --prefix QML2_IMPORT_PATH : "${lib.makeSearchPath qt6.qtbase.qtQmlPrefix [qt6.qtdeclarative qt6.qt5compat qt6.qtmultimedia plugin]}" \
       	--set FONTCONFIG_FILE "${fontconfig}" \
       	--set CAELESTIA_LIB_DIR ${extras}/lib \
+        --set-default CAELESTIA_VIRTUAL_ENV ${pythonEnv} \
         --set CAELESTIA_XKB_RULES_PATH ${xkeyboard-config}/share/xkeyboard-config-2/rules/base.lst \
       	--add-flags "-p $out/share/caelestia-shell"
 
@@ -142,7 +156,7 @@ in
     '';
 
     passthru = {
-      inherit plugin extras;
+      inherit plugin extras pythonEnv;
     };
 
     meta = {

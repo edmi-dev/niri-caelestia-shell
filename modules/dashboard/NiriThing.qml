@@ -48,25 +48,22 @@ Item {
                 Layout.fillWidth: true
 
                 Repeater {
-                    model: Niri.getWorkspaceCount()
+                    // воркспейсы монитора с фокусом (раньше — общий список всех мониторов)
+                    model: Niri.workspacesForOutput(Niri.focusedMonitorName)
 
                     WorkspaceButton {
                         required property int index
-                        readonly property int wsId: Math.floor((Niri.focusedWorkspaceIndex) / 10) * 10 + index + 1
-                        readonly property bool isCurrent: (wsId - 1) % 10 === Niri.focusedWorkspaceIndex
-                        readonly property int wsIndex: wsId - 1
+                        required property var modelData
+                        readonly property int wsId: index + 1
+                        readonly property bool isCurrent: modelData.is_active
 
                         Layout.fillWidth: true
                         active: isCurrent
-                        text: {
-                            if (wsIndex < 0 || wsIndex >= Niri.currentOutputWorkspaces.length)
-                                return "Workspace " + wsId;
-                            return Niri.currentOutputWorkspaces[wsIndex]?.name ?? ("Workspace " + wsId);
-                        }
+                        text: modelData.name || ("Workspace " + wsId)
                         disabled: isCurrent
 
                         function onClicked(): void {
-                            Niri.moveWindowToWorkspace(wsId);
+                            Niri.moveWindowToWorkspaceById(modelData.id);
                         }
                     }
                 }

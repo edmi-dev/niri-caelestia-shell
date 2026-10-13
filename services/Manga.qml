@@ -148,12 +148,16 @@ Singleton {
 
     // ── Backend server ───────────────────────────────────────────────────────
     property bool serverReady: false
+    property int _failCount: 0
+    property bool _gaveUp: false
+    readonly property int _maxFails: 3
 
     Process {
         id: serverProcess
         command: [
             "bash", "-c",
-            "export CAELESTIA_DATA_DIR=\"$1\" && exec \"$2\" \"$3\"",
+            // $2 — python из venv; если его нет (NixOS, setup.sh не запускался) — python3 из PATH
+            "export CAELESTIA_DATA_DIR=\"$1\"; py=\"$2\"; [ -x \"$py\" ] || py=\"$(command -v python3)\" || { echo \"python3 not found\" >&2; exit 127; }; exec \"$py\" \"$3\"",
             "--",
             Paths.config + "/data",
             (Quickshell.env("CAELESTIA_VIRTUAL_ENV") || (Quickshell.env("XDG_STATE_HOME") || (Quickshell.env("HOME") + "/.local/state")) + "/quickshell/.venv") + "/bin/python3",
@@ -162,8 +166,18 @@ Singleton {
         running: false // Started by healthPoller if needed
         onExited: (code) => {
             root.serverReady = false
-            if (code !== 0 && code !== 1) { // 1 usually means 'port busy' which we handle via lazy start
-                console.warn("[ServiceManga] Server exited with code", code)
+            if (code === 0)
+                return
+            root._failCount++
+            // 127 — нет интерпретатора, 1 — чаще всего ImportError. Перезапуск
+            // каждые 2с ничего не исправит, только забивает журнал.
+            if (code === 127 || root._failCount >= root._maxFails) {
+                if (!root._gaveUp)
+                    console.warn("[ServiceManga] Backend failed (exit " + code + "), giving up after " + root._failCount + " attempt(s). "
+                        + "Point CAELESTIA_VIRTUAL_ENV to a python env with requests, beautifulsoup4, lxml, curl_cffi.")
+                root._gaveUp = true
+            } else {
+                console.warn("[ServiceManga] Server exited with code", code, "(attempt " + root._failCount + "/" + root._maxFails + ")")
             }
         }
     }
@@ -189,6 +203,7 @@ Singleton {
                     if (xhr.status === 200) {
                         if (!root.serverReady) {
                             root.serverReady = true
+                            root._failCount = 0
                             console.log("[ServiceManga] Backend connected at", root.apiUrl)
                             fetchByOrigin("", true)
                             fetchFavorites()
@@ -196,7 +211,7 @@ Singleton {
                         }
                     } else {
                         root.serverReady = false
-                        if (!serverProcess.running && Config.extra.manga) {
+                        if (!serverProcess.running && !root._gaveUp && Config.extra.manga) {
                             console.log("[ServiceManga] Backend not found, starting process...")
                             serverProcess.running = true
                         }
@@ -629,6 +644,10 @@ Singleton {
     Connections {
         target: Config.extra
         function onMangaChanged() {
+            if (Config.extra.manga) {
+                root._failCount = 0
+                root._gaveUp = false
+            }
             if (!Config.extra.manga && serverProcess.running) {
                 console.log("[ServiceManga] [DEBUG] Manga feature disabled: stopping backend process immediately.")
                 serverProcess.running = false

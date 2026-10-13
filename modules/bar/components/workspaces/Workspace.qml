@@ -14,12 +14,15 @@ ColumnLayout {
     required property int groupOffset
     required property int focusedWindowId
     required property int activeWsId
+    required property var outputWorkspaces
 
     required property Item windowPopoutSignal
 
     readonly property bool isWorkspace: true // Flag for finding workspace children
     readonly property int size: isWorkspace ? implicitHeight + (hasWindows ? Appearance.padding.xs : 0) : 0
     readonly property int ws: groupOffset + index + 1
+    // воркспейс niri в этой ячейке (null, если на мониторе их меньше)
+    readonly property var niriWs: outputWorkspaces[ws - 1] ?? null
     readonly property bool isOccupied: occupied[ws] ?? false
     readonly property bool hasWindows: isOccupied && Config.bar.workspaces.showWindows
 

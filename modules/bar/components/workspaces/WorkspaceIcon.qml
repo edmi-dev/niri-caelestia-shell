@@ -44,7 +44,7 @@ Item {
                 text: {
                     //TODO: Add config option to choose between name/number/both for workspaces
 
-                    const wsName = Niri.getWorkspaceNameByIndex(root.workspace.index) || (root.workspace.ws);
+                    const wsName = root.workspace.niriWs?.name || root.workspace.ws;
                     const label = Config.bar.workspaces.label || root.workspace.ws;
                     const occupiedLabel = Config.bar.workspaces.occupiedLabel || label;
                     const activeLabel = Config.bar.workspaces.activeLabel || (root.workspace.isOccupied ? occupiedLabel : label);
@@ -67,7 +67,7 @@ Item {
                 color: Config.bar.workspaces.occupiedBg || root.workspace.isOccupied || root.workspace.activeWsId === root.workspace.ws ? Colours.palette.m3onSurface : Colours.layer(Colours.palette.m3outlineVariant, 2)
 
                 font.family: Appearance.font.family.mono
-                text: Niri.getWorkspaceNameByIndex(root.workspace.index) || "Workspace " + (root.workspace.index + 1)
+                text: root.workspace.niriWs?.name || "Workspace " + root.workspace.ws
             }
         }
         z: 1
@@ -93,9 +93,10 @@ Item {
 
         onClicked: mouse => {
             if (mouse.button === Qt.LeftButton) {
-                const wsArrayIndex = root.workspace.index + root.workspace.groupOffset;
-                if (Niri.focusedWorkspaceIndex !== wsArrayIndex)
-                    Niri.switchToWorkspaceByIndex(wsArrayIndex);
+                // по id: воркспейс именно этого монитора, даже если фокус на другом
+                const target = root.workspace.niriWs;
+                if (target && !target.is_focused)
+                    Niri.focusWorkspaceById(target.id);
                 return;
             }
         }
