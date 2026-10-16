@@ -116,6 +116,8 @@ private slots:
     void focusedWindowClosed();
     void windowLayoutsReorder();
     void keyboardLayoutSwitched();
+    void workspaceActiveWindowChanged();
+    void configLoaded();
     void actionPayload_data();
     void actionPayload();
     void replayFixtures_data();
@@ -235,6 +237,34 @@ void TestNiriIpc::keyboardLayoutSwitched() {
     QCOMPARE(spy.count(), 1);
 }
 
+void TestNiriIpc::workspaceActiveWindowChanged() {
+    NiriIpc ipc(false, nullptr);
+    loadSnapshot(ipc, m_basic);
+    const auto event = [](const QJsonValue& win) {
+        return QJsonObject{ { QStringLiteral("WorkspaceActiveWindowChanged"),
+            QJsonObject{ { QStringLiteral("workspace_id"), 1 }, { QStringLiteral("active_window_id"), win } } } };
+    };
+
+    ipc.processEvent(event(11));
+    QCOMPARE(workspaceById(ipc, 1).value(QStringLiteral("active_window_id")).toInt(), 11);
+    ipc.processEvent(event(QJsonValue::Null));
+    QVERIFY(workspaceById(ipc, 1).value(QStringLiteral("active_window_id")).isNull());
+}
+
+void TestNiriIpc::configLoaded() {
+    NiriIpc ipc(false, nullptr);
+    QSignalSpy spy(&ipc, &NiriIpc::configLoaded);
+
+    // Fixture: one ConfigLoaded on connect, one after `niri msg action load-config-file`
+    replayEvents(ipc, fixturesRoot() + QStringLiteral("/config-reload"));
+    QCOMPARE(spy.count(), 2);
+    QCOMPARE(spy.at(1).at(0).toBool(), false);
+
+    ipc.processEvent({ { QStringLiteral("ConfigLoaded"), QJsonObject{ { QStringLiteral("failed"), true } } } });
+    QCOMPARE(spy.count(), 3);
+    QCOMPARE(spy.at(2).at(0).toBool(), true);
+}
+
 void TestNiriIpc::actionPayload_data() {
     QTest::addColumn<QString>("name");
     QTest::addColumn<QVariantList>("args");
@@ -293,7 +323,7 @@ void TestNiriIpc::replayFixtures() {
         const auto actual = workspaceById(ipc, id);
         QVERIFY2(!actual.isEmpty(), qPrintable(QStringLiteral("workspace %1 missing").arg(id)));
         for (const auto& field : { QStringLiteral("output"), QStringLiteral("idx"), QStringLiteral("is_active"),
-                 QStringLiteral("is_focused") }) {
+                 QStringLiteral("is_focused"), QStringLiteral("active_window_id") }) {
             QVERIFY2(actual.value(field) == expected.value(field).toVariant(),
                 qPrintable(QStringLiteral("workspace %1 field %2").arg(id).arg(field)));
         }

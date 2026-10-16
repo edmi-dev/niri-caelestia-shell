@@ -376,9 +376,10 @@ void NiriIpc::processEvent(const QJsonObject& event) {
         handleKeyboardLayoutSwitched(data);
     } else if (type == QStringLiteral("OverviewOpenedOrClosed")) {
         handleOverviewOpenedOrClosed(data);
-    } else if (type == QStringLiteral("OutputsChanged")) {
-        // UNVERIFIED: carried over from fork-legacy, not confirmed to exist in niri (see DECISIONS.md)
-        handleOutputsChanged(data);
+    } else if (type == QStringLiteral("WorkspaceActiveWindowChanged")) {
+        handleWorkspaceActiveWindowChanged(data);
+    } else if (type == QStringLiteral("ConfigLoaded")) {
+        emit configLoaded(data.value(QStringLiteral("failed")).toBool());
     }
 }
 
@@ -399,6 +400,14 @@ void NiriIpc::applyResponse(const QJsonObject& result) {
         handleKeyboardLayoutsChanged(
             { { QStringLiteral("keyboard_layouts"), result.value(QStringLiteral("KeyboardLayouts")) } });
     }
+}
+
+void NiriIpc::refreshOutputs() {
+    m_requestSocket.request("\"Outputs\"", [this](bool ok, const QJsonObject& resp) {
+        if (ok) {
+            applyResponse(resp.value(QStringLiteral("result")).toObject());
+        }
+    });
 }
 
 void NiriIpc::fetchInitialState() {
@@ -425,6 +434,11 @@ void NiriIpc::handleWorkspacesChanged(const QJsonObject& data) {
     });
 
     m_workspacesModel->resetData(wsList);
+
+    // niri has no outputs event; workspaces change on output hotplug, so refresh outputs here
+    if (m_available) {
+        refreshOutputs();
+    }
 
     m_focusedWorkspaceIndex = -1;
     m_focusedWorkspaceId = -1;
@@ -493,6 +507,23 @@ void NiriIpc::handleWorkspaceActivated(const QJsonObject& data) {
     updateCurrentOutputWorkspaces();
     emit workspacesChanged();
     emit focusedWorkspaceChanged();
+}
+
+void NiriIpc::handleWorkspaceActiveWindowChanged(const QJsonObject& data) {
+    const auto id = data.value(QStringLiteral("workspace_id")).toInt();
+    const auto activeWindow = data.value(QStringLiteral("active_window_id")).toVariant();
+
+    const auto& wsList = m_workspacesModel->items();
+    for (qsizetype i = 0; i < wsList.size(); ++i) {
+        auto ws = wsList.at(i).toMap();
+        if (ws.value(kId).toInt() == id) {
+            ws[QStringLiteral("active_window_id")] = activeWindow;
+            m_workspacesModel->setItem(toIndex(i), ws);
+            updateCurrentOutputWorkspaces();
+            emit workspacesChanged();
+            return;
+        }
+    }
 }
 
 void NiriIpc::handleWindowsChanged(const QJsonObject& data) {
@@ -616,12 +647,6 @@ void NiriIpc::handleWindowLayoutsChanged(const QJsonObject& data) {
 
     updateFocusedWindowFields();
     emit windowsChanged();
-}
-
-void NiriIpc::handleOutputsChanged(const QJsonObject& data) {
-    const auto outputs = data.value(QStringLiteral("outputs"));
-    m_outputs = outputs.isObject() ? outputs.toObject().toVariantMap() : data.toVariantMap();
-    emit outputsChanged();
 }
 
 void NiriIpc::handleKeyboardLayoutsChanged(const QJsonObject& data) {

@@ -2,26 +2,25 @@
 Upstream base: a3a8fe59aba2c0048ab02dc817748678f96076ff   Branch: niri-v2   Updated: 2026-10-16
 
 ## Current step
-S3c — недостающие события в `Caelestia.Niri` (каждое — с тестом)
+S4 — фасад `services/Compositor.qml` (S3c закрыт, кроме фуллскрина — BLOCKED(Q3))
 
 ## In progress
 - (пусто)
 
 ## Next action
-В `plugin/src/Caelestia/Niri/niriipc.cpp` → `processEvent`: добавить `KeyboardLayoutSwitched{idx}` (+ сценарий
-`tests/fixtures/niri/synthetic-kb-switch/` и тест), затем `ConfigLoaded{failed}` → сигнал `configLoaded(bool failed)`,
-`WorkspaceActiveWindowChanged`; ветку `OutputsChanged` удалить, `Outputs` перезапрашивать по `WorkspacesChanged`.
-Проверка: `nix develop -c bash -c 'cmake --build build && ctest --test-dir build --output-on-failure'`.
+`rg -n '\bHypr\.|Hyprland\.|HyprlandMonitor|HyprlandToplevel|HyprlandWorkspace' -t qml` → таблица мест вызова в
+`docs/port/COMPOSITOR_API.md` (вызов → файл:строка → функция Compositor → niri action/event → U-ID); затем
+`services/Compositor.qml` по таблице + объект `supports`.
 
 ## Metrics
-boundary-allowlist: 29 files · fhs-allowlist: 1 file · flake check: green (package, boundary, fhs, unit)
+boundary-allowlist: 29 files · fhs-allowlist: 1 file · flake check: green (package, boundary, fhs, unit; 24 теста, 8 сценариев)
 
 ## Blocked / pending decisions
-- Фуллскрин (часть S3c) — BLOCKED(Q3): по src 26.4.0 флага нет, нужен выбор эвристики/отказа + фикстура `fullscreen`
-- Q2–Q15, Q-NIX1, Q-NIX2 — PENDING (DECISIONS.md)
+- Фуллскрин (S3c) — BLOCKED(Q3): данные есть (window_size == размер выхода), нужен выбор человека
+- Q2, Q4–Q7, Q9–Q15, Q-NIX1, Q-NIX2 — PENDING (DECISIONS.md); Q8 — подтверждён и исправлен
 - Рантайм шелла сломан до S4 (`services/Hypr.qml` → удалённый `HyprExtras`) — ожидаемо
 
 ## Needs human
-- Записать фикстуры niri: VERIFY.md → «S2» (у агента нет доступа к `NIRI_SOCKET`, он работает от `claude-agent`).
-- Решить Q3 (фуллскрин): эвристика по `layout.window_size` ≈ размер выхода или не детектировать.
+- Решить Q3 (фуллскрин): (a) эвристика `window_size` == логический размер выхода (рекомендую), (b) не детектировать.
+- `niri --version` в системе — сверить с 26.04 (фикстуры записаны на 26.04).
 - `git push -u origin niri-v2` — у агента нет прав на origin.
