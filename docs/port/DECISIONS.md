@@ -57,7 +57,7 @@
 - Ветка `OutputsChanged` оставлена с пометкой UNVERIFIED (решится по фикстурам в S3c).
 - 2026-10-16 — S3b: тесты `plugin/tests/niri/tst_niriipc.cpp`. `replayFixtures` автоматически берёт **каждый** каталог `tests/fixtures/niri/*` с `workspaces.after.json`: снимок → проигрывание `event-stream.jsonl` → сравнение с `*.after.json` (воркспейсы: output/idx/is_active/is_focused; порядок окон по воркспейсам; фокус окна; раскладка). Пока есть только `synthetic-basic` (ручная, по схеме src 26.4.0). Тесты: `CAELESTIA_BUILD_TESTS=ON` (по умолчанию OFF, чтобы не трогать сборку пакета), `checks.unit` во flake.
 - Формат: `niri msg --json <query>` печатает **развёрнутый** ответ (массив/объект/null), event-stream — по одному событию `{"Type":{...}}` на строку (src 26.4.0, `src/ipc/client.rs`).
-- Известный долг для S3c: `actionPayload("switch-layout", {"next"})` строит `{"SwitchLayout":"next"}`, а нужен `{"SwitchLayout":{"layout":"Next"}}`; generic-числовой аргумент превращается в `{"id":N}` — для многих действий это неверно. Разобрать вместе с API `Compositor` (S4).
+- ~~Известный долг: `actionPayload("switch-layout", …)` и generic-числовой аргумент~~ — 2026-10-16 S4-cpp: `SwitchLayout{layout:"Next"|"Prev"|{"Index":N}}` и `MoveWindowToWorkspace{window_id,reference:{Id},focus}` сверены с `niri-ipc/src/lib.rs` 26.4.0, покрыты тестами. Generic `{"id":N}` для прочих действий остаётся — новые действия добавлять только с тестом payload.
 
 ## Фикстуры (S2, записаны 2026-10-16)
 Как записаны: `scripts/port/record-niri-fixtures.sh` — изолированный headless sway (pixman) → вложенный niri 26.04 (winit) с `tests/fixtures/niri/config.kdl`; к сессии пользователя не подключается (свой `XDG_RUNTIME_DIR`, сброшены `WAYLAND_DISPLAY`/`NIRI_SOCKET`/`DBUS_SESSION_BUS_ADDRESS`). Окна — `foot --app-id fixture-N sleep 3600`. Сценарии: idle, windows, workspaces, fullscreen, kb-switch, overview, config-reload.
@@ -71,3 +71,9 @@
 - UNVERIFIED(nested) — multi-monitor: у winit-бэкенда niri ровно один выход, сценарий в изоляции не записать.
 - 2026-10-16 — S3c: ветка `OutputsChanged` удалена (события нет в niri 26.04). `Outputs` перезапрашивается при каждом `WorkspacesChanged`, если сокет подключён (воркспейсы меняются при hotplug выходов). UNVERIFIED: что niri шлёт `WorkspacesChanged` при hotplug — в изоляции не проверить (winit, один выход).
 - 2026-10-16 — `ConfigLoaded{failed}` → сигнал `NiriIpc.configLoaded(bool failed)`. Он приходит и при каждом переподключении event-stream, поэтому потребители (GameMode, U47) должны быть идемпотентны.
+
+## Шорткаты (S5b)
+- VERIFIED(src niri-config 26.4.0, `binds.rs`) — у `Bind` нет триггера на отпускание клавиши. Upstream `launcher` (toggle on release + `launcherInterrupt`) на niri не воспроизводим → launcher по нажатию. Следствие вынужденное, не развилка.
+- VERIFIED(`niri validate`) — `docs/port/niri-binds.example.kdl` валиден для niri 26.04.
+- UNVERIFIED — `caelestia-shell ipc call …`: обёртка добавляет `-p <path>` перед подкомандой `ipc`; парсинг `qs -p X ipc --help` проходит, вызов в живом инстансе не проверен → VERIFY.md.
+- 2026-10-16 — `drawers toggle sidebar|utilities` не блокируется при фуллскрине (upstream-шорткаты блокировали). Оставлено как в upstream IPC, отличие записано в COMPOSITOR_API.md.

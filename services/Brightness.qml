@@ -5,7 +5,6 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Caelestia.Config
-import qs.components.misc
 
 Singleton {
     id: root
@@ -92,21 +91,7 @@ Singleton {
         }
     }
 
-    // qmllint disable unresolved-type
-    CustomShortcut {
-        // qmllint enable unresolved-type
-        name: "brightnessUp"
-        description: "Increase brightness"
-        onPressed: root.increaseBrightness()
-    }
-
-    // qmllint disable unresolved-type
-    CustomShortcut {
-        // qmllint enable unresolved-type
-        name: "brightnessDown"
-        description: "Decrease brightness"
-        onPressed: root.decreaseBrightness()
-    }
+    // NIRI-PORT(U18): no global-shortcuts protocol on niri; bind this file's IpcHandler in niri KDL instead
 
     IpcHandler {
         function get(): real {
@@ -156,6 +141,15 @@ Singleton {
             monitor.setBrightness(targetBrightness);
 
             return `Set monitor ${monitor.modelData.name} brightness to ${+monitor.brightness.toFixed(2)}`;
+        }
+
+        // NIRI-PORT(U18): replaces the brightnessUp/brightnessDown global shortcuts (config step size)
+        function increase(): void {
+            root.increaseBrightness();
+        }
+
+        function decrease(): void {
+            root.decreaseBrightness();
         }
 
         target: "brightness"

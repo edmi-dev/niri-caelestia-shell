@@ -2,113 +2,28 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Caelestia
-import qs.components.misc
 import qs.services
 import qs.modules.nexus
 
 Scope {
     id: root
 
-    property bool launcherInterrupted
-    readonly property bool hasFullscreen: Hypr.focusedWorkspace?.toplevels.values.some(t => t.lastIpcObject.fullscreen > 1) ?? false
+    // NIRI-PORT(U51): fullscreen heuristic per output (Q3 = a)
+    readonly property bool hasFullscreen: Compositor.hasFullscreen(Compositor.focusedMonitor)
 
-    // qmllint disable unresolved-type
-    CustomShortcut {
-        // qmllint enable unresolved-type
-        name: "nexus"
-        description: "Open nexus"
-        onPressed: WindowFactory.create()
-    }
+    // NIRI-PORT(U18): no global-shortcuts protocol on niri. The former shortcuts map to IPC calls bound in niri KDL
+    // (docs/port/niri-binds.example.kdl): drawers toggle <name>, drawers showAll, nexus open. niri has no release
+    // binds, so the launcher toggles on press and launcherInterrupt is gone.
 
-    // qmllint disable unresolved-type
-    CustomShortcut {
-        // qmllint enable unresolved-type
-        name: "showall"
-        description: "Toggle launcher, dashboard and osd"
-        onPressed: {
+    IpcHandler {
+        // NIRI-PORT(U18): former "showall" global shortcut
+        function showAll(): void {
             if (root.hasFullscreen)
                 return;
             const v = ShellState.forActive();
             v.launcher = v.dashboard = v.osd = v.utilities = !(v.launcher || v.dashboard || v.osd || v.utilities);
         }
-    }
 
-    // qmllint disable unresolved-type
-    CustomShortcut {
-        // qmllint enable unresolved-type
-        name: "dashboard"
-        description: "Toggle dashboard"
-        onPressed: {
-            if (root.hasFullscreen)
-                return;
-            const screenState = ShellState.forActive();
-            screenState.dashboard = !screenState.dashboard;
-        }
-    }
-
-    // qmllint disable unresolved-type
-    CustomShortcut {
-        // qmllint enable unresolved-type
-        name: "session"
-        description: "Toggle session menu"
-        onPressed: {
-            if (root.hasFullscreen)
-                return;
-            const screenState = ShellState.forActive();
-            screenState.session = !screenState.session;
-        }
-    }
-
-    // qmllint disable unresolved-type
-    CustomShortcut {
-        // qmllint enable unresolved-type
-        name: "launcher"
-        description: "Toggle launcher"
-        onPressed: root.launcherInterrupted = false
-        onReleased: {
-            if (!root.launcherInterrupted && !root.hasFullscreen) {
-                const screenState = ShellState.forActive();
-                screenState.launcher = !screenState.launcher;
-            }
-            root.launcherInterrupted = false;
-        }
-    }
-
-    // qmllint disable unresolved-type
-    CustomShortcut {
-        // qmllint enable unresolved-type
-        name: "launcherInterrupt"
-        description: "Interrupt launcher keybind"
-        onPressed: root.launcherInterrupted = true
-    }
-
-    // qmllint disable unresolved-type
-    CustomShortcut {
-        // qmllint enable unresolved-type
-        name: "sidebar"
-        description: "Toggle sidebar"
-        onPressed: {
-            if (root.hasFullscreen)
-                return;
-            const screenState = ShellState.forActive();
-            screenState.sidebar = !screenState.sidebar;
-        }
-    }
-
-    // qmllint disable unresolved-type
-    CustomShortcut {
-        // qmllint enable unresolved-type
-        name: "utilities"
-        description: "Toggle utilities"
-        onPressed: {
-            if (root.hasFullscreen)
-                return;
-            const screenState = ShellState.forActive();
-            screenState.utilities = !screenState.utilities;
-        }
-    }
-
-    IpcHandler {
         function toggle(drawer: string): void {
             if (list().split("\n").includes(drawer)) {
                 if (root.hasFullscreen && ["launcher", "session", "dashboard"].includes(drawer))

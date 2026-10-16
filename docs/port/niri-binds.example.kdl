@@ -1,0 +1,39 @@
+// Пример биндов niri для caelestia-shell (S5b, U18/U51). Подключить через `include` в config.kdl.
+// Глобальных шорткатов (протокол hyprland-global-shortcuts) в niri нет: каждый бывший CustomShortcut —
+// функция IpcHandler, вызываемая через `caelestia-shell ipc call <target> <function> [args]`.
+// Бинды на отпускание клавиши в niri 26.04 отсутствуют (niri-config Bind: нет release-триггера),
+// поэтому launcher переключается по нажатию, а launcherInterrupt не нужен.
+// UNVERIFIED: `caelestia-shell ipc call` (обёртка добавляет `-p <path>` перед подкомандой) на живой сессии — VERIFY.md.
+
+binds {
+    // Drawers (modules/Shortcuts.qml, target "drawers")
+    Mod+Space repeat=false { spawn "caelestia-shell" "ipc" "call" "drawers" "toggle" "launcher"; }
+    Mod+D repeat=false { spawn "caelestia-shell" "ipc" "call" "drawers" "toggle" "dashboard"; }
+    Mod+Escape repeat=false { spawn "caelestia-shell" "ipc" "call" "drawers" "toggle" "session"; }
+    Mod+S repeat=false { spawn "caelestia-shell" "ipc" "call" "drawers" "toggle" "sidebar"; }
+    Mod+U repeat=false { spawn "caelestia-shell" "ipc" "call" "drawers" "toggle" "utilities"; }
+    Mod+A repeat=false { spawn "caelestia-shell" "ipc" "call" "drawers" "showAll"; }
+    Mod+I repeat=false { spawn "caelestia-shell" "ipc" "call" "nexus" "open"; }
+
+    // Lock (modules/lock/Lock.qml, target "lock")
+    Mod+L allow-when-locked=true { spawn "caelestia-shell" "ipc" "call" "lock" "lock"; }
+
+    // Screenshots (modules/areapicker/AreaPicker.qml, target "picker")
+    Print { spawn "caelestia-shell" "ipc" "call" "picker" "open"; }
+    Mod+Shift+S { spawn "caelestia-shell" "ipc" "call" "picker" "openFreeze"; }
+    Ctrl+Print { spawn "caelestia-shell" "ipc" "call" "picker" "openClip"; }
+    Mod+Shift+C { spawn "caelestia-shell" "ipc" "call" "picker" "openFreezeClip"; }
+
+    // Media (services/Players.qml, target "mpris")
+    XF86AudioPlay allow-when-locked=true { spawn "caelestia-shell" "ipc" "call" "mpris" "playPause"; }
+    XF86AudioPrev allow-when-locked=true { spawn "caelestia-shell" "ipc" "call" "mpris" "previous"; }
+    XF86AudioNext allow-when-locked=true { spawn "caelestia-shell" "ipc" "call" "mpris" "next"; }
+    XF86AudioStop allow-when-locked=true { spawn "caelestia-shell" "ipc" "call" "mpris" "stop"; }
+
+    // Brightness (services/Brightness.qml, target "brightness"; шаг из конфига)
+    XF86MonBrightnessUp allow-when-locked=true { spawn "caelestia-shell" "ipc" "call" "brightness" "increase"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "caelestia-shell" "ipc" "call" "brightness" "decrease"; }
+
+    // Notifications (services/Notifs.qml, target "notifs")
+    Mod+Shift+N { spawn "caelestia-shell" "ipc" "call" "notifs" "clear"; }
+}
