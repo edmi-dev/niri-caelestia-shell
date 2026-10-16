@@ -18,8 +18,9 @@ MouseArea {
 
     property bool onClient
 
-    property real realBorderWidth: onClient ? (Hypr.options["general:border_size"] ?? 1) : 2
-    property real realRounding: onClient ? (Hypr.options["decoration:rounding"] ?? 0) : 0
+    // NIRI-PORT(U62): niri has no runtime option query; use the upstream fallbacks
+    property real realBorderWidth: onClient ? 1 : 2
+    property real realRounding: 0
 
     property real ssx
     property real ssy
@@ -34,24 +35,14 @@ MouseArea {
     property real sw: Math.abs(sx - ex)
     property real sh: Math.abs(sy - ey)
 
+    // NIRI-PORT(U62): niri reports a position only for floating windows (tile_pos_in_workspace_view is None for tiled
+    // ones, niri 26.4.0 src), so only those can be snapped to. UNVERIFIED: workspace view == screen-local coordinates.
     property list<var> clients: {
-        const mon = Hypr.monitorFor(screen);
-        if (!mon)
+        const ws = Compositor.activeWorkspaceFor(Compositor.monitorFor(screen));
+        if (!ws)
             return [];
 
-        const special = mon.lastIpcObject?.specialWorkspace;
-        const wsId = special?.name ? special.id : mon.activeWorkspace?.id;
-        if (wsId === undefined)
-            return [];
-
-        return Hypr.toplevelsForWs(wsId).sort((a, b) => {
-            // Pinned first, then fullscreen, then floating, then any other
-            const ac = a?.lastIpcObject;
-            const bc = b?.lastIpcObject;
-            if (!ac || !bc)
-                return !ac - !bc; // Missing IPC last
-            return (bc.pinned - ac.pinned) || ((bc.fullscreen !== 0) - (ac.fullscreen !== 0)) || (bc.floating - ac.floating);
-        });
+        return Compositor.toplevelsForWs(ws.id).filter(w => w.layout?.tile_pos_in_workspace_view).sort((a, b) => b.is_focused - a.is_focused);
     }
 
     function checkClientRects(x: real, y: real): void {
@@ -59,16 +50,11 @@ MouseArea {
             if (!client)
                 continue;
 
-            const ipc = client.lastIpcObject;
-            if (!ipc?.at || !ipc?.size)
-                continue;
-
-            let {
-                at: [cx, cy],
-                size: [cw, ch]
-            } = ipc;
-            cx -= screen.x;
-            cy -= screen.y;
+            // NIRI-PORT(U62): window geometry = tile position in the workspace view + window offset in the tile
+            const layout = client.layout;
+            const cx = layout.tile_pos_in_workspace_view[0] + layout.window_offset_in_tile[0];
+            const cy = layout.tile_pos_in_workspace_view[1] + layout.window_offset_in_tile[1];
+            const [cw, ch] = layout.window_size;
             if (cx <= x && cy <= y && cx + cw >= x && cy + ch >= y) {
                 onClient = true;
                 sx = cx;
@@ -101,8 +87,6 @@ MouseArea {
     cursorShape: Qt.CrossCursor
 
     Component.onCompleted: {
-        Hypr.extras.refreshOptions();
-
         // Break binding if frozen
         if (loader.freeze)
             clients = clients;
@@ -200,16 +184,8 @@ MouseArea {
         }
     }
 
-    Process {
-        running: true
-        command: ["hyprctl", "cursorpos", "-j"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const pos = JSON.parse(text);
-                root.checkClientRects(pos.x - root.screen.x, pos.y - root.screen.y);
-            }
-        }
-    }
+    // NIRI-PORT(U62): no cursor position in niri IPC (Compositor.supports.cursorPos); window snapping starts on the
+    // first mouse move (hoverEnabled) instead of at open
 
     Loader {
         id: screencopy
