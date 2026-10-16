@@ -20,3 +20,8 @@ add_library(caelestia-util INTERFACE)
 target_include_directories(caelestia-util INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 add_subdirectory(src/Caelestia)
+
+# NIRI-PORT(S3b): niri IPC unit tests
+if(CAELESTIA_BUILD_TESTS)
+    add_subdirectory(tests/niri)
+endif()

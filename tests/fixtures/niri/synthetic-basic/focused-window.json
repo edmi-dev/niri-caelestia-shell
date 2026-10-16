@@ -1,0 +1,33 @@
+{
+  "id": 10,
+  "title": "Mozilla Firefox",
+  "app_id": "firefox",
+  "pid": 1010,
+  "workspace_id": 1,
+  "is_focused": true,
+  "is_floating": false,
+  "is_urgent": false,
+  "layout": {
+    "pos_in_scrolling_layout": [
+      2,
+      1
+    ],
+    "tile_size": [
+      800.0,
+      960.0
+    ],
+    "window_size": [
+      792,
+      952
+    ],
+    "tile_pos_in_workspace_view": [
+      800.0,
+      0.0
+    ],
+    "window_offset_in_tile": [
+      4.0,
+      4.0
+    ]
+  },
+  "focus_timestamp": null
+}

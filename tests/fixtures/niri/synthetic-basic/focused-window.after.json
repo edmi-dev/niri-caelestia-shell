@@ -1,0 +1,33 @@
+{
+  "id": 12,
+  "title": "main.cpp - Code",
+  "app_id": "code",
+  "pid": 1012,
+  "workspace_id": 2,
+  "is_focused": true,
+  "is_floating": false,
+  "is_urgent": false,
+  "layout": {
+    "pos_in_scrolling_layout": [
+      1,
+      1
+    ],
+    "tile_size": [
+      1536.0,
+      960.0
+    ],
+    "window_size": [
+      1528,
+      952
+    ],
+    "tile_pos_in_workspace_view": [
+      0.0,
+      0.0
+    ],
+    "window_offset_in_tile": [
+      4.0,
+      4.0
+    ]
+  },
+  "focus_timestamp": null
+}
