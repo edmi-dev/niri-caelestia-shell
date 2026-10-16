@@ -1,9 +1,10 @@
-// Пример биндов niri для caelestia-shell (S5b, U18/U51). Подключить через `include` в config.kdl.
-// Глобальных шорткатов (протокол hyprland-global-shortcuts) в niri нет: каждый бывший CustomShortcut —
-// функция IpcHandler, вызываемая через `caelestia-shell ipc call <target> <function> [args]`.
-// Бинды на отпускание клавиши в niri 26.04 отсутствуют (niri-config Bind: нет release-триггера),
-// поэтому launcher переключается по нажатию, а launcherInterrupt не нужен.
-// UNVERIFIED: `caelestia-shell ipc call` (обёртка добавляет `-p <path>` перед подкомандой) на живой сессии — VERIFY.md.
+// niri config snippet for caelestia-shell (niri >= 26.04). Include it at the END of your niri config:
+//     include "caelestia.kdl"
+// The home-manager module writes it to ~/.config/niri/caelestia.kdl (programs.caelestia.niri.enable).
+//
+// niri has no global-shortcuts protocol: every former shell shortcut is an IpcHandler function called with
+// `caelestia-shell ipc call <target> <function> [args]`. niri has no key-release binds, so the launcher
+// toggles on press.
 
 binds {
     // Drawers (modules/Shortcuts.qml, target "drawers")
@@ -30,7 +31,7 @@ binds {
     XF86AudioNext allow-when-locked=true { spawn "caelestia-shell" "ipc" "call" "mpris" "next"; }
     XF86AudioStop allow-when-locked=true { spawn "caelestia-shell" "ipc" "call" "mpris" "stop"; }
 
-    // Brightness (services/Brightness.qml, target "brightness"; шаг из конфига)
+    // Brightness (services/Brightness.qml, target "brightness"; step size from the shell config)
     XF86MonBrightnessUp allow-when-locked=true { spawn "caelestia-shell" "ipc" "call" "brightness" "increase"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "caelestia-shell" "ipc" "call" "brightness" "decrease"; }
 
@@ -38,11 +39,14 @@ binds {
     Mod+Shift+N { spawn "caelestia-shell" "ipc" "call" "notifs" "clear"; }
 }
 
-// Размытие под панелями шелла (U53). В Hyprland шелл ставил layerrule на лету по `transparency.enabled`;
-// в niri правила статичны — включать вручную, если в конфиге шелла включена прозрачность.
+// Blur behind the shell's panels. niri layer rules are static, unlike the runtime rules the shell set on
+// Hyprland; keep it if transparency is enabled in the shell config.
 layer-rule {
     match namespace="^caelestia-drawers$"
     background-effect {
         blur true
     }
 }
+
+// Game mode overrides written by the shell (Compositor.setGameMode); must stay last to win over the rest.
+include optional=true "caelestia-gamemode.kdl"

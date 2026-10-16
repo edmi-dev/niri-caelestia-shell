@@ -37,7 +37,7 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 
 ## S5. Каркас оболочки
 - [x] S5a: U20 — ShellState/Screens — DONE
-- [x] S5b: U18, U51 — CustomShortcut → IpcHandler, `niri-binds.example.kdl` — DONE
+- [x] S5b: U18, U51 — CustomShortcut → IpcHandler, `nix/niri/caelestia.kdl` — DONE
 - [x] S5c: U21 (+U29 Wrapper) — ContentWindow, focus grab — DONE (эмуляция, см. DECISIONS «Focus grab»)
 
 ## S6. Бар
@@ -58,7 +58,7 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 
 ## S8. Упаковка под NixOS (U02)
 - [x] `nix/default.nix`: без hyprland, env-пути — DONE (niri в runtimeDeps не нужен)
-- [~] `nix/hm-module.nix` (Q-NIX1, Q-NIX2), `NIRI_SOCKET` в user-сервисе — NIRI_SOCKET: правка не нужна (VERIFIED src); остальное BLOCKED(Q-NIX1, Q-NIX2)
+- [x] `nix/hm-module.nix` (Q-NIX1, Q-NIX2), `NIRI_SOCKET` в user-сервисе — DONE: `settingsMode` managed|seed, `niri.enable` → `~/.config/niri/caelestia.kdl`; NIRI_SOCKET без правок
 - [ ] README — TODO
 
 ## S9. Интеграция в систему пользователя

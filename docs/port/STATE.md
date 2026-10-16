@@ -9,7 +9,7 @@ S7/S8 — всё незаблокированное в S5–S8 сделано. �
 
 ## Next action
 S8 README: короткий раздел «niri port» в начале `README.md` (маркер NIRI-PORT(S8)): зависимости (niri ≥ 26.04, без Hyprland),
-`include` для `docs/port/niri-binds.example.kdl`, `caelestia-shell ipc call …` вместо глобальных шорткатов, ограничения (`supports.*`).
+`include` для `nix/niri/caelestia.kdl`, `caelestia-shell ipc call …` вместо глобальных шорткатов, ограничения (`supports.*`).
 После решений человека: S6b (Q2, Q5, Q7) → `Workspaces.qml`, `Workspace.qml`, `SpecialWorkspaces.qml`; U47 GameMode (Q15).
 В маркерах не упоминать `hyprctl`, `Hypr.`, `Hyprland<Type>` — их ловит check-boundary.
 
