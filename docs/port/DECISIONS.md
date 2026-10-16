@@ -107,3 +107,9 @@
 - 2026-10-17 — «Номер» воркспейса в баре = `idx` на выходе этого бара; клик фокусирует по `{Id}` (ссылка `{Index}` разрешается на сфокусированном выходе — для бара другого монитора было бы неверно); позиция за пределами существующих → последний (всегда пустой) воркспейс выхода. `SpecialWorkspaces.qml` удалён, оверлей спецворкспейсов убран; в Nexus скрыты «Per monitor» и «Windows on special workspaces».
 - 2026-10-17 — Q7: новый ключ `bar.workspaces.ignoredWindows` (QStringList, по умолчанию пусто; точное совпадение или `^…$`-regex по `app_id` или `title`), `ignoredTags` на niri не используется. `Compositor.toplevelsForWs(wsId, ignoredWindows)`, `isWindowIgnored`, `workspaceAt(output, idx)`.
 - Иконки воркспейсов (`workspaceIcons`) матчатся по имени именованного воркспейса niri, у безымянных — по позиции (как числовые имена в upstream).
+
+## GameMode (U47, Q15 = a)
+- 2026-10-17 — `Compositor.setGameMode(on)` пишет `$XDG_CONFIG_HOME/niri/caelestia-gamemode.kdl` (первая строка — маркер on/off) и после записи делает `load-config-file`; `Compositor.gameMode` читается из файла (FileView, watchChanges). Пользователь подключает **в конце** своего `niri.kdl`: `include optional=true "caelestia-gamemode.kdl"`.
+- VERIFIED(src niri-config 26.4.0 `lib.rs`: include с `optional`, части сливаются через `merge_with`; `niri validate` на конфиге с включённым/выключенным файлом и отсутствующим optional-include) — валидно. Содержимое: `animations { off }`, `blur { off }`, `layout { gaps 0; focus-ring { off }; border { width 1 }; shadow { off } }`, `window-rule { geometry-corner-radius 0 }`.
+- VERIFIED(src) — опции tearing в niri-config 26.4.0 нет; `allow_tearing` не переносится.
+- UNVERIFIED — что поздний `window-rule { geometry-corner-radius 0 }` перебивает скругление из правил пользователя, и что `border { width 1 }` не включает рамку, если пользователь её выключил (`off` в его конфиге) → VERIFY.md.
