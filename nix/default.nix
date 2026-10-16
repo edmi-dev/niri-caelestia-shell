@@ -13,7 +13,6 @@
   wl-clipboard,
   libqalculate,
   bash,
-  hyprland,
   material-symbols,
   rubik,
   nerd-fonts,
@@ -48,7 +47,7 @@
       wl-clipboard
       libqalculate
       bash
-      hyprland
+      # NIRI-PORT(S8): no compositor CLI at runtime; the shell talks to niri over $NIRI_SOCKET (Caelestia.Niri)
     ]
     ++ extraRuntimeDeps
     ++ lib.optional withCli caelestia-cli;

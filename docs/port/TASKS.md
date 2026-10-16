@@ -57,8 +57,8 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 - [ ] `boundary-allowlist.txt` пуст, `nix flake check` зелёный — TODO
 
 ## S8. Упаковка под NixOS (U02)
-- [ ] `nix/default.nix`: без hyprland, + niri, env-пути — TODO
-- [ ] `nix/hm-module.nix` (Q-NIX1, Q-NIX2), `NIRI_SOCKET` в user-сервисе — TODO
+- [x] `nix/default.nix`: без hyprland, env-пути — DONE (niri в runtimeDeps не нужен)
+- [~] `nix/hm-module.nix` (Q-NIX1, Q-NIX2), `NIRI_SOCKET` в user-сервисе — NIRI_SOCKET: правка не нужна (VERIFIED src); остальное BLOCKED(Q-NIX1, Q-NIX2)
 - [ ] README — TODO
 
 ## S9. Интеграция в систему пользователя
