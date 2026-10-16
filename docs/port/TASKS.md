@@ -59,7 +59,7 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 ## S8. Упаковка под NixOS (U02)
 - [x] `nix/default.nix`: без hyprland, env-пути — DONE (niri в runtimeDeps не нужен)
 - [x] `nix/hm-module.nix` (Q-NIX1, Q-NIX2), `NIRI_SOCKET` в user-сервисе — DONE: `settingsMode` managed|seed, `niri.enable` → `~/.config/niri/caelestia.kdl`; NIRI_SOCKET без правок
-- [ ] README — TODO
+- [x] README — DONE (раздел «niri port»)
 
 ## S9. Интеграция в систему пользователя
 - [ ] Путь к системному flake — NEEDS-HUMAN
