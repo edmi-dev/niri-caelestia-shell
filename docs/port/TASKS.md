@@ -46,7 +46,7 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 - [~] S6c: U26 (Q9), U27, U28 — активное окно, статус-иконки, раскладки — U27, U28 DONE; U26 DONE кроме превью (BLOCKED(Q9))
 
 ## S7. Остальные места, зависящие от композитора
-- [ ] U42 — уведомления и фуллскрин (Q3) — TODO
+- [x] U42 — уведомления и фуллскрин (Q3) — DONE (+ U39 StateMessage)
 - [ ] U52 — Visualiser autoHide — TODO
 - [ ] U56 — IdleMonitors, power-off-monitors — TODO
 - [ ] U49 — windowinfo (Q13) — TODO
