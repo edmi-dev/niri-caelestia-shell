@@ -5,10 +5,10 @@
 ## Вопросы
 
 - **Q1** — DECIDED — человек — Стратегия: перенос upstream на niri (ветка `niri-v2` от `upstream/main`), доработки форка — опционально в S10. — Схема работ S0–S11.
-- **Q2** — PENDING — Спецворкспейсы (U25): отказаться / эмулировать именованными воркспейсами. Рекомендация плана: отказаться (`supports.specialWorkspaces: false`). — Блокирует S6b (U25).
+- **Q2** — DECIDED — человек (2026-10-17) — (a) отказаться: виджет спецворкспейсов скрыт, `supports.specialWorkspaces: false`. Исходно: Спецворкспейсы (U25): отказаться / эмулировать именованными воркспейсами. Рекомендация плана: отказаться (`supports.specialWorkspaces: false`). — Блокирует S6b (U25).
 - **Q3** — DECIDED — человек (2026-10-16) — Вариант (a): эвристика. Окно считается фуллскринным, если `layout.window_size` совпадает (±1px) с логическим размером выхода его воркспейса; выход «в фуллскрине», если такое окно на его **активном** воркспейсе. Windowed fullscreen не детектируется. — `NiriIpc.fullscreenOutputs`, `hasFullscreen(output)`, `isWindowFullscreen(id)`, сигнал `fullscreenChanged`; в S4 → `Compositor.hasFullscreen(output)`, `supports.fullscreenFlag: true` (по эвристике). UNVERIFIED: допуск ±1px при дробном масштабе.
 - **Q4** — PENDING — Совместимость `shell.json` со старым форком: миграция при загрузке / скрипт (bash/Go) / начать с чистого. — Актуально для S10/S8.
-- **Q5** — PENDING — `bar.workspaces.perMonitor = false` на niri: показывать воркспейсы всех выходов / игнорировать опцию. — Блокирует S6b.
+- **Q5** — DECIDED — человек (2026-10-17) — (a) игнорировать `perMonitor`: бар всегда показывает воркспейсы своего выхода. Исходно: `bar.workspaces.perMonitor = false` на niri: показывать воркспейсы всех выходов / игнорировать опцию. — Блокирует S6b.
 - **Q6** — PENDING — Мониторинг: C++-сервисы upstream (U11) или `sysmonitor` форка (F12). Рекомендация: upstream. — Актуально только для S10.
 - **Q7** — DECIDED — человек (2026-10-17) — Вариант «заменить»: `ignoredTags` → правила (regex) по `app_id`/`title`. Исходная формулировка: `ignoredTags`: убрать / заменить на regex по `app_id`/`title`. — Блокирует часть S6b.
 - **Q8** — PENDING — Какое событие приходит при переключении раскладки (`KeyboardLayoutSwitched`?). Решается по фикстуре `kb-switch`. По src 26.4.0 событие `KeyboardLayoutSwitched{idx}` есть; осталось подтвердить фикстурой, что niri шлёт именно его. — S3c, S6c.
@@ -18,10 +18,10 @@
 - **Q12** — PENDING — Настройки: Nexus (upstream) или Control Center форка (F04). Рекомендация: Nexus. — Только S10.
 - **Q13** — PENDING — `windowinfo` (U49) и `NiriThing` (F03): объединить / оставить оба. — U49 в S7 (базовая часть не блокируется).
 - **Q14** — PENDING — `modules/keybinds` (F15): удалить / восстановить. — Только S10.
-- **Q15** — PENDING — GameMode (U47): допустимо ли писать файлы в `~/.config/niri/` (генерируемый include). Рекомендация: да. — Блокирует U47.
+- **Q15** — DECIDED — человек (2026-10-17) — (a) да: GameMode пишет генерируемый include-файл в `~/.config/niri/`. Исходно: GameMode (U47): допустимо ли писать файлы в `~/.config/niri/` (генерируемый include). Рекомендация: да. — Блокирует U47.
 - **Q16** — DECIDED — человек (2026-10-17) — Вариант (a): оставить `close-window`. Исходная формулировка: Кнопка «Kill» в windowinfo (U49): в niri нет принудительного kill (`niri msg action --help`). Варианты: (a) `close-window` — вежливое закрытие (сейчас так, не блокирует); (b) `kill -9 <pid>` из шелла. Рекомендация: (a), подпись кнопки не менять.
-- **Q-NIX1** — PENDING — HM: `shell.json` через `xdg.configFile` (read-only симлинк) ломает сохранение из UI. Варианты: (a) как есть; (b) seed — активационный скрипт копирует JSON, только если файла нет; (c) оба через опцию. — Блокирует S8 (hm-module).
-- **Q-NIX2** — PENDING — Генерировать ли из HM-модуля KDL-сниппет биндов для `include` в конфиг niri, и как пользователь собирает конфиг niri. — Блокирует часть S8.
+- **Q-NIX1** — DECIDED — человек (2026-10-17) — (c) оба режима через опцию модуля (managed — симлинк, seed — копия, если файла нет). Исходно: HM: `shell.json` через `xdg.configFile` (read-only симлинк) ломает сохранение из UI. Варианты: (a) как есть; (b) seed — активационный скрипт копирует JSON, только если файла нет; (c) оба через опцию. — Блокирует S8 (hm-module).
+- **Q-NIX2** — DECIDED — человек (2026-10-17) — конфиг niri пишется руками и подключается из системного flake (`hmArgs.niriConfig = ./hosts/kurva-lenovo/config/niri.kdl`); HM-модуль генерирует `~/.config/niri/caelestia.kdl`, пользователь добавляет `include "caelestia.kdl"` (VERIFIED: `include` есть в niri 26.04, `niri validate`). Исходно: Генерировать ли из HM-модуля KDL-сниппет биндов для `include` в конфиг niri, и как пользователь собирает конфиг niri. — Блокирует часть S8.
 
 ## Факты о niri
 
