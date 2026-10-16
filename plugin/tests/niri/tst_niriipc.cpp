@@ -115,6 +115,7 @@ private slots:
     void workspaceActivatedFocused();
     void focusedWindowClosed();
     void windowLayoutsReorder();
+    void keyboardLayoutSwitched();
     void actionPayload_data();
     void actionPayload();
     void replayFixtures_data();
@@ -215,6 +216,23 @@ void TestNiriIpc::windowLayoutsReorder() {
     // Focus follows the window, not the row
     QCOMPARE(ipc.focusedWindowId(), QStringLiteral("10"));
     QCOMPARE(ipc.focusedWindow().value(QStringLiteral("id")).toInt(), 10);
+}
+
+void TestNiriIpc::keyboardLayoutSwitched() {
+    NiriIpc ipc(false, nullptr);
+    loadSnapshot(ipc, m_basic);
+    QSignalSpy spy(&ipc, &NiriIpc::keyboardChanged);
+
+    ipc.processEvent({ { QStringLiteral("KeyboardLayoutSwitched"), QJsonObject{ { QStringLiteral("idx"), 1 } } } });
+    QCOMPARE(ipc.kbLayoutIndex(), 1);
+    QCOMPARE(ipc.kbLayout(), QStringLiteral("ru"));
+    QCOMPARE(spy.count(), 1);
+
+    // Same or out-of-range index: no change, no signal
+    ipc.processEvent({ { QStringLiteral("KeyboardLayoutSwitched"), QJsonObject{ { QStringLiteral("idx"), 1 } } } });
+    ipc.processEvent({ { QStringLiteral("KeyboardLayoutSwitched"), QJsonObject{ { QStringLiteral("idx"), 7 } } } });
+    QCOMPARE(ipc.kbLayoutIndex(), 1);
+    QCOMPARE(spy.count(), 1);
 }
 
 void TestNiriIpc::actionPayload_data() {

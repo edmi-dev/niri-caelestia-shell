@@ -18,7 +18,7 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 - [x] `scripts/port/check-boundary.sh` + авто-allowlist (33 файла) — DONE(L1)
 - [x] `scripts/port/check-fhs.sh` (+ `fhs-allowlist.txt`, 1 файл) — DONE(L1)
 - [x] `scripts/port/divergence.sh` — DONE(L0)
-- [x] `scripts/port/record-niri-fixtures.sh` — DONE(L0, не запускался: нет доступа к niri)
+- [x] `scripts/port/record-niri-fixtures.sh` (изолированный headless sway + niri) — DONE(L2)
 - [x] `checks.boundary`, `checks.fhs` во flake — DONE(L1)
 - [x] Записать фикстуры в изолированном sway+niri (idle, windows, workspaces, fullscreen, kb-switch, overview, config-reload) — DONE(L2)
 - [ ] multi-monitor — NEEDS-HUMAN (под winit один выход; опционально)
@@ -27,7 +27,7 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 ## S3. C++ модуль Caelestia.Niri (F01, U10)
 - [x] S3a: перенос `nirisocket`/`niriipc` → `plugin/src/Caelestia/Niri/`, удалить `hyprextras.*`/`hyprdevices.*` (U10) — DONE(L1)
 - [x] S3b: QtTest `plugin/tests/niri/` + `checks.unit` — DONE(L2) (синтетика; реальные фикстуры подхватятся автоматически)
-- [ ] S3c: `KeyboardLayoutSwitched`, `ConfigLoaded`, `WorkspaceActiveWindowChanged`, `OutputsChanged`, фуллскрин (Q3) — TODO
+- [ ] S3c: `KeyboardLayoutSwitched`, `ConfigLoaded`, `WorkspaceActiveWindowChanged`, `OutputsChanged`, фуллскрин (Q3) — WIP: KeyboardLayoutSwitched DONE(L2); фуллскрин BLOCKED(Q3)
 
 ## S4. Фасад services/Compositor.qml
 - [ ] Таблица мест вызова `Hypr.*` в `COMPOSITOR_API.md` — TODO

@@ -162,6 +162,7 @@ private:
     void handleWindowLayoutsChanged(const QJsonObject& data);
     void handleOutputsChanged(const QJsonObject& data);
     void handleKeyboardLayoutsChanged(const QJsonObject& data);
+    void handleKeyboardLayoutSwitched(const QJsonObject& data);
     void handleOverviewOpenedOrClosed(const QJsonObject& data);
 
     void updateCurrentOutputWorkspaces();
