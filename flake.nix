@@ -60,9 +60,16 @@
       in
         mkShell {
           inputsFrom = [shell shell.plugin shell.extras];
-          packages = with pkgs; [clazy material-symbols rubik nerd-fonts.caskaydia-cove];
+          packages = with pkgs; [clazy material-symbols rubik nerd-fonts.caskaydia-cove]
+            # NIRI-PORT(S1): tooling for the niri port (niri msg, linters, fixture tools)
+            ++ (with pkgs; [niri jq ripgrep libxml2 qt6.qtdeclarative clang-tools]);
           CAELESTIA_XKB_RULES_PATH = "${pkgs.xkeyboard-config}/share/xkeyboard-config-2/rules/base.lst";
         };
+    });
+
+    # NIRI-PORT(S1): port gate checks (boundary, fhs, unit are added in S2/S3)
+    checks = eachSystem (system: {
+      package = self.packages.${system}.caelestia-shell;
     });
 
     homeManagerModules.default = modules.importApply ./nix/hm-module.nix self;
