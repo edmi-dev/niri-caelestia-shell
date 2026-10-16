@@ -2,7 +2,6 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell
-import Quickshell.Hyprland
 import Quickshell.Wayland
 import Caelestia.Config
 import qs.components
@@ -90,11 +89,7 @@ Item {
         onDetachRequested: mode => root.detach(mode)
     }
 
-    HyprlandFocusGrab {
-        active: root.isDetached
-        windows: [QsWindow.window]
-        onCleared: root.close()
-    }
+    // NIRI-PORT(U29): no focus grab protocol on niri; the detached popout is covered by the emulated grab in drawers/ContentWindow.qml
 
     Binding {
         when: root.isDetached || (root.hasCurrent && root.currentName === "wirelesspassword")
@@ -123,7 +118,7 @@ Item {
 
         sourceComponent: WindowInfo {
             screen: root.screen
-            client: Hypr.activeToplevel
+            client: Compositor.activeToplevel // NIRI-PORT(U29): niri window object
         }
     }
 

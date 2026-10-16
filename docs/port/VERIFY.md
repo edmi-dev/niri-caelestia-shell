@@ -17,3 +17,11 @@
 - [ ] `caelestia-shell ipc call drawers toggle launcher` → открывается/закрывается launcher на сфокусированном выходе.
 - [ ] Mod+Space из примера → то же самое, launcher переключается по нажатию.
 - [ ] XF86MonBrightnessUp/Down → яркость меняется на шаг из конфига.
+
+## S5c — эмуляция focus grab
+- [ ] Открыть launcher (`caelestia-shell ipc call drawers toggle launcher`) → можно сразу печатать, без клика.
+- [ ] Клик по окну приложения при открытом launcher/sidebar/session → панель закрывается (сам клик в окно не попадает — ожидаемо).
+- [ ] Клик внутри открытой панели (кнопки sidebar, поле launcher) → панель не закрывается.
+- [ ] После закрытия панели фокус клавиатуры возвращается окну приложения.
+- [ ] Отсоединить popout (winfo) → клик снаружи закрывает его; ввод с клавиатуры в отсоединённом popout (wirelesspassword) работает.
+- [ ] Полноэкранное окно (`niri msg action fullscreen-window`) → рамка/бар скрываются, панели закрываются.

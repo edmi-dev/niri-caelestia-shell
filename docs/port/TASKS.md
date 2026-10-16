@@ -38,7 +38,7 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 ## S5. Каркас оболочки
 - [x] S5a: U20 — ShellState/Screens — DONE
 - [x] S5b: U18, U51 — CustomShortcut → IpcHandler, `niri-binds.example.kdl` — DONE
-- [ ] S5c: U21 (+U29 Wrapper) — ContentWindow, focus grab — TODO
+- [x] S5c: U21 (+U29 Wrapper) — ContentWindow, focus grab — DONE (эмуляция, см. DECISIONS «Focus grab»)
 
 ## S6. Бар
 - [ ] S6a: U23 — Bar.handleWheel — TODO
