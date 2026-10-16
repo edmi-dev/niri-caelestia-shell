@@ -1,10 +1,13 @@
 {"ConfigLoaded":{"failed":false}}
 {"WorkspaceActivated":{"id":5,"focused":false}}
 {"WindowFocusChanged":{"id":11}}
+{"WorkspaceActiveWindowChanged":{"workspace_id":1,"active_window_id":11}}
 {"WindowLayoutsChanged":{"changes":[[10,{"pos_in_scrolling_layout":[1,1],"tile_size":[800.0,960.0],"window_size":[792,952],"tile_pos_in_workspace_view":[0.0,0.0],"window_offset_in_tile":[4.0,4.0]}],[11,{"pos_in_scrolling_layout":[2,1],"tile_size":[800.0,480.0],"window_size":[792,472],"tile_pos_in_workspace_view":[800.0,0.0],"window_offset_in_tile":[4.0,4.0]}],[14,{"pos_in_scrolling_layout":[2,2],"tile_size":[800.0,480.0],"window_size":[792,472],"tile_pos_in_workspace_view":[800.0,480.0],"window_offset_in_tile":[4.0,4.0]}]]}}
 {"WorkspaceActivated":{"id":2,"focused":true}}
 {"WindowOpenedOrChanged":{"window":{"id":15,"title":"foot","app_id":"foot","pid":1015,"workspace_id":2,"is_focused":true,"is_floating":false,"is_urgent":false,"layout":{"pos_in_scrolling_layout":[2,1],"tile_size":[800.0,960.0],"window_size":[792,952],"tile_pos_in_workspace_view":[800.0,0.0],"window_offset_in_tile":[4.0,4.0]},"focus_timestamp":null}}}
+{"WorkspaceActiveWindowChanged":{"workspace_id":2,"active_window_id":15}}
 {"WindowClosed":{"id":15}}
+{"WorkspaceActiveWindowChanged":{"workspace_id":2,"active_window_id":12}}
 {"WindowFocusChanged":{"id":12}}
 {"KeyboardLayoutsChanged":{"keyboard_layouts":{"names":["English (US)","Russian"],"current_idx":1}}}
 {"OverviewOpenedOrClosed":{"is_open":true}}

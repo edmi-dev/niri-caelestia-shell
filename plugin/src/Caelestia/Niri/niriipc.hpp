@@ -147,12 +147,15 @@ signals:
     void capsLockChanged();
     void numLockChanged();
     void windowOpenedOrChanged(const QVariantMap& windowData);
+    // Config (re)load result; also sent once on every (re)connect to the event stream
+    void configLoaded(bool failed);
 
 private:
     void onEventStreamConnected();
     void onEventStreamDisconnected();
 
     void fetchInitialState();
+    void refreshOutputs();
     void handleWorkspacesChanged(const QJsonObject& data);
     void handleWorkspaceActivated(const QJsonObject& data);
     void handleWindowsChanged(const QJsonObject& data);
@@ -160,7 +163,7 @@ private:
     void handleWindowClosed(const QJsonObject& data);
     void handleWindowFocusChanged(const QJsonObject& data);
     void handleWindowLayoutsChanged(const QJsonObject& data);
-    void handleOutputsChanged(const QJsonObject& data);
+    void handleWorkspaceActiveWindowChanged(const QJsonObject& data);
     void handleKeyboardLayoutsChanged(const QJsonObject& data);
     void handleKeyboardLayoutSwitched(const QJsonObject& data);
     void handleOverviewOpenedOrClosed(const QJsonObject& data);
