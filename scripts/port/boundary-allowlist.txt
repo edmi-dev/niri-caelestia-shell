@@ -27,4 +27,3 @@ services/Colours.qml
 services/GameMode.qml
 services/NotifData.qml
 services/Notifs.qml
-services/ShellState.qml
