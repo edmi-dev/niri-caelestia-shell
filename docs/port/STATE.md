@@ -2,13 +2,15 @@
 Upstream base: a3a8fe59aba2c0048ab02dc817748678f96076ff   Branch: niri-v2   Updated: 2026-10-16
 
 ## Current step
-S7 — остальные места, зависящие от композитора (S0–S5, S6a закрыты; S6b BLOCKED(Q2,Q5,Q7); S6c — превью BLOCKED(Q9))
+S7/S8 — всё незаблокированное в S5–S8 сделано. Остаток упирается в решения человека (см. ниже).
 
 ## In progress
 - (пусто)
 
 ## Next action
-S7, U49 (windowinfo, базовая часть без превью: Details, Buttons, WindowInfo; Preview — BLOCKED(Q9)), U47 BLOCKED(Q15). U53 layerrule — DONE.
+S8 README: короткий раздел «niri port» в начале `README.md` (маркер NIRI-PORT(S8)): зависимости (niri ≥ 26.04, без Hyprland),
+`include` для `docs/port/niri-binds.example.kdl`, `caelestia-shell ipc call …` вместо глобальных шорткатов, ограничения (`supports.*`).
+После решений человека: S6b (Q2, Q5, Q7) → `Workspaces.qml`, `Workspace.qml`, `SpecialWorkspaces.qml`; U47 GameMode (Q15).
 В маркерах не упоминать `hyprctl`, `Hypr.`, `Hyprland<Type>` — их ловит check-boundary.
 
 Рецепт qmllint (в devShell нет QML-путей): собрать плагин `cmake -S . -B <scratch>/build -G Ninja -DCAELESTIA_BUILD_TESTS=ON`,
@@ -17,13 +19,14 @@ S7, U49 (windowinfo, базовая часть без превью: Details, But
 Ограничение L0: qmllint не разрешает `qs.*` (нужна VFS quickshell) — для потребителей проверять только синтаксис.
 
 ## Metrics
-boundary-allowlist: 8 files · fhs-allowlist: 0 files · flake check: green (package, boundary, fhs, unit; 30 тестов, 8 сценариев)
+boundary-allowlist: 4 files (воркспейсы бара ×3, GameMode) · fhs-allowlist: 0 files · flake check: green (package, boundary, fhs, unit; 30 тестов, 8 сценариев) · closure без hyprland
 
 ## Blocked / pending decisions
-- Q2, Q4–Q7, Q9–Q15, Q-NIX1, Q-NIX2 — PENDING (DECISIONS.md); Q3 — DECIDED (a); Q8 — исправлен
-- S6b (воркспейсы бара, спецворкспейсы) — BLOCKED(Q2, Q5, Q7); превью активного окна (U26) — BLOCKED(Q9)
-- Рантайм шелла сломан, пока места вызова `Hypr.*` не перенесены на `Compositor.*` (S6b, S7) — ожидаемо
+- S6b (воркспейсы бара, спецворкспейсы) — BLOCKED(Q2, Q5, Q7); U47 GameMode — BLOCKED(Q15)
+- Превью окна (U26, U49 Preview) — BLOCKED(Q9); Kill в windowinfo — Q16 (сейчас close-window)
+- hm-module — BLOCKED(Q-NIX1, Q-NIX2); U45 Recorder — Q10; аудит caelestia-cli (U36/U53/U54) — человек
+- Рантайм шелла не стартует, пока в QML есть `Hypr.*` (4 файла выше) — ожидаемо
 
 ## Needs human
 - `git push -u origin niri-v2` — у агента нет прав на origin.
-- Решения Q2, Q5, Q7 (разблокируют S6b) и Q9 (превью окна) — DECISIONS.md.
+- Решения: Q2, Q5, Q7 (разблокируют S6b и запуск шелла), Q15 (GameMode), Q9, Q16, Q-NIX1/2 — DECISIONS.md.
