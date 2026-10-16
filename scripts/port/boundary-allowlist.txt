@@ -7,5 +7,4 @@ modules/windowinfo/Buttons.qml
 modules/windowinfo/Details.qml
 modules/windowinfo/Preview.qml
 modules/windowinfo/WindowInfo.qml
-services/Colours.qml
 services/GameMode.qml
