@@ -1,0 +1,31 @@
+// Minimal deterministic niri config for recording IPC fixtures in an isolated nested session
+// (scripts/port/record-niri-fixtures.sh). Not a user config.
+
+input {
+    keyboard {
+        xkb {
+            layout "us,ru"
+        }
+    }
+}
+
+layout {
+    gaps 8
+    default-column-width { proportion 0.5; }
+}
+
+animations {
+    off
+}
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+prefer-no-csd
+
+screenshot-path null
+
+// Named workspaces give the fixtures stable workspaces in addition to the dynamic ones
+workspace "one"
+workspace "two"
