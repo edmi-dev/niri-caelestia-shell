@@ -372,6 +372,8 @@ void NiriIpc::processEvent(const QJsonObject& event) {
         handleWindowLayoutsChanged(data);
     } else if (type == QStringLiteral("KeyboardLayoutsChanged")) {
         handleKeyboardLayoutsChanged(data);
+    } else if (type == QStringLiteral("KeyboardLayoutSwitched")) {
+        handleKeyboardLayoutSwitched(data);
     } else if (type == QStringLiteral("OverviewOpenedOrClosed")) {
         handleOverviewOpenedOrClosed(data);
     } else if (type == QStringLiteral("OutputsChanged")) {
@@ -637,6 +639,16 @@ void NiriIpc::handleKeyboardLayoutsChanged(const QJsonObject& data) {
     const auto idx = kb.value(QStringLiteral("current_idx")).toInt(0);
     m_kbLayoutIndex = idx >= 0 && idx < m_kbLayoutsArray.size() ? idx : 0;
 
+    emit keyboardChanged();
+}
+
+void NiriIpc::handleKeyboardLayoutSwitched(const QJsonObject& data) {
+    // niri reports a layout switch only with this event, not with KeyboardLayoutsChanged (fixture kb-switch)
+    const auto idx = data.value(QStringLiteral("idx")).toInt(-1);
+    if (idx < 0 || idx >= m_kbLayoutsArray.size() || idx == m_kbLayoutIndex) {
+        return;
+    }
+    m_kbLayoutIndex = idx;
     emit keyboardChanged();
 }
 
