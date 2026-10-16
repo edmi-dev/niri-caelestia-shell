@@ -67,9 +67,10 @@
         };
     });
 
-    # NIRI-PORT(S1): port gate checks (unit is added in S3)
+    # NIRI-PORT(S1): port gate checks
     checks = eachSystem (system: let
       pkgs = pkgsOf.${system};
+      inherit (pkgs) lib;
       portCheck = name: script:
         pkgs.runCommand "port-check-${name}" {nativeBuildInputs = with pkgs; [bash ripgrep findutils gnused gawk];} ''
           cp -r ${self} src && chmod -R u+w src
@@ -80,6 +81,16 @@
       package = self.packages.${system}.caelestia-shell;
       boundary = portCheck "boundary" "check-boundary.sh";
       fhs = portCheck "fhs" "check-fhs.sh";
+      # Plugin build with QtTest unit tests run against tests/fixtures/niri
+      unit = self.packages.${system}.caelestia-shell.plugin.overrideAttrs (old: {
+        name = "caelestia-qml-plugin-tests";
+        src = lib.fileset.toSource {
+          root = ./.;
+          fileset = lib.fileset.unions [./CMakeLists.txt ./plugin ./tests/fixtures/niri];
+        };
+        cmakeFlags = old.cmakeFlags ++ [(lib.cmakeBool "CAELESTIA_BUILD_TESTS" true)];
+        doCheck = true;
+      });
     });
 
     homeManagerModules.default = modules.importApply ./nix/hm-module.nix self;

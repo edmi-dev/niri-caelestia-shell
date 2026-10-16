@@ -63,6 +63,12 @@ if("extras" IN_LIST ENABLE_MODULES)
     add_subdirectory(extras)
 endif()
 
+# NIRI-PORT(S3b): unit tests for the niri IPC module (ctest --test-dir build)
+option(CAELESTIA_BUILD_TESTS "Build unit tests" OFF)
+if(CAELESTIA_BUILD_TESTS)
+    enable_testing()
+endif()
+
 if("plugin" IN_LIST ENABLE_MODULES)
     add_subdirectory(plugin)
 endif()
