@@ -53,8 +53,8 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 - [x] U62 — areapicker — DONE (привязка только к плавающим окнам)
 - [ ] Аудит `caelestia-cli` для U53/U54/U36 — TODO (решение — человек)
 - [ ] U45 — Recorder (Q10) — TODO
-- [ ] U47 — GameMode (Q15) — TODO
-- [ ] `boundary-allowlist.txt` пуст, `nix flake check` зелёный — TODO
+- [x] U47 — GameMode (Q15) — DONE
+- [x] `boundary-allowlist.txt` пуст, `nix flake check` зелёный — DONE (2026-10-17)
 
 ## S8. Упаковка под NixOS (U02)
 - [x] `nix/default.nix`: без hyprland, env-пути — DONE (niri в runtimeDeps не нужен)

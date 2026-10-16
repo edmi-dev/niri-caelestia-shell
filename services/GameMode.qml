@@ -13,47 +13,34 @@ Singleton {
 
     property alias enabled: props.enabled
 
+    // NIRI-PORT(U47): niri has no runtime options; game mode is a generated KDL include (Q15 = a), see Compositor
     function setDynamicConfs(): void {
-        Hypr.extras.applyOptions({
-            "animations:enabled": 0,
-            "decoration:shadow:enabled": 0,
-            "decoration:blur:enabled": 0,
-            "general:gaps_in": 0,
-            "general:gaps_out": 0,
-            "general:border_size": 1,
-            "decoration:rounding": 0,
-            "general:allow_tearing": 1
-        });
+        Compositor.setGameMode(true);
     }
 
     onEnabledChanged: {
+        // NIRI-PORT(U47): the include file persists across reloads; only act on a real change
+        if (enabled === Compositor.gameMode)
+            return;
         if (enabled) {
             setDynamicConfs();
             if (GlobalConfig.utilities.toasts.gameModeChanged)
-                Toaster.toast(Tr.tr("Game mode enabled"), Tr.tr("Disabled Hyprland animations, blur, gaps and shadows"), "gamepad");
+                Toaster.toast(Tr.tr("Game mode enabled"), Tr.tr("Disabled niri animations, blur, gaps and shadows"), "gamepad");
         } else {
-            Hypr.extras.message("reload");
+            Compositor.setGameMode(false);
             if (GlobalConfig.utilities.toasts.gameModeChanged)
-                Toaster.toast(Tr.tr("Game mode disabled"), Tr.tr("Hyprland settings restored"), "gamepad");
+                Toaster.toast(Tr.tr("Game mode disabled"), Tr.tr("niri settings restored"), "gamepad");
         }
     }
 
     PersistentProperties {
         id: props
 
-        property bool enabled: Hypr.options["animations:enabled"] === 0 // qmllint disable missing-property
+        property bool enabled: Compositor.gameMode
 
         reloadableId: "gameMode"
     }
 
-    Connections {
-        function onConfigReloaded(): void {
-            if (props.enabled)
-                root.setDynamicConfs();
-        }
-
-        target: Hypr
-    }
 
     IpcHandler {
         function isEnabled(): bool {
