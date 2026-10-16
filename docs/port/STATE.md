@@ -22,11 +22,11 @@ S8 README: короткий раздел «niri port» в начале `README.m
 boundary-allowlist: 4 files (воркспейсы бара ×3, GameMode) · fhs-allowlist: 0 files · flake check: green (package, boundary, fhs, unit; 30 тестов, 8 сценариев) · closure без hyprland
 
 ## Blocked / pending decisions
-- S6b (воркспейсы бара, спецворкспейсы) — BLOCKED(Q2, Q5, Q7); U47 GameMode — BLOCKED(Q15)
-- Превью окна (U26, U49 Preview) — BLOCKED(Q9); Kill в windowinfo — Q16 (сейчас close-window)
+- S6b (воркспейсы бара, спецворкспейсы) — BLOCKED(Q2, Q5); Q7 решён (regex по app_id/title); U47 GameMode — BLOCKED(Q15)
+- Превью окна (U26, U49 Preview) — BLOCKED(Q9); Kill в windowinfo — Q16 DECIDED (close-window)
 - hm-module — BLOCKED(Q-NIX1, Q-NIX2); U45 Recorder — Q10; аудит caelestia-cli (U36/U53/U54) — человек
 - Рантайм шелла не стартует, пока в QML есть `Hypr.*` (4 файла выше) — ожидаемо
 
 ## Needs human
 - `git push -u origin niri-v2` — у агента нет прав на origin.
-- Решения: Q2, Q5, Q7 (разблокируют S6b и запуск шелла), Q15 (GameMode), Q9, Q16, Q-NIX1/2 — DECISIONS.md.
+- Решения: Q2, Q5 (вместе с решённым Q7 разблокируют S6b и запуск шелла), Q15 (GameMode), Q9, Q-NIX1/2 — DECISIONS.md.
