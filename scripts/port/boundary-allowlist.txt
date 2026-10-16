@@ -22,10 +22,6 @@ modules/windowinfo/Buttons.qml
 modules/windowinfo/Details.qml
 modules/windowinfo/Preview.qml
 modules/windowinfo/WindowInfo.qml
-plugin/src/Caelestia/Services/hyprdevices.cpp
-plugin/src/Caelestia/Services/hyprdevices.hpp
-plugin/src/Caelestia/Services/hyprextras.cpp
-plugin/src/Caelestia/Services/hyprextras.hpp
 services/Brightness.qml
 services/Colours.qml
 services/GameMode.qml

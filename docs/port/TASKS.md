@@ -24,7 +24,7 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 - [ ] Ответы по фикстурам: Q3, Q8, OutputsChanged, tile_pos_in_workspace_view, версия niri — TODO
 
 ## S3. C++ модуль Caelestia.Niri (F01, U10)
-- [ ] S3a: перенос `nirisocket`/`niriipc` → `plugin/src/Caelestia/Niri/`, удалить `hyprextras.*`/`hyprdevices.*` (U10) — TODO
+- [x] S3a: перенос `nirisocket`/`niriipc` → `plugin/src/Caelestia/Niri/`, удалить `hyprextras.*`/`hyprdevices.*` (U10) — DONE(L1)
 - [ ] S3b: QtTest `plugin/tests/niri/` + `checks.unit` — TODO
 - [ ] S3c: `KeyboardLayoutSwitched`, `ConfigLoaded`, `WorkspaceActiveWindowChanged`, `OutputsChanged`, фуллскрин (Q3) — TODO
 
