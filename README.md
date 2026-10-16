@@ -15,8 +15,25 @@ https://github.com/user-attachments/assets/0840f496-575c-4ca6-83a8-87bb01a85c5f
 ## Components
 
 - Widgets: [`Quickshell`](https://quickshell.outfoxxed.me)
-- Window manager: [`Hyprland`](https://hypr.land)
+<!-- NIRI-PORT(S8): this branch runs on niri instead of Hyprland -->
+- Window manager: [`niri`](https://github.com/YaLTeR/niri) (>= 26.04)
 - Dots: [`caelestia`][dots-repo]
+
+## niri port
+
+This branch (`niri-v2`) is upstream caelestia-shell ported to niri; Hyprland is not supported. The shell talks to niri
+over `$NIRI_SOCKET` (module `Caelestia.Niri`, facade `services/Compositor.qml`).
+
+- **Shortcuts.** niri has no global-shortcuts protocol, so every shortcut is an IPC call:
+  `caelestia-shell ipc call <target> <function>`. A ready snippet with binds, a blur layer rule and the game mode
+  include is in [`nix/niri/caelestia.kdl`](nix/niri/caelestia.kdl); add `include "caelestia.kdl"` at the end of your
+  niri config. With home-manager, `programs.caelestia.niri.enable = true` writes it to `~/.config/niri/caelestia.kdl`.
+- **Game mode** writes `~/.config/niri/caelestia-gamemode.kdl` and reloads the niri config.
+- **Settings.** With home-manager, `programs.caelestia.settingsMode = "seed"` keeps `shell.json` writable from the
+  shell's settings UI (`"managed"`, the default, makes it a read-only symlink).
+- **Not available on niri:** special workspaces, window pinning, live window previews, tags (use
+  `bar.workspaces.ignoredWindows`: exact or `^...$` regex on `app_id`/title), cursor-position window snapping,
+  runtime compositor options. The area picker snaps to floating windows only; fullscreen is detected by window size.
 
 ## Installation
 
