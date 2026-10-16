@@ -130,4 +130,20 @@
 
 ## IPC (`IpcHandler`-цели, замена `CustomShortcut`)
 
-_TBD (S5b)._
+Вызов: `caelestia-shell ipc call <target> <function> [args]`. Пример биндов — `docs/port/niri-binds.example.kdl` (`niri validate` OK).
+Бинды на отпускание в niri 26.04 отсутствуют (`niri-config/src/binds.rs`: у `Bind` нет release-триггера).
+
+| Бывший `CustomShortcut` | Файл | IPC target → функция |
+|---|---|---|
+| `nexus` | modules/Shortcuts.qml | `nexus open` |
+| `showall` | modules/Shortcuts.qml | `drawers showAll` (новая, NIRI-PORT U18) |
+| `dashboard`, `session`, `launcher`, `sidebar`, `utilities` | modules/Shortcuts.qml | `drawers toggle <name>` |
+| `launcherInterrupt` | modules/Shortcuts.qml | — (нет release-биндов; launcher по нажатию) |
+| `lock`, `unlock` | modules/lock/Lock.qml | `lock lock`, `lock unlock` |
+| `screenshot`, `screenshotFreeze`, `screenshotClip`, `screenshotFreezeClip` | modules/areapicker/AreaPicker.qml | `picker open`, `openFreeze`, `openClip`, `openFreezeClip` |
+| `mediaToggle`, `mediaPrev`, `mediaNext`, `mediaStop` | services/Players.qml | `mpris playPause`, `previous`, `next`, `stop` |
+| `brightnessUp`, `brightnessDown` | services/Brightness.qml | `brightness increase`, `decrease` (новые, шаг из конфига) |
+| `clearNotifs` | services/Notifs.qml | `notifs clear` |
+| `refreshDevices` (Hypr.qml) | — | не нужен: Caps/Num из sysfs LED |
+
+Отличие от upstream: шорткаты `sidebar`/`utilities` не срабатывали при фуллскрине, а `drawers toggle` блокирует только `launcher`/`session`/`dashboard`.

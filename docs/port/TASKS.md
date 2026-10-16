@@ -36,8 +36,8 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 - [x] Удалить `services/Hypr.qml` — DONE (места вызова `Hypr.*` мигрируют в S5–S7)
 
 ## S5. Каркас оболочки
-- [ ] S5a: U20 — ShellState/Screens — TODO
-- [ ] S5b: U18, U51 — CustomShortcut → IpcHandler, `niri-binds.example.kdl` — TODO
+- [x] S5a: U20 — ShellState/Screens — DONE
+- [x] S5b: U18, U51 — CustomShortcut → IpcHandler, `niri-binds.example.kdl` — DONE
 - [ ] S5c: U21 (+U29 Wrapper) — ContentWindow, focus grab — TODO
 
 ## S6. Бар

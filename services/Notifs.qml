@@ -8,7 +8,6 @@ import Quickshell.Services.Notifications
 import Caelestia
 import Caelestia.Config
 import Caelestia.I18n
-import qs.components.misc
 import qs.services
 import qs.utils
 
@@ -131,16 +130,7 @@ Singleton {
         }
     }
 
-    // qmllint disable unresolved-type
-    CustomShortcut {
-        // qmllint enable unresolved-type
-        name: "clearNotifs"
-        description: "Clear all notifications"
-        onPressed: {
-            for (const notif of root.list.slice())
-                notif.close();
-        }
-    }
+    // NIRI-PORT(U18): no global-shortcuts protocol on niri; bind this file's IpcHandler in niri KDL instead
 
     IpcHandler {
         function clear(): void {
