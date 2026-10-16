@@ -68,26 +68,27 @@ Item {
         return "";
     }
 
+    // NIRI-PORT(U39): lock keys and layout from Compositor (sysfs LEDs, niri keyboard layouts)
     readonly property string stateMsg: {
-        if (Hypr.kbLayout !== Hypr.defaultKbLayout) {
-            if (Hypr.capsLock && Hypr.numLock)
+        if (Compositor.kbLayout !== Compositor.defaultKbLayout) {
+            if (Compositor.capsLock && Compositor.numLock)
                 // TRANSLATORS: %1 = the active keyboard layout name, e.g. "English (US)"
-                return Tr.tr("Caps lock and Num lock are ON.\nKeyboard layout: %1").arg(Hypr.kbLayoutFull);
-            if (Hypr.capsLock)
+                return Tr.tr("Caps lock and Num lock are ON.\nKeyboard layout: %1").arg(Compositor.kbLayoutFull);
+            if (Compositor.capsLock)
                 // TRANSLATORS: %1 = the active keyboard layout name, e.g. "English (US)"
-                return Tr.tr("Caps lock is ON. Keyboard layout: %1").arg(Hypr.kbLayoutFull);
-            if (Hypr.numLock)
+                return Tr.tr("Caps lock is ON. Keyboard layout: %1").arg(Compositor.kbLayoutFull);
+            if (Compositor.numLock)
                 // TRANSLATORS: %1 = the active keyboard layout name, e.g. "English (US)"
-                return Tr.tr("Num lock is ON. Keyboard layout: %1").arg(Hypr.kbLayoutFull);
+                return Tr.tr("Num lock is ON. Keyboard layout: %1").arg(Compositor.kbLayoutFull);
             // TRANSLATORS: %1 = the active keyboard layout name, e.g. "English (US)"
-            return Tr.tr("Keyboard layout: %1").arg(Hypr.kbLayoutFull);
+            return Tr.tr("Keyboard layout: %1").arg(Compositor.kbLayoutFull);
         }
 
-        if (Hypr.capsLock && Hypr.numLock)
+        if (Compositor.capsLock && Compositor.numLock)
             return Tr.tr("Caps lock and Num lock are ON.");
-        if (Hypr.capsLock)
+        if (Compositor.capsLock)
             return Tr.tr("Caps lock is ON.");
-        if (Hypr.numLock)
+        if (Compositor.numLock)
             return Tr.tr("Num lock is ON.");
 
         return "";

@@ -6,7 +6,6 @@ modules/bar/components/workspaces/SpecialWorkspaces.qml
 modules/bar/components/workspaces/Workspace.qml
 modules/bar/components/workspaces/Workspaces.qml
 modules/IdleMonitors.qml
-modules/lock/center/StateMessage.qml
 modules/windowinfo/Buttons.qml
 modules/windowinfo/Details.qml
 modules/windowinfo/Preview.qml
@@ -14,5 +13,3 @@ modules/windowinfo/WindowInfo.qml
 services/Brightness.qml
 services/Colours.qml
 services/GameMode.qml
-services/NotifData.qml
-services/Notifs.qml
