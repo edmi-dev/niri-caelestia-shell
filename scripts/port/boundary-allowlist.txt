@@ -3,8 +3,4 @@
 modules/bar/components/workspaces/SpecialWorkspaces.qml
 modules/bar/components/workspaces/Workspace.qml
 modules/bar/components/workspaces/Workspaces.qml
-modules/windowinfo/Buttons.qml
-modules/windowinfo/Details.qml
-modules/windowinfo/Preview.qml
-modules/windowinfo/WindowInfo.qml
 services/GameMode.qml

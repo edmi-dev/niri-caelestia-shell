@@ -49,7 +49,7 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 - [x] U42 — уведомления и фуллскрин (Q3) — DONE (+ U39 StateMessage)
 - [x] U52 — Visualiser autoHide — DONE
 - [x] U56 — IdleMonitors, power-off-monitors — DONE (+ U55 Brightness)
-- [ ] U49 — windowinfo (Q13) — TODO
+- [x] U49 — windowinfo (Q13) — DONE базовая часть; превью BLOCKED(Q9), Kill — Q16
 - [x] U62 — areapicker — DONE (привязка только к плавающим окнам)
 - [ ] Аудит `caelestia-cli` для U53/U54/U36 — TODO (решение — человек)
 - [ ] U45 — Recorder (Q10) — TODO

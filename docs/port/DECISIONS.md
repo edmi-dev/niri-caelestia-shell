@@ -19,6 +19,7 @@
 - **Q13** — PENDING — `windowinfo` (U49) и `NiriThing` (F03): объединить / оставить оба. — U49 в S7 (базовая часть не блокируется).
 - **Q14** — PENDING — `modules/keybinds` (F15): удалить / восстановить. — Только S10.
 - **Q15** — PENDING — GameMode (U47): допустимо ли писать файлы в `~/.config/niri/` (генерируемый include). Рекомендация: да. — Блокирует U47.
+- **Q16** — PENDING — Кнопка «Kill» в windowinfo (U49): в niri нет принудительного kill (`niri msg action --help`). Варианты: (a) `close-window` — вежливое закрытие (сейчас так, не блокирует); (b) `kill -9 <pid>` из шелла. Рекомендация: (a), подпись кнопки не менять.
 - **Q-NIX1** — PENDING — HM: `shell.json` через `xdg.configFile` (read-only симлинк) ломает сохранение из UI. Варианты: (a) как есть; (b) seed — активационный скрипт копирует JSON, только если файла нет; (c) оба через опцию. — Блокирует S8 (hm-module).
 - **Q-NIX2** — PENDING — Генерировать ли из HM-модуля KDL-сниппет биндов для `include` в конфиг niri, и как пользователь собирает конфиг niri. — Блокирует часть S8.
 
@@ -91,3 +92,9 @@
 - VERIFIED(fixture outputs.json) — у выхода niri нет числового `id` (поля: name, make, model, serial, logical, modes, …). `Brightness.getMonitor("id:N")` на niri ничего не находит; `model:`/`serial:`/имя работают.
 - 2026-10-16 — U56: строковые idle-действия из конфига: `"dpms off"`/`"dpms on"` → `power-off-monitors`/`power-on-monitors`; прочие строки были командами диспетчера Hyprland — на niri предупреждение в лог, без действия. UNVERIFIED: `power-on-monitors` по `returnAction` (niri и так будит мониторы при вводе) → VERIFY.md.
 - 2026-10-16 — U53 (часть «layerrule»): `Colours.reloadHyprRules` — no-op (вызовы и таймеры сохранены ради минимального диффа), `Connections` к `configReloaded` удалён. VERIFIED(src niri-config 26.4.0 `layer_rule.rs`, `niri validate`): `layer-rule { match namespace="^caelestia-drawers$"; background-effect { blur true } }` — пример в `niri-binds.example.kdl`. Аналога `ignore_alpha` нет. `setMode` через `caelestia scheme` CLI не тронут — аудит CLI (U36/U53/U54) за человеком.
+
+## windowinfo (S7, U49)
+- 2026-10-16 — Details: `address` → id окна niri; позиция — только для плавающих (`tile_pos_in_workspace_view`); монитор — выход воркспейса окна, вместо числового id — `model` (id у выходов нет); строки «Initial title/class», «Xwayland», «Pinned» скрыты (полей нет в niri 26.04, фикстура windows.json); фуллскрин — эвристика Q3, «maximised» неразличим.
+- 2026-10-16 — Buttons: сетка 10 номеров → существующие воркспейсы выхода окна (`workspacesFor`), перенос по `{Id}`; «Pin» скрыт `supports.windowPin`; «Kill» → `close-window` (Q16).
+- Preview: захват выключен до Q9 (`captureSource: null`).
+- Q13 (объединение с NiriThing) не затронут — это S10.
