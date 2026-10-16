@@ -41,7 +41,7 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 - [x] S5c: U21 (+U29 Wrapper) — ContentWindow, focus grab — DONE (эмуляция, см. DECISIONS «Focus grab»)
 
 ## S6. Бар
-- [ ] S6a: U23 — Bar.handleWheel — TODO
+- [x] S6a: U23 — Bar.handleWheel — DONE
 - [ ] S6b: U24 (Q5, Q7), U25 (Q2) — воркспейсы — TODO
 - [ ] S6c: U26 (Q9), U27, U28 — активное окно, статус-иконки, раскладки — TODO
 

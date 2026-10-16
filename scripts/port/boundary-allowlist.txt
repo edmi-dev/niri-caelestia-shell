@@ -2,7 +2,6 @@
 # Shrinking this list is the main progress metric of the niri port; it must reach 0 by S7.
 modules/areapicker/Picker.qml
 modules/background/Visualiser.qml
-modules/bar/Bar.qml
 modules/bar/components/ActiveWindow.qml
 modules/bar/components/StatusIcons.qml
 modules/bar/components/status/LockStatus.qml
