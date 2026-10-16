@@ -15,7 +15,8 @@ Item {
     required property ShellScreen screen
     required property Item wallpaper
 
-    readonly property bool shouldBeActive: Config.background.visualiser.enabled && (!Config.background.visualiser.autoHide || (Hypr.monitorFor(screen)?.activeWorkspace?.toplevels?.values.every(t => t.lastIpcObject?.floating) ?? true))
+    // NIRI-PORT(U52): windows of the output's active workspace (niri JSON, is_floating)
+    readonly property bool shouldBeActive: Config.background.visualiser.enabled && (!Config.background.visualiser.autoHide || Compositor.toplevelsForWs(Compositor.activeWorkspaceFor(Compositor.monitorFor(screen))?.id ?? -1).every(w => w.is_floating))
     property real offset: shouldBeActive ? 0 : screen.height * 0.2
 
     opacity: shouldBeActive ? 1 : 0

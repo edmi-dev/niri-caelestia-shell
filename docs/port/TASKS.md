@@ -47,8 +47,8 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 
 ## S7. Остальные места, зависящие от композитора
 - [x] U42 — уведомления и фуллскрин (Q3) — DONE (+ U39 StateMessage)
-- [ ] U52 — Visualiser autoHide — TODO
-- [ ] U56 — IdleMonitors, power-off-monitors — TODO
+- [x] U52 — Visualiser autoHide — DONE
+- [x] U56 — IdleMonitors, power-off-monitors — DONE (+ U55 Brightness)
 - [ ] U49 — windowinfo (Q13) — TODO
 - [ ] U62 — areapicker — TODO
 - [ ] Аудит `caelestia-cli` для U53/U54/U36 — TODO (решение — человек)

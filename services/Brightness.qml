@@ -25,7 +25,8 @@ Singleton {
 
     function getMonitor(query: string): var {
         if (query === "active") {
-            return monitors.find(m => Hypr.monitorFor(m.modelData)?.focused); // qmllint disable missing-property
+            // NIRI-PORT(U55): focused niri output
+            return monitors.find(m => Compositor.monitorFor(m.modelData) === Compositor.focusedMonitor); // qmllint disable missing-property
         }
 
         if (query.startsWith("model:")) {
@@ -39,8 +40,8 @@ Singleton {
         }
 
         if (query.startsWith("id:")) {
-            const id = parseInt(query.slice(3), 10);
-            return monitors.find(m => Hypr.monitorFor(m.modelData)?.id === id); // qmllint disable missing-property
+            // NIRI-PORT(U55): niri outputs have no numeric id (fixture outputs.json), so id: queries match nothing
+            return undefined;
         }
 
         return monitors.find(m => m.modelData.name === query); // qmllint disable missing-property
