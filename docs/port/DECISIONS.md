@@ -113,3 +113,7 @@
 - VERIFIED(src niri-config 26.4.0 `lib.rs`: include с `optional`, части сливаются через `merge_with`; `niri validate` на конфиге с включённым/выключенным файлом и отсутствующим optional-include) — валидно. Содержимое: `animations { off }`, `blur { off }`, `layout { gaps 0; focus-ring { off }; border { width 1 }; shadow { off } }`, `window-rule { geometry-corner-radius 0 }`.
 - VERIFIED(src) — опции tearing в niri-config 26.4.0 нет; `allow_tearing` не переносится.
 - UNVERIFIED — что поздний `window-rule { geometry-corner-radius 0 }` перебивает скругление из правил пользователя, и что `border { width 1 }` не включает рамку, если пользователь её выключил (`off` в его конфиге) → VERIFY.md.
+
+## Smoke-запуск (L3a, 2026-10-17)
+- `scripts/port/smoke-shell.sh` — сборка `./result` запускается во вложенной изолированной сессии (headless sway → niri winit, временный HOME). Результат: `Configuration Loaded`, QML-ошибок (TypeError/ReferenceError/не найденных типов) нет.
+- VERIFIED(src niri 26.4.0 `src/backend/winit.rs:198-206`) — winit-бэкенд без DRM-ноды отдаёт linux-dmabuf v3; quickshell 0.3.2 вызывает `get_default_feedback` (нужен v4) и падает сразу после загрузки. Это ограничение тестового окружения (tty-бэкенд на железе отдаёт v4+ с feedback), поэтому IPC-вызовы в изоляции не проверить.
