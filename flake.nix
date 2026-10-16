@@ -67,9 +67,19 @@
         };
     });
 
-    # NIRI-PORT(S1): port gate checks (boundary, fhs, unit are added in S2/S3)
-    checks = eachSystem (system: {
+    # NIRI-PORT(S1): port gate checks (unit is added in S3)
+    checks = eachSystem (system: let
+      pkgs = pkgsOf.${system};
+      portCheck = name: script:
+        pkgs.runCommand "port-check-${name}" {nativeBuildInputs = with pkgs; [bash ripgrep findutils gnused gawk];} ''
+          cp -r ${self} src && chmod -R u+w src
+          PORT_ROOT="$PWD/src" bash src/scripts/port/${script}
+          touch $out
+        '';
+    in {
       package = self.packages.${system}.caelestia-shell;
+      boundary = portCheck "boundary" "check-boundary.sh";
+      fhs = portCheck "fhs" "check-fhs.sh";
     });
 
     homeManagerModules.default = modules.importApply ./nix/hm-module.nix self;
