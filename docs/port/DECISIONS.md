@@ -40,3 +40,13 @@
 - `nix flake check --all-systems` падает на `armv6l-linux`: «cannot bootstrap GHC» (quickshell → pipewire → … → pandoc → ghc). Проблема upstream/nixpkgs, не порта; гейт — только x86_64-linux. Предупреждение `unknown flake output 'homeManagerModules'` — из upstream, не трогаем.
 - devShell: niri 26.04 (nixpkgs), qmllint/qtdeclarative 6.11.2, clang-tools 21.1.8, cmake 4.4.3. Версия niri в живой сессии пользователя — записать по фикстурам (S2).
 - 2026-10-16 — Агент работает от пользователя `claude-agent` без `NIRI_SOCKET`: L3a (вложенный niri) и запись фикстур агенту недоступны; всё рантайм-поведение — через человека (L3b).
+- 2026-10-16 — S3a: `Services/hypr{extras,devices}` удалены (U10). До S4 рантайм шелла сломан: `services/Hypr.qml` ссылается на `HyprExtras`. Это ожидаемо по плану; сборка C++ и `nix flake check` зелёные.
+
+## Отличия `Caelestia.Niri` от fork-legacy (S3a)
+- Пространство имён `caelestia::niri`, URI `Caelestia.Niri`, логирование через категории `caelestia.niri.{socket,ipc}`.
+- `NiriRequestSocket`: колбэк и `processQueue()` вызывались дважды, когда приходили и `errorOccurred`, и `disconnected` → теперь ровно один раз.
+- `handleWindowClosed`: при закрытии сфокусированного окна индекс фокуса указывал на чужое окно → фокус сбрасывается.
+- `handleWindowsChanged` / `handleWindowOpenedOrChanged`: индекс фокуса пересчитывается после сортировки (был устаревшим).
+- `handleWindowFocusChanged`: `focusedWindowChanged` эмитился дважды → один раз.
+- Для тестов: публичные `processEvent()`, `applyResponse()`, статический `actionPayload()`, конструктор `NiriIpc(autoConnect=false, parent)`.
+- Ветка `OutputsChanged` оставлена с пометкой UNVERIFIED (решится по фикстурам в S3c).
