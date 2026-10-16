@@ -12,7 +12,7 @@ Scope {
     readonly property bool hasFullscreen: Compositor.hasFullscreen(Compositor.focusedMonitor)
 
     // NIRI-PORT(U18): no global-shortcuts protocol on niri. The former shortcuts map to IPC calls bound in niri KDL
-    // (docs/port/niri-binds.example.kdl): drawers toggle <name>, drawers showAll, nexus open. niri has no release
+    // (nix/niri/caelestia.kdl): drawers toggle <name>, drawers showAll, nexus open. niri has no release
     // binds, so the launcher toggles on press and launcherInterrupt is gone.
 
     IpcHandler {

@@ -172,7 +172,7 @@ docs/port/COMPOSITOR_API.md         # контракт Compositor.qml (свой�
 
 #### S5. Каркас оболочки
 - **S5a. Состояние экранов (U20).** `services/ShellState.qml` `forActive()`/`componentsForActive()` → `Compositor.focusedOutput`; `services/Screens.qml`, `components/ScreenState.qml` — без изменений, если не требуется.
-- **S5b. Шорткаты (U18, U51).** Удалить `components/misc/CustomShortcut.qml`; каждый `CustomShortcut` в `modules/Shortcuts.qml` и других файлах заменить на функцию `IpcHandler` с тем же смыслом. Список целей и функций записать в `COMPOSITOR_API.md → IPC`. Сгенерировать пример KDL-биндов в `docs/port/niri-binds.example.kdl`.
+- **S5b. Шорткаты (U18, U51).** Удалить `components/misc/CustomShortcut.qml`; каждый `CustomShortcut` в `modules/Shortcuts.qml` и других файлах заменить на функцию `IpcHandler` с тем же смыслом. Список целей и функций записать в `COMPOSITOR_API.md → IPC`. Сгенерировать пример KDL-биндов в `nix/niri/caelestia.kdl`.
 - **S5c. Окно drawers (U21).** `modules/drawers/ContentWindow.qml`: монитор → `Compositor.outputForScreen(screen)`; спецворкспейс → убрать по `supports.specialWorkspaces`; фуллскрин → `Compositor.hasFullscreen(output)`; `HyprlandFocusGrab` → `WlrLayershell.keyboardFocus` (Exclusive/OnDemand) + закрытие по клику вне области. Образец обходного пути — `git show fork-legacy:modules/drawers/Drawers.qml` (строка ~32). То же в `modules/bar/popouts/Wrapper.qml`.
 - **Проверка:** L0 (allowlist уменьшился), L1, L3 из VERIFY: панели открываются и закрываются, Esc и клик вне закрывают, фокус не залипает, рамка исчезает при фуллскрине.
 

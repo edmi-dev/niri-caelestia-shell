@@ -75,7 +75,7 @@
 
 ## Шорткаты (S5b)
 - VERIFIED(src niri-config 26.4.0, `binds.rs`) — у `Bind` нет триггера на отпускание клавиши. Upstream `launcher` (toggle on release + `launcherInterrupt`) на niri не воспроизводим → launcher по нажатию. Следствие вынужденное, не развилка.
-- VERIFIED(`niri validate`) — `docs/port/niri-binds.example.kdl` валиден для niri 26.04.
+- VERIFIED(`niri validate`) — `nix/niri/caelestia.kdl` валиден для niri 26.04.
 - UNVERIFIED — `caelestia-shell ipc call …`: обёртка добавляет `-p <path>` перед подкомандой `ipc`; парсинг `qs -p X ipc --help` проходит, вызов в живом инстансе не проверен → VERIFY.md.
 - 2026-10-16 — `drawers toggle sidebar|utilities` не блокируется при фуллскрине (upstream-шорткаты блокировали). Оставлено как в upstream IPC, отличие записано в COMPOSITOR_API.md.
 
@@ -91,7 +91,7 @@
 ## S7: idle, яркость
 - VERIFIED(fixture outputs.json) — у выхода niri нет числового `id` (поля: name, make, model, serial, logical, modes, …). `Brightness.getMonitor("id:N")` на niri ничего не находит; `model:`/`serial:`/имя работают.
 - 2026-10-16 — U56: строковые idle-действия из конфига: `"dpms off"`/`"dpms on"` → `power-off-monitors`/`power-on-monitors`; прочие строки были командами диспетчера Hyprland — на niri предупреждение в лог, без действия. UNVERIFIED: `power-on-monitors` по `returnAction` (niri и так будит мониторы при вводе) → VERIFY.md.
-- 2026-10-16 — U53 (часть «layerrule»): `Colours.reloadHyprRules` — no-op (вызовы и таймеры сохранены ради минимального диффа), `Connections` к `configReloaded` удалён. VERIFIED(src niri-config 26.4.0 `layer_rule.rs`, `niri validate`): `layer-rule { match namespace="^caelestia-drawers$"; background-effect { blur true } }` — пример в `niri-binds.example.kdl`. Аналога `ignore_alpha` нет. `setMode` через `caelestia scheme` CLI не тронут — аудит CLI (U36/U53/U54) за человеком.
+- 2026-10-16 — U53 (часть «layerrule»): `Colours.reloadHyprRules` — no-op (вызовы и таймеры сохранены ради минимального диффа), `Connections` к `configReloaded` удалён. VERIFIED(src niri-config 26.4.0 `layer_rule.rs`, `niri validate`): `layer-rule { match namespace="^caelestia-drawers$"; background-effect { blur true } }` — пример в `nix/niri/caelestia.kdl`. Аналога `ignore_alpha` нет. `setMode` через `caelestia scheme` CLI не тронут — аудит CLI (U36/U53/U54) за человеком.
 
 ## windowinfo (S7, U49)
 - 2026-10-16 — Details: `address` → id окна niri; позиция — только для плавающих (`tile_pos_in_workspace_view`); монитор — выход воркспейса окна, вместо числового id — `model` (id у выходов нет); строки «Initial title/class», «Xwayland», «Pinned» скрыты (полей нет в niri 26.04, фикстура windows.json); фуллскрин — эвристика Q3, «maximised» неразличим.
@@ -117,3 +117,9 @@
 ## Smoke-запуск (L3a, 2026-10-17)
 - `scripts/port/smoke-shell.sh` — сборка `./result` запускается во вложенной изолированной сессии (headless sway → niri winit, временный HOME). Результат: `Configuration Loaded`, QML-ошибок (TypeError/ReferenceError/не найденных типов) нет.
 - VERIFIED(src niri 26.4.0 `src/backend/winit.rs:198-206`) — winit-бэкенд без DRM-ноды отдаёт linux-dmabuf v3; quickshell 0.3.2 вызывает `get_default_feedback` (нужен v4) и падает сразу после загрузки. Это ограничение тестового окружения (tty-бэкенд на железе отдаёт v4+ с feedback), поэтому IPC-вызовы в изоляции не проверить.
+
+## hm-module (S8, Q-NIX1 = c, Q-NIX2)
+- 2026-10-17 — `programs.caelestia.settingsMode = "managed" | "seed"` (по умолчанию managed — как upstream). seed: `home.activation.caelestiaSeedSettings` (после `linkGeneration`) копирует сгенерированный JSON, если файла нет; оставшийся симлинк в `/nix/store` от managed заменяется копией. Restart-trigger сервиса — только в managed.
+- 2026-10-17 — `programs.caelestia.niri.enable` пишет `~/.config/niri/caelestia.kdl` из `nix/niri/caelestia.kdl` (опция `niri.config` для своей версии); `spawn "caelestia-shell"` заменяется абсолютным путём бинаря пакета, чтобы IPC попадал в инстанс этого пакета. Внутри — бинды, layer-rule blur и последним `include optional=true "caelestia-gamemode.kdl"`. Пример перенесён из `docs/port/niri-binds.example.kdl` в `nix/niri/caelestia.kdl` (единый источник).
+- VERIFIED(src niri-config 26.4.0 `lib.rs`: база include = `path.parent()` без canonicalize) — относительный include из симлинка `~/.config/niri/caelestia.kdl` ищется в `~/.config/niri`, а не в `/nix/store`.
+- VERIFIED(eval) — модуль вычислен в `home-manager` (github master) для обоих режимов; сгенерированный KDL проходит `niri validate`.

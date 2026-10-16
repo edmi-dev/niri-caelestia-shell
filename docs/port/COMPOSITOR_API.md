@@ -132,7 +132,7 @@
 
 ## IPC (`IpcHandler`-цели, замена `CustomShortcut`)
 
-Вызов: `caelestia-shell ipc call <target> <function> [args]`. Пример биндов — `docs/port/niri-binds.example.kdl` (`niri validate` OK).
+Вызов: `caelestia-shell ipc call <target> <function> [args]`. Пример биндов — `nix/niri/caelestia.kdl` (`niri validate` OK).
 Бинды на отпускание в niri 26.04 отсутствуют (`niri-config/src/binds.rs`: у `Bind` нет release-триггера).
 
 | Бывший `CustomShortcut` | Файл | IPC target → функция |

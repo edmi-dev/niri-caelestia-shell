@@ -11,7 +11,7 @@
 - [x] Сверить версию niri в системе: `niri --version` → 26.04 (проверено агентом 2026-10-16).
 
 ## S5b — шорткаты через IPC
-Подключить `docs/port/niri-binds.example.kdl` (`include`) и запустить шелл (`caelestia-shell`). Рантайм работает только после переноса мест вызова `Hypr.*` (S5–S7), до этого пункты не выполнять.
+Подключить `nix/niri/caelestia.kdl` (через HM: `programs.caelestia.niri.enable = true`, в конце `niri.kdl` — `include "caelestia.kdl"`) и запустить шелл (`caelestia-shell`).
 
 - [ ] `caelestia-shell ipc show` → видны цели `drawers` (с `showAll`), `nexus`, `lock`, `picker`, `mpris`, `brightness` (с `increase`/`decrease`), `notifs`, `toaster`.
 - [ ] `caelestia-shell ipc call drawers toggle launcher` → открывается/закрывается launcher на сфокусированном выходе.
@@ -49,3 +49,8 @@
 - [ ] Utilities → Game mode вкл → анимации/blur/gaps/тени выключены, углы квадратные; `~/.config/niri/caelestia-gamemode.kdl` начинается с `(on)`.
 - [ ] Выкл → настройки niri восстановлены, файл содержит только заголовок `(off)`; перезапуск шелла не переключает режим и не показывает тост.
 - [ ] Если у вас рамка (`border`) выключена — game mode её не включает (UNVERIFIED).
+
+## S9 — интеграция (системный flake)
+В HM-конфиге: `programs.caelestia = { enable = true; settingsMode = "seed"; niri.enable = true; };`, в конце `hosts/kurva-lenovo/config/niri.kdl`: `include "caelestia.kdl"`.
+- [ ] После `home-manager`/`nixos-rebuild switch`: `~/.config/niri/caelestia.kdl` — симлинк, `niri validate` без ошибок; `~/.config/caelestia/shell.json` — обычный файл (seed), сохранение настроек из Nexus работает.
+- [ ] `systemctl --user status caelestia` → active; бар, панели, воркспейсы на месте.
