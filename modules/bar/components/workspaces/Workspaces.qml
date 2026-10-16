@@ -3,7 +3,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Effects
 import Quickshell
-import Quickshell.Hyprland
 import Caelestia
 import Caelestia.Components
 import Caelestia.Config
@@ -16,9 +15,10 @@ StyledClippingRect {
     required property ShellScreen screen
     required property bool fullscreen
 
-    readonly property HyprlandMonitor monitor: Hypr.monitorFor(screen)
-    readonly property bool onSpecial: monitor?.lastIpcObject.specialWorkspace?.name !== ""
-    readonly property int activeWsId: monitor.activeWorkspace?.id ?? 1
+    // NIRI-PORT(U24): niri output name; workspace numbers are positions (idx) on this output; no special workspaces (Q2)
+    readonly property string monitor: Compositor.monitorFor(screen)
+    readonly property bool onSpecial: false
+    readonly property int activeWsId: Compositor.activeWorkspaceFor(monitor)?.idx ?? 1
     readonly property int activeWsIdx: workspaceIndex(activeWsId)
     readonly property int shown: Math.max(1, Config.bar.workspaces.shown)
 
@@ -28,17 +28,17 @@ StyledClippingRect {
                 length: shown
             }, (_, i) => i + 1);
 
-        const allMonitors = !Config.bar.workspaces.perMonitor;
-        const ignoredTags = GlobalConfig.bar.workspaces.ignoredTags;
-        const workspaces = Hypr.workspaces.values.filter(w => w.id > 0 && (allMonitors || w.monitor === root.monitor) && (w.id === activeWsId || w.toplevels.values.some(t => !Hypr.isToplevelIgnored(t, ignoredTags))));
-        const currentIdx = workspaces.findIndex(w => w.id === activeWsId);
+        // NIRI-PORT(Q5, Q7): this output's workspaces only; window rules by app_id/title
+        const ignoredWindows = GlobalConfig.bar.workspaces.ignoredWindows;
+        const workspaces = Compositor.workspacesFor(root.monitor).filter(w => w.idx === activeWsId || Compositor.toplevelsForWs(w.id, ignoredWindows).length > 0);
+        const currentIdx = workspaces.findIndex(w => w.idx === activeWsId);
         if (currentIdx < 0)
             return [];
 
         const end = CUtils.clamp(currentIdx + 1, Math.min(shown, workspaces.length), workspaces.length);
         const start = Math.max(0, end - shown);
 
-        return workspaces.slice(start, end).map(w => w.id);
+        return workspaces.slice(start, end).map(w => w.idx);
     }
 
     readonly property var workspaces: {
@@ -175,10 +175,12 @@ StyledClippingRect {
                 const ws = (workspaces.itemAt(event.x, event.y) as Workspace)?.ws;
                 if (!ws)
                     return;
-                if (Hypr.activeWsId !== ws)
-                    Hypr.focusWorkspace(ws);
-                else
-                    Hypr.toggleSpecial("special");
+                // NIRI-PORT(U24): focus by id (an index would resolve on the focused output); a position past the
+                // existing workspaces goes to the output's last (always empty) workspace; no special workspaces (Q2)
+                const outputWs = Compositor.workspacesFor(root.monitor);
+                const target = Compositor.workspaceAt(root.monitor, ws) ?? outputWs[outputWs.length - 1];
+                if (target && !target.is_focused)
+                    Compositor.focusWorkspaceId(target.id);
             }
         }
 
@@ -193,42 +195,7 @@ StyledClippingRect {
         }
     }
 
-    Loader {
-        id: specialWs
-
-        anchors.fill: parent
-
-        asynchronous: true
-        active: opacity > 0
-        opacity: root.onSpecial ? 1 : 0
-
-        sourceComponent: Item {
-            StyledRect {
-                anchors.fill: parent
-                radius: Tokens.rounding.full
-                color: Qt.alpha(Colours.palette.m3scrim, Colours.light ? 0 : 0.2)
-            }
-
-            SpecialWorkspaces {
-                anchors.fill: parent
-                anchors.margins: Tokens.padding.extraSmall
-                monitor: root.monitor
-
-                scale: 0.5
-                Component.onCompleted: scale = Qt.binding(() => root.onSpecial ? 1 : 0.5)
-
-                Behavior on scale {
-                    Anim {}
-                }
-            }
-        }
-
-        Behavior on opacity {
-            Anim {
-                type: Anim.DefaultEffects
-            }
-        }
-    }
+    // NIRI-PORT(Q2): special workspaces overlay removed (SpecialWorkspaces.qml)
 
     Behavior on blur {
         Anim {

@@ -102,3 +102,8 @@
 ## Упаковка (S8)
 - 2026-10-16 — `nix/default.nix`: `hyprland` убран из аргументов и runtimeDeps; `niri` в runtimeDeps не нужен — шелл не вызывает CLI niri, только сокет `$NIRI_SOCKET`. Замыкание `nix build .#default` не содержит путей hyprland (`nix path-info -r ./result`). `CAELESTIA_XKB_RULES_PATH` уже задаётся обёрткой.
 - VERIFIED(src niri 26.4.0 `src/main.rs:277-290`) — niri с feature `systemd` делает `systemctl --user import-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE NIRI_SOCKET`, поэтому user-сервис `caelestia` из hm-module получает `NIRI_SOCKET` без изменений модуля. UNVERIFIED: что niri из nixpkgs собран с `systemd` (проверить `systemctl --user show-environment | grep NIRI_SOCKET` в сессии) → VERIFY.md.
+
+## Воркспейсы бара (S6b, по Q2=a, Q5=a, Q7)
+- 2026-10-17 — «Номер» воркспейса в баре = `idx` на выходе этого бара; клик фокусирует по `{Id}` (ссылка `{Index}` разрешается на сфокусированном выходе — для бара другого монитора было бы неверно); позиция за пределами существующих → последний (всегда пустой) воркспейс выхода. `SpecialWorkspaces.qml` удалён, оверлей спецворкспейсов убран; в Nexus скрыты «Per monitor» и «Windows on special workspaces».
+- 2026-10-17 — Q7: новый ключ `bar.workspaces.ignoredWindows` (QStringList, по умолчанию пусто; точное совпадение или `^…$`-regex по `app_id` или `title`), `ignoredTags` на niri не используется. `Compositor.toplevelsForWs(wsId, ignoredWindows)`, `isWindowIgnored`, `workspaceAt(output, idx)`.
+- Иконки воркспейсов (`workspaceIcons`) матчатся по имени именованного воркспейса niri, у безымянных — по позиции (как числовые имена в upstream).

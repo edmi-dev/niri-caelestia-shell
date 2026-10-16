@@ -54,7 +54,9 @@ PageBase {
             onToggled: GlobalConfig.bar.workspaces.showUnoccupied = checked
         }
 
+        // NIRI-PORT(Q5): niri workspaces always belong to one output, the option has no effect
         ToggleRow {
+            visible: false
             text: Tr.trCtx("Per monitor", "bar workspaces")
             subtext: Tr.tr("Hide workspaces not on the current monitor")
             checked: Config.bar.workspaces.perMonitor
@@ -68,7 +70,9 @@ PageBase {
             onToggled: GlobalConfig.bar.workspaces.showWindows = checked
         }
 
+        // NIRI-PORT(Q2): no special workspaces on niri
         ToggleRow {
+            visible: false
             text: Tr.trCtx("Windows on special workspaces", "bar workspaces")
             checked: Config.bar.workspaces.showWindowsOnSpecialWorkspaces
             onToggled: GlobalConfig.bar.workspaces.showWindowsOnSpecialWorkspaces = checked

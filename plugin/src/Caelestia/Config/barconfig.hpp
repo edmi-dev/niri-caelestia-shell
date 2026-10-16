@@ -61,6 +61,8 @@ class BarWorkspaces : public settings::ObjectNode {
             u"hide_in_bar"_s,
             u"xwl_popup"_s,
         }))
+    // NIRI-PORT(Q7): niri has no window tags; hide windows whose app_id or title matches (exact or ^...$ regex)
+    CONFIG_GLOBAL_PROPERTY(QStringList, ignoredWindows, {})
     CONFIG_GLOBAL_LIST(IconRuleList, windowIcons,
         DEFAULT_ARG({
             ICON_RULE_REGEX("steam(_app_(default|[0-9]+))?", "", "sports_esports"),
