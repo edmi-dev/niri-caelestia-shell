@@ -255,7 +255,33 @@ QByteArray NiriIpc::actionPayload(const QString& actionName, const QVariantList&
 
     QJsonValue inner;
 
-    if (args.size() == 2 && firstArg == QStringLiteral("--id") && (isFocusWs || isMoveToWs)) {
+    if (isMoveToWs && args.size() >= 4 && args.size() % 2 == 0 && firstArg == QStringLiteral("--window-id")) {
+        // {"--window-id", W, "--id", WS[, "--focus", bool]} -> {"window_id": W, "reference": {"Id": WS}, "focus": bool}
+        QJsonObject obj{ { QStringLiteral("window_id"), args.at(1).toLongLong() }, { QStringLiteral("focus"), true } };
+        for (qsizetype i = 2; i < args.size(); i += 2) {
+            const auto opt = args.at(i).toString();
+            if (opt == QStringLiteral("--id"))
+                obj[QStringLiteral("reference")] = QJsonObject{ { QStringLiteral("Id"), args.at(i + 1).toLongLong() } };
+            else if (opt == QStringLiteral("--focus"))
+                obj[QStringLiteral("focus")] = args.at(i + 1).toBool();
+            else
+                qCWarning(lcNiriIpc) << "Unhandled option for" << actionName << opt;
+        }
+        inner = obj;
+    } else if (name == QStringLiteral("SwitchLayout") && args.size() == 1) {
+        // niri-ipc 26.4.0 LayoutSwitchTarget: "Next" | "Prev" | {"Index": N}
+        bool isNumber = false;
+        const auto idx = args.at(0).toInt(&isNumber);
+        const auto target = args.at(0).toString().toLower();
+        QJsonValue layout;
+        if (isNumber)
+            layout = QJsonObject{ { QStringLiteral("Index"), idx } };
+        else if (target == QStringLiteral("next") || target == QStringLiteral("prev"))
+            layout = target == QStringLiteral("next") ? QStringLiteral("Next") : QStringLiteral("Prev");
+        else
+            qCWarning(lcNiriIpc) << "Unhandled layout target for" << actionName << args.at(0);
+        inner = QJsonObject{ { QStringLiteral("layout"), layout } };
+    } else if (args.size() == 2 && firstArg == QStringLiteral("--id") && (isFocusWs || isMoveToWs)) {
         // Workspace reference by id. {"Index": N} is resolved on the *focused* output, so with
         // several outputs it may point at a different workspace.
         QJsonObject obj{ { QStringLiteral("reference"), QJsonObject{ { QStringLiteral("Id"), args.at(1).toLongLong() } } } };

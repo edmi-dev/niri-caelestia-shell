@@ -31,7 +31,7 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 
 ## S4. Фасад services/Compositor.qml
 - [x] Таблица мест вызова `Hypr.*` в `COMPOSITOR_API.md` — DONE
-- [ ] S4-cpp: `actionPayload` — `MoveWindowToWorkspace` с `window_id`/`focus`, `SwitchLayout{Index}` + тесты — TODO
+- [x] S4-cpp: `actionPayload` — `MoveWindowToWorkspace` с `window_id`/`focus`, `SwitchLayout{Index}` + тесты — DONE
 - [ ] `services/Compositor.qml` + `supports` — TODO
 - [ ] Удалить `services/Hypr.qml` — TODO
 

@@ -63,7 +63,9 @@
 
 Аргументы действий сверены с `niri msg action <name> --help` (niri 26.04): `focus-workspace <REFERENCE>`, `move-window-to-workspace [--window-id] [--focus] <REFERENCE>`, `toggle-window-floating [--id]`, `close-window [--id]`, `focus-window --id`, `power-on-monitors`, `power-off-monitors`, `switch-layout <LAYOUT>`, `load-config-file [--path]`.
 
-**Пробелы в C++** (задача S4-cpp, до Compositor.qml): `NiriIpc::actionPayload` не умеет (1) `MoveWindowToWorkspace` с `window_id` и `focus` вместе с Id-ссылкой — сейчас `window_id: null`, `focus: true` жёстко; (2) `SwitchLayout{layout:{Index:N}}` — строковый аргумент уходит как голая строка. Нужен тест на payload. UNVERIFIED: точная JSON-форма `SwitchLayout` — сверить с `niri-ipc` 26.04.
+Формы вызова `NiriIpc.action` (S4-cpp, JSON сверен с `niri-ipc/src/lib.rs` 26.4.0, тесты `actionPayload`):
+`action("move-window-to-workspace", ["--window-id", W, "--id", WS, "--focus", follow])` → `{window_id:W, reference:{Id:WS}, focus}`;
+`action("switch-layout", [N])` → `{layout:{Index:N}}`, `["next"|"prev"]` → `{layout:"Next"|"Prev"}`.
 
 Поведение overview: при открытии niri шлёт `WindowFocusChanged{id:null}` (фикстура `overview`) → `activeToplevel` = null на время overview. Upstream делает то же для пустого воркспейса, UI это переживает.
 
