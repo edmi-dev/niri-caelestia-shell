@@ -79,6 +79,16 @@ Singleton {
         return output ? fullscreenOutputs.includes(output) : fullscreenOutputs.length > 0;
     }
 
+    function isWindowFullscreen(windowId: int): bool {
+        void fullscreenOutputs; // Re-evaluate bindings on fullscreen changes
+        void windows;
+        return NiriIpc.isWindowFullscreen(windowId);
+    }
+
+    function workspaceById(wsId: int): var {
+        return workspaces.find(w => w.id === wsId) ?? null;
+    }
+
     // Index on the focused output
     function focusWorkspace(idx: int): void {
         NiriIpc.action("focus-workspace", [idx]);

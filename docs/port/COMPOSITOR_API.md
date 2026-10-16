@@ -49,6 +49,8 @@
 | `workspacesFor(output)` | list\<Workspace\> | фильтр `workspaces` по `output`, сортировка по `idx` | `Hypr.workspaces.filter(w.monitor===…)` |
 | `activeWorkspaceFor(output)` | Workspace\|null | `is_active && output===…` | `monitor.activeWorkspace` |
 | `toplevelsForWs(wsId)` | list\<Window\> | `getWindowsByWorkspaceId` | `Hypr.toplevelsForWs` (теги игнорируются, Q7) |
+| `isWindowFullscreen(winId)` | bool | `isWindowFullscreen(id)` (эвристика Q3; зависимость от `fullscreenOutputs`/`windows`) | `lastIpcObject.fullscreen` (U49) |
+| `workspaceById(wsId)` | Workspace\|null | поиск в `workspaces` | `client.workspace` (U49) |
 | `hasFullscreen(output?)` | bool | `hasFullscreen(output)`; без аргумента — `fullscreenOutputs.length>0` | разные `lastIpcObject.fullscreen > 1` |
 | `focusWorkspace(idx)` | void | `action("focus-workspace", [idx])` (Index на сфокусированном выходе) | `Hypr.focusWorkspace` |
 | `focusWorkspaceId(id)` | void | `action("focus-workspace", ["--id", id])` (Id-ссылка) | — |
