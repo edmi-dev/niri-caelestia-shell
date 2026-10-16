@@ -37,3 +37,12 @@ binds {
     // Notifications (services/Notifs.qml, target "notifs")
     Mod+Shift+N { spawn "caelestia-shell" "ipc" "call" "notifs" "clear"; }
 }
+
+// Размытие под панелями шелла (U53). В Hyprland шелл ставил layerrule на лету по `transparency.enabled`;
+// в niri правила статичны — включать вручную, если в конфиге шелла включена прозрачность.
+layer-rule {
+    match namespace="^caelestia-drawers$"
+    background-effect {
+        blur true
+    }
+}
