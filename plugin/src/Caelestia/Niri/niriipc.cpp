@@ -8,6 +8,7 @@
 #include <qloggingcategory.h>
 
 #include <algorithm>
+#include <cstdlib>
 
 namespace caelestia::niri {
 
@@ -184,6 +185,10 @@ QVariantMap NiriIpc::outputs() const {
     return m_outputs;
 }
 
+QStringList NiriIpc::fullscreenOutputs() const {
+    return m_fullscreenOutputs;
+}
+
 QVariantList NiriIpc::kbLayoutsArray() const {
     return m_kbLayoutsArray;
 }
@@ -349,6 +354,11 @@ void NiriIpc::onEventStreamDisconnected() {
 }
 
 void NiriIpc::processEvent(const QJsonObject& event) {
+    dispatchEvent(event);
+    updateFullscreen();
+}
+
+void NiriIpc::dispatchEvent(const QJsonObject& event) {
     if (event.isEmpty()) {
         return;
     }
@@ -384,6 +394,11 @@ void NiriIpc::processEvent(const QJsonObject& event) {
 }
 
 void NiriIpc::applyResponse(const QJsonObject& result) {
+    dispatchResponse(result);
+    updateFullscreen();
+}
+
+void NiriIpc::dispatchResponse(const QJsonObject& result) {
     // Request replies are wrapped in PascalCase keys ({"Workspaces": [...]}), event payloads use
     // snake_case keys ({"workspaces": [...]}); rewrap so both go through the same handlers.
     if (result.contains(QStringLiteral("Workspaces"))) {
@@ -843,6 +858,65 @@ void NiriIpc::readLedState() {
     if (m_numLock != newNum) {
         m_numLock = newNum;
         emit numLockChanged();
+    }
+}
+
+
+// Fullscreen detection (decision Q3)
+
+QVariantMap NiriIpc::workspaceById(int id) const {
+    for (const auto& v : m_workspacesModel->items()) {
+        const auto ws = v.toMap();
+        if (ws.value(kId).toInt() == id) {
+            return ws;
+        }
+    }
+    return {};
+}
+
+bool NiriIpc::isFullscreen(const QVariantMap& window) const {
+    const auto ws = workspaceById(window.value(kWorkspaceId).toInt());
+    const auto logical = m_outputs.value(ws.value(kOutput).toString()).toMap().value(QStringLiteral("logical")).toMap();
+    const auto size = window.value(kLayout).toMap().value(QStringLiteral("window_size")).toList();
+    if (logical.isEmpty() || size.size() != 2) {
+        return false;
+    }
+    // Exact match in the fixture; allow 1px for rounding with fractional scales (UNVERIFIED)
+    const auto near = [](int a, int b) {
+        return std::abs(a - b) <= 1;
+    };
+    return near(size.at(0).toInt(), logical.value(QStringLiteral("width")).toInt()) &&
+           near(size.at(1).toInt(), logical.value(QStringLiteral("height")).toInt());
+}
+
+bool NiriIpc::isWindowFullscreen(qint64 id) const {
+    const auto idx = findWindowIndexById(id);
+    return idx >= 0 && isFullscreen(m_windowsModel->items().at(idx).toMap());
+}
+
+bool NiriIpc::hasFullscreen(const QString& output) const {
+    return m_fullscreenOutputs.contains(output);
+}
+
+void NiriIpc::updateFullscreen() {
+    QStringList outputs;
+    for (const auto& v : m_windowsModel->items()) {
+        const auto win = v.toMap();
+        const auto ws = workspaceById(win.value(kWorkspaceId).toInt());
+        // Only the visible (active) workspace of an output counts
+        if (!ws.value(kIsActive).toBool() || !isFullscreen(win)) {
+            continue;
+        }
+        const auto output = ws.value(kOutput).toString();
+        if (!outputs.contains(output)) {
+            outputs.append(output);
+        }
+    }
+    outputs.sort();
+
+    if (m_fullscreenOutputs != outputs) {
+        m_fullscreenOutputs = outputs;
+        emit fullscreenChanged();
     }
 }
 
