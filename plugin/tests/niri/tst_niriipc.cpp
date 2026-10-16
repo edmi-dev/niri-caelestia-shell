@@ -334,6 +334,18 @@ void TestNiriIpc::actionPayload_data() {
     QTest::newRow("move window by id")
         << QStringLiteral("move-window-to-workspace") << QVariantList{ QStringLiteral("--id"), 4 }
         << QByteArray(R"({"Action":{"MoveWindowToWorkspace":{"focus":true,"reference":{"Id":4},"window_id":null}}})");
+    QTest::newRow("move given window, follow")
+        << QStringLiteral("move-window-to-workspace")
+        << QVariantList{ QStringLiteral("--window-id"), 7, QStringLiteral("--id"), 4 }
+        << QByteArray(R"({"Action":{"MoveWindowToWorkspace":{"focus":true,"reference":{"Id":4},"window_id":7}}})");
+    QTest::newRow("move given window, no follow")
+        << QStringLiteral("move-window-to-workspace")
+        << QVariantList{ QStringLiteral("--window-id"), 7, QStringLiteral("--id"), 4, QStringLiteral("--focus"), false }
+        << QByteArray(R"({"Action":{"MoveWindowToWorkspace":{"focus":false,"reference":{"Id":4},"window_id":7}}})");
+    QTest::newRow("switch layout by index") << QStringLiteral("switch-layout") << QVariantList{ 1 }
+                                            << QByteArray(R"({"Action":{"SwitchLayout":{"layout":{"Index":1}}}})");
+    QTest::newRow("switch layout next") << QStringLiteral("switch-layout") << QVariantList{ QStringLiteral("next") }
+                                        << QByteArray(R"({"Action":{"SwitchLayout":{"layout":"Next"}}})");
 }
 
 void TestNiriIpc::actionPayload() {

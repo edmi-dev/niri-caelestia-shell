@@ -8,12 +8,12 @@ S4 — фасад `services/Compositor.qml` (S0–S3 закрыты)
 - (пусто)
 
 ## Next action
-S4-cpp: в `plugin/src/Caelestia/Niri/niriipc.cpp` `actionPayload` — добавить `MoveWindowToWorkspace` с `window_id`+`focus`+
-`{Id}` и `SwitchLayout{layout:{Index:N}}` (JSON-форму сверить с `niri-ipc` 26.04, иначе UNVERIFIED), тесты в `plugin/tests/niri/`.
-Затем `services/Compositor.qml` строго по `COMPOSITOR_API.md` → «Свойства / функции / сигналы» (таблица мест вызова готова).
+Написать `services/Compositor.qml` (pragma Singleton) строго по `COMPOSITOR_API.md` → «Свойства / функции / сигналы» + `supports`;
+разбор xkb `base.lst` перенести из `services/Hypr.qml` (FileView `kbLayoutFile`). Добавить файл в allowlist `check-boundary.sh`, если нужно; `qmllint`.
+Сборка: каталог `build/` сконфигурирован под старый путь (`/home/edmi/...`) — использовать свежий `cmake -B <scratch> -DCAELESTIA_BUILD_TESTS=ON`.
 
 ## Metrics
-boundary-allowlist: 29 files · fhs-allowlist: 1 file · flake check: green (package, boundary, fhs, unit; 26 тестов, 8 сценариев)
+boundary-allowlist: 29 files · fhs-allowlist: 1 file · flake check: green (package, boundary, fhs, unit; 30 тестов, 8 сценариев)
 
 ## Blocked / pending decisions
 - Q2, Q4–Q7, Q9–Q15, Q-NIX1, Q-NIX2 — PENDING (DECISIONS.md); Q3 — DECIDED (a); Q8 — исправлен
