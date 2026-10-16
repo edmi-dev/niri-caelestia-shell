@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Io
 import Caelestia.I18n
 import Caelestia.Niri
+import qs.utils
 
 // NIRI-PORT(S4): compositor facade, the only QML file that talks to NiriIpc.
 // Contract: docs/port/COMPOSITOR_API.md. Workspaces and windows are raw niri JSON objects.
@@ -71,8 +72,20 @@ Singleton {
         return workspaces.find(w => w.output === output && w.is_active) ?? null;
     }
 
-    function toplevelsForWs(wsId: int): var {
-        return windows.filter(w => w.workspace_id === wsId);
+    function toplevelsForWs(wsId: int, ignoredWindows = []): var {
+        return windows.filter(w => w.workspace_id === wsId && !isWindowIgnored(w, ignoredWindows));
+    }
+
+    // Q7: niri has no window tags; rules match app_id or title (exact or ^...$ regex, see Strings.testRegexList)
+    function isWindowIgnored(window: var, ignoredWindows = []): bool {
+        if (!window || ignoredWindows.length === 0)
+            return false;
+        return Strings.testRegexList(ignoredWindows, window.app_id ?? "") || Strings.testRegexList(ignoredWindows, window.title ?? "");
+    }
+
+    // Workspace at position idx (1-based) on an output
+    function workspaceAt(output: string, idx: int): var {
+        return workspaces.find(w => w.output === output && w.idx === idx) ?? null;
     }
 
     function hasFullscreen(output: string): bool {
