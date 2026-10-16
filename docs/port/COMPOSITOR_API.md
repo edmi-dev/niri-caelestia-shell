@@ -13,7 +13,7 @@
 | `runtimeOptions` | false | нет runtime-опций; только KDL + include |
 | `windowTags` | false | в niri нет тегов окон (Q7) |
 | `cursorPos` | false | нет позиции курсора в IPC |
-| `fullscreenFlag` | TBD | по фикстурам (Q3) |
+| `fullscreenFlag` | true (эвристика) | Q3(a): `window_size` == логический размер выхода; windowed fullscreen не виден |
 | `toplevelCapture` | TBD | проверить (Q9) |
 
 ## Свойства / функции / сигналы

@@ -118,6 +118,8 @@ private slots:
     void keyboardLayoutSwitched();
     void workspaceActiveWindowChanged();
     void configLoaded();
+    void fullscreenFixture();
+    void fullscreenInactiveWorkspace();
     void actionPayload_data();
     void actionPayload();
     void replayFixtures_data();
@@ -263,6 +265,55 @@ void TestNiriIpc::configLoaded() {
     ipc.processEvent({ { QStringLiteral("ConfigLoaded"), QJsonObject{ { QStringLiteral("failed"), true } } } });
     QCOMPARE(spy.count(), 3);
     QCOMPARE(spy.at(2).at(0).toBool(), true);
+}
+
+void TestNiriIpc::fullscreenFixture() {
+    const auto dir = fixturesRoot() + QStringLiteral("/fullscreen");
+    NiriIpc ipc(false, nullptr);
+    loadSnapshot(ipc, dir);
+    QSignalSpy spy(&ipc, &NiriIpc::fullscreenChanged);
+    QVERIFY(ipc.fullscreenOutputs().isEmpty());
+    QVERIFY(!ipc.hasFullscreen(QStringLiteral("winit")));
+
+    // Real fullscreen: window_size == output logical size
+    loadSnapshot(ipc, dir, QStringLiteral(".fullscreen"));
+    QCOMPARE(ipc.fullscreenOutputs(), QStringList{ QStringLiteral("winit") });
+    QVERIFY(ipc.hasFullscreen(QStringLiteral("winit")));
+    QVERIFY(ipc.isWindowFullscreen(ipc.focusedWindowId().toLongLong()));
+    QCOMPARE(spy.count(), 1);
+
+    // Windowed fullscreen is invisible to IPC
+    loadSnapshot(ipc, dir, QStringLiteral(".windowed-fullscreen"));
+    QVERIFY(ipc.fullscreenOutputs().isEmpty());
+    QCOMPARE(spy.count(), 2);
+
+    // Event replay: on and off again
+    NiriIpc replay(false, nullptr);
+    loadSnapshot(replay, dir);
+    QSignalSpy replaySpy(&replay, &NiriIpc::fullscreenChanged);
+    replayEvents(replay, dir);
+    QCOMPARE(replaySpy.count(), 2);
+    QVERIFY(replay.fullscreenOutputs().isEmpty());
+}
+
+void TestNiriIpc::fullscreenInactiveWorkspace() {
+    NiriIpc ipc(false, nullptr);
+    loadSnapshot(ipc, m_basic);
+    const auto sized = [](int w, int h) {
+        return QJsonObject{ { QStringLiteral("window_size"), QJsonArray{ w, h } } };
+    };
+
+    // Window 12 is on workspace 2 (inactive on eDP-1, logical 1536x960)
+    ipc.processEvent({ { QStringLiteral("WindowLayoutsChanged"),
+        QJsonObject{ { QStringLiteral("changes"), QJsonArray{ QJsonArray{ 12, sized(1536, 960) } } } } } });
+    QVERIFY(ipc.isWindowFullscreen(12));
+    QVERIFY(!ipc.hasFullscreen(QStringLiteral("eDP-1")));
+
+    // Activating its workspace makes the output fullscreen
+    ipc.processEvent({ { QStringLiteral("WorkspaceActivated"),
+        QJsonObject{ { QStringLiteral("id"), 2 }, { QStringLiteral("focused"), true } } } });
+    QVERIFY(ipc.hasFullscreen(QStringLiteral("eDP-1")));
+    QVERIFY(!ipc.hasFullscreen(QStringLiteral("HDMI-A-1")));
 }
 
 void TestNiriIpc::actionPayload_data() {

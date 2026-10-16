@@ -72,6 +72,9 @@ class NiriIpc : public QObject {
     // Outputs
     Q_PROPERTY(QVariantMap outputs READ outputs NOTIFY outputsChanged)
 
+    // Fullscreen (niri IPC has no flag; heuristic, see isWindowFullscreen)
+    Q_PROPERTY(QStringList fullscreenOutputs READ fullscreenOutputs NOTIFY fullscreenChanged)
+
     // Keyboard
     Q_PROPERTY(QVariantList kbLayoutsArray READ kbLayoutsArray NOTIFY keyboardChanged)
     Q_PROPERTY(int kbLayoutIndex READ kbLayoutIndex NOTIFY keyboardChanged)
@@ -108,6 +111,7 @@ public:
     [[nodiscard]] bool inOverview() const;
 
     [[nodiscard]] QVariantMap outputs() const;
+    [[nodiscard]] QStringList fullscreenOutputs() const;
 
     [[nodiscard]] QVariantList kbLayoutsArray() const;
     [[nodiscard]] int kbLayoutIndex() const;
@@ -127,6 +131,12 @@ public:
     Q_INVOKABLE QVariantList getWindowsByWorkspaceIndex(int index) const;
     Q_INVOKABLE QVariantList getActiveWorkspaceWindows() const;
 
+    // Heuristic (decision Q3): a window is fullscreen when its layout.window_size equals the logical size of its
+    // workspace's output (fixture "fullscreen"). Windowed fullscreen is not detectable via IPC.
+    Q_INVOKABLE bool isWindowFullscreen(qint64 id) const;
+    // True when the active workspace of `output` shows a fullscreen window
+    Q_INVOKABLE bool hasFullscreen(const QString& output) const;
+
     // Applies one event-stream event, e.g. {"WorkspacesChanged": {...}}
     void processEvent(const QJsonObject& event);
     // Applies the "Ok" value of a request reply, e.g. request "Workspaces" -> {"Workspaces": [...]}
@@ -143,6 +153,7 @@ signals:
     void scrollDirectionChanged();
     void inOverviewChanged();
     void outputsChanged();
+    void fullscreenChanged();
     void keyboardChanged();
     void capsLockChanged();
     void numLockChanged();
@@ -176,6 +187,11 @@ private:
     [[nodiscard]] int findWindowIndexById(qint64 id) const;
     void setupLedWatchers();
     void readLedState();
+    void dispatchEvent(const QJsonObject& event);
+    void dispatchResponse(const QJsonObject& result);
+    void updateFullscreen();
+    [[nodiscard]] bool isFullscreen(const QVariantMap& window) const;
+    [[nodiscard]] QVariantMap workspaceById(int id) const;
 
     NiriEventSocket m_eventSocket;
     NiriRequestSocket m_requestSocket;
@@ -205,6 +221,7 @@ private:
 
     // Output state
     QVariantMap m_outputs;
+    QStringList m_fullscreenOutputs;
 
     // Keyboard state
     QVariantList m_kbLayoutsArray;
