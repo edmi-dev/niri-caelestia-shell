@@ -4,7 +4,6 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
 import Quickshell
-import Quickshell.Hyprland
 import Quickshell.Wayland
 import Caelestia.Blobs
 import Caelestia.Config
@@ -21,19 +20,11 @@ StyledWindow {
 
     readonly property ScreenState screenState: ShellState.forScreen(screen)
 
-    readonly property HyprlandMonitor monitor: Hypr.monitorFor(screen)
-    readonly property bool hasSpecialWorkspace: (monitor?.lastIpcObject.specialWorkspace?.name.length ?? 0) > 0
-    readonly property bool hasFullscreenOnNormalWs: monitor?.activeWorkspace?.toplevels.values.some(t => t.lastIpcObject.fullscreen > 1) ?? false
-    readonly property bool hasFullscreen: {
-        if (hasSpecialWorkspace) {
-            const specialName = monitor?.lastIpcObject.specialWorkspace?.name;
-            if (!specialName)
-                return false;
-            const specialWs = Hypr.workspaces.values.find(ws => ws.name === specialName);
-            return specialWs?.toplevels.values.some(t => t.lastIpcObject.fullscreen > 1) ?? false;
-        }
-        return hasFullscreenOnNormalWs;
-    }
+    // NIRI-PORT(U21): niri output name; no special workspaces (Q2); fullscreen by window size heuristic (Q3 = a)
+    readonly property string monitor: Compositor.monitorFor(screen)
+    readonly property bool hasSpecialWorkspace: false
+    readonly property bool hasFullscreenOnNormalWs: Compositor.hasFullscreen(monitor)
+    readonly property bool hasFullscreen: hasFullscreenOnNormalWs
 
     property real fsTransitionProg: hasFullscreen ? 1 : 0
     readonly property real sdfBorderOffset: 2 * fsTransitionProg // SDFs joins are not exact, so offset by 2px to ensure nothing shows
@@ -48,7 +39,8 @@ StyledWindow {
         if (focusGrab.active || panels.popouts.isDetached)
             return 0;
 
-        if (monitor?.lastIpcObject.specialWorkspace?.name || monitor?.activeWorkspace?.toplevels.values.length > 0)
+        // NIRI-PORT(U21): windows on the output's active workspace
+        if (Compositor.toplevelsForWs(Compositor.activeWorkspaceFor(monitor)?.id ?? -1).length > 0)
             return 0;
 
         const thresholds = [];
@@ -68,9 +60,11 @@ StyledWindow {
     name: "drawers"
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
     WlrLayershell.layer: (fsTransitionProg > 0 && contentItem.Config.general.showOverFullscreen) || (hasSpecialWorkspace && hasFullscreenOnNormalWs) ? WlrLayer.Overlay : WlrLayer.Top
-    WlrLayershell.keyboardFocus: screenState.launcher || screenState.session ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+    // NIRI-PORT(U21): no focus grab protocol on niri; take the keyboard exclusively while the emulated grab is active
+    WlrLayershell.keyboardFocus: focusGrab.active ? WlrKeyboardFocus.Exclusive : screenState.launcher || screenState.session ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-    mask: hasFullscreen ? emptyRegion : regions
+    // NIRI-PORT(U21): while grabbing, take all input so that a click outside the panels can be seen (focusGrabOutside)
+    mask: hasFullscreen ? emptyRegion : focusGrab.active ? fullRegion : regions
 
     anchors.top: true
     anchors.bottom: true
@@ -109,10 +103,19 @@ StyledWindow {
         win: root
     }
 
-    HyprlandFocusGrab {
+    Region {
+        id: fullRegion
+
+        width: root.width
+        height: root.height
+    }
+
+    // NIRI-PORT(U21): emulated focus grab. Same activation and onCleared as upstream; cleared by a press outside the bar,
+    // the border and the open panels (see focusGrabOutside). UNVERIFIED on niri: Exclusive keyboard focus of a Top layer.
+    QtObject {
         id: focusGrab
 
-        active: {
+        readonly property bool active: {
             const s = root.screenState;
             const conf = root.contentItem.Config;
             if ((s.launcher && conf.launcher.enabled) || (s.session && conf.session.enabled) || (s.sidebar && conf.sidebar.enabled))
@@ -121,15 +124,21 @@ StyledWindow {
                 return true;
             if (panels.popouts.currentName.startsWith("traymenu") && (panels.popouts.current as StackView)?.depth > 1)
                 return true;
+            // NIRI-PORT(U29): replaces the detached popout's own focus grab (bar/popouts/Wrapper.qml)
+            if (panels.popouts.isDetached)
+                return true;
             return false;
         }
-        windows: [root]
-        onCleared: {
+
+        function cleared(): void {
             root.screenState.launcher = false;
             root.screenState.session = false;
             root.screenState.sidebar = false;
             root.screenState.dashboard = false;
-            panels.popouts.hasCurrent = false;
+            if (panels.popouts.isDetached)
+                panels.popouts.close();
+            else
+                panels.popouts.hasCurrent = false;
             bar.closeTray();
         }
     }
@@ -307,6 +316,26 @@ StyledWindow {
             popouts: panels.popouts
 
             fullscreen: root.hasFullscreen
+        }
+    }
+
+    // NIRI-PORT(U21): clears the emulated focus grab on a press outside the bar, the border and the open panels.
+    // The press is consumed; presses on the shell's own UI fall through to the items below.
+    MouseArea {
+        id: focusGrabOutside
+
+        anchors.fill: parent
+        enabled: focusGrab.active && !root.hasFullscreen
+        acceptedButtons: Qt.AllButtons
+
+        onPressed: event => {
+            const p = mapToItem(panels, event.x, event.y);
+            const inPanelsArea = p.x >= 0 && p.y >= 0 && p.x < panels.width && p.y < panels.height;
+            if (!inPanelsArea || panels.childAt(p.x, p.y)) {
+                event.accepted = false;
+                return;
+            }
+            focusGrab.cleared();
         }
     }
 

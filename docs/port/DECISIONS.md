@@ -77,3 +77,8 @@
 - VERIFIED(`niri validate`) — `docs/port/niri-binds.example.kdl` валиден для niri 26.04.
 - UNVERIFIED — `caelestia-shell ipc call …`: обёртка добавляет `-p <path>` перед подкомандой `ipc`; парсинг `qs -p X ipc --help` проходит, вызов в живом инстансе не проверен → VERIFY.md.
 - 2026-10-16 — `drawers toggle sidebar|utilities` не блокируется при фуллскрине (upstream-шорткаты блокировали). Оставлено как в upstream IPC, отличие записано в COMPOSITOR_API.md.
+
+## Focus grab (S5c, U21/U29)
+- 2026-10-16 — `HyprlandFocusGrab` эмулируется в `modules/drawers/ContentWindow.qml`: та же формула `active` (+ отсоединённый popout вместо отдельного grab в `bar/popouts/Wrapper.qml`); пока активен — `keyboardFocus: Exclusive` и маска ввода на весь экран; нажатие вне бара/рамки/детей `Panels` вызывает тот же сброс, что `onCleared` в upstream. Форк grab не реализовывал (TODO в `fork-legacy:modules/drawers/Drawers.qml:65`). Вынужденное следствие (протокола нет), не развилка.
+- Отличия от Hyprland: (1) нажатие вне панелей поглощается шеллом и не доходит до окна под курсором; (2) пока grab активен, hover/scroll по окнам приложений недоступны; (3) «внутри» = bounding box детей `Panels` (обёртки могут быть чуть больше видимой панели).
+- UNVERIFIED — niri отдаёт клавиатуру layer-surface `Top` с `Exclusive` (ожидается по протоколу) и возвращает фокус окну после снятия. UNVERIFIED — отсоединённый popout: `Binding` в Wrapper.qml переопределяет фокус на `OnDemand`; получает ли он клавиатуру без клика на niri. → VERIFY.md.

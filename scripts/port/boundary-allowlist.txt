@@ -12,8 +12,6 @@ modules/bar/components/workspaces/Workspaces.qml
 modules/bar/popouts/ActiveWindow.qml
 modules/bar/popouts/kblayout/KbLayoutModel.qml
 modules/bar/popouts/LockStatus.qml
-modules/bar/popouts/Wrapper.qml
-modules/drawers/ContentWindow.qml
 modules/IdleMonitors.qml
 modules/lock/center/StateMessage.qml
 modules/windowinfo/Buttons.qml
