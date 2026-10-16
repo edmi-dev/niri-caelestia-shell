@@ -50,7 +50,7 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 - [x] U52 — Visualiser autoHide — DONE
 - [x] U56 — IdleMonitors, power-off-monitors — DONE (+ U55 Brightness)
 - [ ] U49 — windowinfo (Q13) — TODO
-- [ ] U62 — areapicker — TODO
+- [x] U62 — areapicker — DONE (привязка только к плавающим окнам)
 - [ ] Аудит `caelestia-cli` для U53/U54/U36 — TODO (решение — человек)
 - [ ] U45 — Recorder (Q10) — TODO
 - [ ] U47 — GameMode (Q15) — TODO

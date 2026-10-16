@@ -67,7 +67,7 @@
 - VERIFIED(fixture overview) — при открытии overview приходит `WindowFocusChanged{id:null}`, при закрытии фокус возвращается (`WindowFocusChanged{id:3}`). UI, завязанный на фокусное окно, будет «мигать» на время overview.
 - VERIFIED(fixture config-reload) — `load-config-file` даёт `ConfigLoaded{failed:false}`.
 - VERIFIED(fixture windows) — смена фокуса и перестановка колонок дают `WorkspaceActiveWindowChanged` и `WindowLayoutsChanged`; новое окно — `WindowOpenedOrChanged`, закрытие — `WindowClosed`.
-- UNVERIFIED(nested) — `tile_pos_in_workspace_view` во вложенной сессии всегда `null` (вероятно, headless sway не присылает кадры, и niri не считает вид). Проверить в живой сессии или не опираться на поле.
+- VERIFIED(src niri 26.4.0: `src/layout/tile.rs:869`, `floating.rs:336`) — `tile_pos_in_workspace_view` заполняется только для плавающих окон; у тайловых всегда `null` (не особенность вложенной сессии). U62: в area picker привязка только к плавающим окнам. UNVERIFIED: координаты «workspace view» совпадают с локальными координатами экрана (struts/exclusive zone).
 - UNVERIFIED(nested) — multi-monitor: у winit-бэкенда niri ровно один выход, сценарий в изоляции не записать.
 - 2026-10-16 — S3c: ветка `OutputsChanged` удалена (события нет в niri 26.04). `Outputs` перезапрашивается при каждом `WorkspacesChanged`, если сокет подключён (воркспейсы меняются при hotplug выходов). UNVERIFIED: что niri шлёт `WorkspacesChanged` при hotplug — в изоляции не проверить (winit, один выход).
 - 2026-10-16 — `ConfigLoaded{failed}` → сигнал `NiriIpc.configLoaded(bool failed)`. Он приходит и при каждом переподключении event-stream, поэтому потребители (GameMode, U47) должны быть идемпотентны.
