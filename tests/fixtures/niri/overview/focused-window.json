@@ -1,0 +1,33 @@
+{
+  "id": 3,
+  "title": "Fixture 2",
+  "app_id": "fixture-2",
+  "pid": 120606,
+  "workspace_id": 1,
+  "is_focused": true,
+  "is_floating": false,
+  "is_urgent": false,
+  "layout": {
+    "pos_in_scrolling_layout": [
+      2,
+      1
+    ],
+    "tile_size": [
+      626.0,
+      677.0
+    ],
+    "window_size": [
+      626,
+      677
+    ],
+    "tile_pos_in_workspace_view": null,
+    "window_offset_in_tile": [
+      0.0,
+      0.0
+    ]
+  },
+  "focus_timestamp": {
+    "secs": 13744,
+    "nanos": 326021112
+  }
+}

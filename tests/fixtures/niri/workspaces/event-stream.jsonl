@@ -1,0 +1,20 @@
+{"WorkspacesChanged":{"workspaces":[{"id":3,"idx":3,"name":null,"output":"winit","is_urgent":false,"is_active":false,"is_focused":false,"active_window_id":null},{"id":1,"idx":1,"name":"one","output":"winit","is_urgent":false,"is_active":true,"is_focused":true,"active_window_id":4},{"id":2,"idx":2,"name":"two","output":"winit","is_urgent":false,"is_active":false,"is_focused":false,"active_window_id":null}]}}
+{"WindowsChanged":{"windows":[{"id":4,"title":"Fixture 3","app_id":"fixture-3","pid":120062,"workspace_id":1,"is_focused":true,"is_floating":false,"is_urgent":false,"layout":{"pos_in_scrolling_layout":[3,1],"tile_size":[626.0,677.0],"window_size":[626,677],"tile_pos_in_workspace_view":null,"window_offset_in_tile":[0.0,0.0]},"focus_timestamp":{"secs":13731,"nanos":361740263}},{"id":2,"title":"Fixture 1","app_id":"fixture-1","pid":119995,"workspace_id":1,"is_focused":false,"is_floating":false,"is_urgent":false,"layout":{"pos_in_scrolling_layout":[1,1],"tile_size":[626.0,677.0],"window_size":[626,677],"tile_pos_in_workspace_view":null,"window_offset_in_tile":[0.0,0.0]},"focus_timestamp":{"secs":13730,"nanos":906235058}},{"id":3,"title":"Fixture 2","app_id":"fixture-2","pid":120027,"workspace_id":1,"is_focused":false,"is_floating":false,"is_urgent":false,"layout":{"pos_in_scrolling_layout":[2,1],"tile_size":[626.0,677.0],"window_size":[626,677],"tile_pos_in_workspace_view":null,"window_offset_in_tile":[0.0,0.0]},"focus_timestamp":{"secs":13731,"nanos":106914489}}]}}
+{"KeyboardLayoutsChanged":{"keyboard_layouts":{"names":["English (US)","Russian"],"current_idx":0}}}
+{"OverviewOpenedOrClosed":{"is_open":false}}
+{"ConfigLoaded":{"failed":false}}
+{"CastsChanged":{"casts":[]}}
+{"WorkspaceActivated":{"id":2,"focused":true}}
+{"WindowFocusChanged":{"id":null}}
+{"WorkspaceActivated":{"id":1,"focused":true}}
+{"WindowFocusChanged":{"id":4}}
+{"WorkspaceActiveWindowChanged":{"workspace_id":1,"active_window_id":3}}
+{"WorkspaceActiveWindowChanged":{"workspace_id":2,"active_window_id":4}}
+{"WorkspaceActivated":{"id":2,"focused":true}}
+{"WindowOpenedOrChanged":{"window":{"id":4,"title":"Fixture 3","app_id":"fixture-3","pid":120062,"workspace_id":2,"is_focused":true,"is_floating":false,"is_urgent":false,"layout":{"pos_in_scrolling_layout":[1,1],"tile_size":[626.0,677.0],"window_size":[626,677],"tile_pos_in_workspace_view":null,"window_offset_in_tile":[0.0,0.0]},"focus_timestamp":{"secs":13731,"nanos":361740263}}}}
+{"WorkspaceActivated":{"id":3,"focused":true}}
+{"WindowFocusChanged":{"id":null}}
+{"WindowFocusTimestampChanged":{"id":4,"focus_timestamp":{"secs":13733,"nanos":398294832}}}
+{"WorkspaceActivated":{"id":2,"focused":true}}
+{"WindowFocusChanged":{"id":4}}
+{"WindowFocusTimestampChanged":{"id":4,"focus_timestamp":{"secs":13734,"nanos":412391622}}}

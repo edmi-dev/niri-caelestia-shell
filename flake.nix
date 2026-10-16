@@ -62,7 +62,9 @@
           inputsFrom = [shell shell.plugin shell.extras];
           packages = with pkgs; [clazy material-symbols rubik nerd-fonts.caskaydia-cove]
             # NIRI-PORT(S1): tooling for the niri port (niri msg, linters, fixture tools)
-            ++ (with pkgs; [niri jq ripgrep libxml2 qt6.qtdeclarative clang-tools]);
+            ++ (with pkgs; [niri jq ripgrep libxml2 qt6.qtdeclarative clang-tools])
+            # NIRI-PORT(S2): isolated headless sway + niri and a test client, only for recording fixtures
+            ++ (with pkgs; [sway foot]);
           CAELESTIA_XKB_RULES_PATH = "${pkgs.xkeyboard-config}/share/xkeyboard-config-2/rules/base.lst";
         };
     });

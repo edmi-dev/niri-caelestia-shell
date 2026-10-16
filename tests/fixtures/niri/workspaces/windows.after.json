@@ -1,0 +1,101 @@
+[
+  {
+    "id": 4,
+    "title": "Fixture 3",
+    "app_id": "fixture-3",
+    "pid": 120062,
+    "workspace_id": 2,
+    "is_focused": true,
+    "is_floating": false,
+    "is_urgent": false,
+    "layout": {
+      "pos_in_scrolling_layout": [
+        1,
+        1
+      ],
+      "tile_size": [
+        626.0,
+        677.0
+      ],
+      "window_size": [
+        626,
+        677
+      ],
+      "tile_pos_in_workspace_view": null,
+      "window_offset_in_tile": [
+        0.0,
+        0.0
+      ]
+    },
+    "focus_timestamp": {
+      "secs": 13734,
+      "nanos": 412391622
+    }
+  },
+  {
+    "id": 2,
+    "title": "Fixture 1",
+    "app_id": "fixture-1",
+    "pid": 119995,
+    "workspace_id": 1,
+    "is_focused": false,
+    "is_floating": false,
+    "is_urgent": false,
+    "layout": {
+      "pos_in_scrolling_layout": [
+        1,
+        1
+      ],
+      "tile_size": [
+        626.0,
+        677.0
+      ],
+      "window_size": [
+        626,
+        677
+      ],
+      "tile_pos_in_workspace_view": null,
+      "window_offset_in_tile": [
+        0.0,
+        0.0
+      ]
+    },
+    "focus_timestamp": {
+      "secs": 13730,
+      "nanos": 906235058
+    }
+  },
+  {
+    "id": 3,
+    "title": "Fixture 2",
+    "app_id": "fixture-2",
+    "pid": 120027,
+    "workspace_id": 1,
+    "is_focused": false,
+    "is_floating": false,
+    "is_urgent": false,
+    "layout": {
+      "pos_in_scrolling_layout": [
+        2,
+        1
+      ],
+      "tile_size": [
+        626.0,
+        677.0
+      ],
+      "window_size": [
+        626,
+        677
+      ],
+      "tile_pos_in_workspace_view": null,
+      "window_offset_in_tile": [
+        0.0,
+        0.0
+      ]
+    },
+    "focus_timestamp": {
+      "secs": 13731,
+      "nanos": 106914489
+    }
+  }
+]

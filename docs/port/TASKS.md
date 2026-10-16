@@ -20,8 +20,9 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 - [x] `scripts/port/divergence.sh` — DONE(L0)
 - [x] `scripts/port/record-niri-fixtures.sh` — DONE(L0, не запускался: нет доступа к niri)
 - [x] `checks.boundary`, `checks.fhs` во flake — DONE(L1)
-- [ ] Записать фикстуры (idle, fullscreen, kb-switch, multi-monitor, overview) — NEEDS-HUMAN
-- [ ] Ответы по фикстурам: Q3, Q8, OutputsChanged, tile_pos_in_workspace_view, версия niri — TODO
+- [x] Записать фикстуры в изолированном sway+niri (idle, windows, workspaces, fullscreen, kb-switch, overview, config-reload) — DONE(L2)
+- [ ] multi-monitor — NEEDS-HUMAN (под winit один выход; опционально)
+- [x] Ответы по фикстурам: Q8 подтверждён, данные для Q3, OutputsChanged нет, tile_pos null во вложенной сессии, niri 26.04 — DONE
 
 ## S3. C++ модуль Caelestia.Niri (F01, U10)
 - [x] S3a: перенос `nirisocket`/`niriipc` → `plugin/src/Caelestia/Niri/`, удалить `hyprextras.*`/`hyprdevices.*` (U10) — DONE(L1)
