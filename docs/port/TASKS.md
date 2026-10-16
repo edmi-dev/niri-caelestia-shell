@@ -30,7 +30,8 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 - [x] S3c: `KeyboardLayoutSwitched`, `ConfigLoaded`, `WorkspaceActiveWindowChanged`, `OutputsChanged`, фуллскрин (Q3) — DONE(L2): KeyboardLayoutSwitched, ConfigLoaded→configLoaded(bool), WorkspaceActiveWindowChanged, OutputsChanged удалён, фуллскрин по Q3(a)
 
 ## S4. Фасад services/Compositor.qml
-- [ ] Таблица мест вызова `Hypr.*` в `COMPOSITOR_API.md` — TODO
+- [x] Таблица мест вызова `Hypr.*` в `COMPOSITOR_API.md` — DONE
+- [ ] S4-cpp: `actionPayload` — `MoveWindowToWorkspace` с `window_id`/`focus`, `SwitchLayout{Index}` + тесты — TODO
 - [ ] `services/Compositor.qml` + `supports` — TODO
 - [ ] Удалить `services/Hypr.qml` — TODO
 

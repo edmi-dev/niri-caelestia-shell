@@ -8,10 +8,9 @@ S4 — фасад `services/Compositor.qml` (S0–S3 закрыты)
 - (пусто)
 
 ## Next action
-`rg -n '\bHypr\.|Hyprland\.|HyprlandMonitor|HyprlandToplevel|HyprlandWorkspace' -t qml` → таблица мест вызова в
-`docs/port/COMPOSITOR_API.md` (вызов → файл:строка → функция Compositor → niri action/event → U-ID); затем
-`services/Compositor.qml` по таблице + объект `supports` (fullscreenFlag: true — Q3(a), `NiriIpc.hasFullscreen`).
-Учесть: при открытом overview niri шлёт `WindowFocusChanged{id:null}` (DECISIONS → «Фикстуры»).
+S4-cpp: в `plugin/src/Caelestia/Niri/niriipc.cpp` `actionPayload` — добавить `MoveWindowToWorkspace` с `window_id`+`focus`+
+`{Id}` и `SwitchLayout{layout:{Index:N}}` (JSON-форму сверить с `niri-ipc` 26.04, иначе UNVERIFIED), тесты в `plugin/tests/niri/`.
+Затем `services/Compositor.qml` строго по `COMPOSITOR_API.md` → «Свойства / функции / сигналы» (таблица мест вызова готова).
 
 ## Metrics
 boundary-allowlist: 29 files · fhs-allowlist: 1 file · flake check: green (package, boundary, fhs, unit; 26 тестов, 8 сценариев)
