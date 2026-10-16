@@ -25,7 +25,6 @@ modules/windowinfo/WindowInfo.qml
 services/Brightness.qml
 services/Colours.qml
 services/GameMode.qml
-services/Hypr.qml
 services/NotifData.qml
 services/Notifs.qml
 services/ShellState.qml

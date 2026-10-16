@@ -32,8 +32,8 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 ## S4. Фасад services/Compositor.qml
 - [x] Таблица мест вызова `Hypr.*` в `COMPOSITOR_API.md` — DONE
 - [x] S4-cpp: `actionPayload` — `MoveWindowToWorkspace` с `window_id`/`focus`, `SwitchLayout{Index}` + тесты — DONE
-- [ ] `services/Compositor.qml` + `supports` — TODO
-- [ ] Удалить `services/Hypr.qml` — TODO
+- [x] `services/Compositor.qml` + `supports` — DONE
+- [x] Удалить `services/Hypr.qml` — DONE (места вызова `Hypr.*` мигрируют в S5–S7)
 
 ## S5. Каркас оболочки
 - [ ] S5a: U20 — ShellState/Screens — TODO
