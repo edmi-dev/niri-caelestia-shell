@@ -36,7 +36,7 @@ StyledRect {
     // Entries that can shrink to nothing, spacing included
     function collapsed(entry: var): bool {
         if (entry.id === "lockStatus")
-            return !Hypr.capsLock && !Hypr.numLock;
+            return !Compositor.capsLock && !Compositor.numLock; // NIRI-PORT(U27): lock keys from Compositor
         return false;
     }
 
@@ -110,7 +110,7 @@ StyledRect {
                     delegate: EntryWrapper {
                         StyledText {
                             animate: true
-                            text: Hypr.kbLayout
+                            text: Compositor.kbLayout // NIRI-PORT(U27): layout code from Compositor
                             color: root.colour
                             font: Tokens.font.mono.medium
                         }

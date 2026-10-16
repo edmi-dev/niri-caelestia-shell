@@ -12,7 +12,8 @@ Item {
 
     required property PopoutState popouts
 
-    implicitWidth: Hypr.activeToplevel ? child.implicitWidth : -Tokens.padding.extraLargeIncreased
+    // NIRI-PORT(U26): niri window object (title, app_id)
+    implicitWidth: Compositor.activeToplevel ? child.implicitWidth : -Tokens.padding.extraLargeIncreased
     implicitHeight: child.implicitHeight
 
     Column {
@@ -34,7 +35,7 @@ Item {
                 asynchronous: true
                 Layout.alignment: Qt.AlignVCenter
                 implicitSize: details.implicitHeight
-                source: Icons.getAppIcon(Hypr.activeToplevel?.lastIpcObject.class ?? "", "image-missing")
+                source: Icons.getAppIcon(Compositor.activeToplevel?.app_id ?? "", "image-missing")
             }
 
             ColumnLayout {
@@ -45,14 +46,14 @@ Item {
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: Hypr.activeToplevel?.title ?? ""
+                    text: Compositor.activeToplevel?.title ?? ""
                     font: Tokens.font.body.medium
                     elide: Text.ElideRight
                 }
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: Hypr.activeToplevel?.lastIpcObject.class ?? ""
+                    text: Compositor.activeToplevel?.app_id ?? ""
                     color: Colours.palette.m3onSurfaceVariant
                     elide: Text.ElideRight
                 }
@@ -82,14 +83,16 @@ Item {
             }
         }
 
+        // NIRI-PORT(U26): live toplevel preview is off until Q9 (Compositor.supports.toplevelCapture)
         ClippingWrapperRectangle {
+            visible: Compositor.supports.toplevelCapture
             color: "transparent"
             radius: Tokens.rounding.medium
 
             ScreencopyView {
                 id: preview
 
-                captureSource: Hypr.activeToplevel?.wayland ?? null // qmllint disable unresolved-type
+                captureSource: null
                 live: visible
 
                 constraintSize.width: Tokens.sizes.bar.windowPreviewSize

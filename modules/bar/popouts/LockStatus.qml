@@ -8,10 +8,11 @@ ColumnLayout {
     spacing: Tokens.spacing.small
 
     StyledText {
-        text: Hypr.capsLock ? Tr.tr("Caps lock enabled") : Tr.tr("Caps lock disabled")
+        // NIRI-PORT(U27): Caps/Num lock from Compositor (sysfs LEDs on niri)
+        text: Compositor.capsLock ? Tr.tr("Caps lock enabled") : Tr.tr("Caps lock disabled")
     }
 
     StyledText {
-        text: Hypr.numLock ? Tr.tr("Num lock enabled") : Tr.tr("Num lock disabled")
+        text: Compositor.numLock ? Tr.tr("Num lock enabled") : Tr.tr("Num lock disabled")
     }
 }

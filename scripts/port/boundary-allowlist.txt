@@ -2,15 +2,9 @@
 # Shrinking this list is the main progress metric of the niri port; it must reach 0 by S7.
 modules/areapicker/Picker.qml
 modules/background/Visualiser.qml
-modules/bar/components/ActiveWindow.qml
-modules/bar/components/StatusIcons.qml
-modules/bar/components/status/LockStatus.qml
 modules/bar/components/workspaces/SpecialWorkspaces.qml
 modules/bar/components/workspaces/Workspace.qml
 modules/bar/components/workspaces/Workspaces.qml
-modules/bar/popouts/ActiveWindow.qml
-modules/bar/popouts/kblayout/KbLayoutModel.qml
-modules/bar/popouts/LockStatus.qml
 modules/IdleMonitors.qml
 modules/lock/center/StateMessage.qml
 modules/windowinfo/Buttons.qml
