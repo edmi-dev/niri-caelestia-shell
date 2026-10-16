@@ -38,3 +38,6 @@
 - [ ] Визуализатор фона с autoHide: скрыт при тайловом окне на активном воркспейсе, виден при только плавающих/пустом.
 - [ ] Area picker (`caelestia-shell ipc call picker open`): наведение на плавающее окно подсвечивает его рамку точно по краям (проверка UNVERIFIED «workspace view == координаты экрана», в т.ч. с баром\/exclusive zone); на тайловых окнах привязки нет — ожидаемо.
 - [ ] windowinfo (detached popout из «активного окна»): детали окна корректны (id, размер, воркспейс, выход, pid, floating); «Move to workspace» показывает воркспейсы выхода окна и переносит окно; Float/Tile и Kill (вежливое закрытие) работают.
+
+## S8 — упаковка
+- [ ] `systemctl --user show-environment | grep NIRI_SOCKET` в сессии niri → переменная есть (иначе сервису шелла нужен `programs.caelestia.systemd.environment`).

@@ -98,3 +98,7 @@
 - 2026-10-16 — Buttons: сетка 10 номеров → существующие воркспейсы выхода окна (`workspacesFor`), перенос по `{Id}`; «Pin» скрыт `supports.windowPin`; «Kill» → `close-window` (Q16).
 - Preview: захват выключен до Q9 (`captureSource: null`).
 - Q13 (объединение с NiriThing) не затронут — это S10.
+
+## Упаковка (S8)
+- 2026-10-16 — `nix/default.nix`: `hyprland` убран из аргументов и runtimeDeps; `niri` в runtimeDeps не нужен — шелл не вызывает CLI niri, только сокет `$NIRI_SOCKET`. Замыкание `nix build .#default` не содержит путей hyprland (`nix path-info -r ./result`). `CAELESTIA_XKB_RULES_PATH` уже задаётся обёрткой.
+- VERIFIED(src niri 26.4.0 `src/main.rs:277-290`) — niri с feature `systemd` делает `systemctl --user import-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE NIRI_SOCKET`, поэтому user-сервис `caelestia` из hm-module получает `NIRI_SOCKET` без изменений модуля. UNVERIFIED: что niri из nixpkgs собран с `systemd` (проверить `systemctl --user show-environment | grep NIRI_SOCKET` в сессии) → VERIFY.md.
