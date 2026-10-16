@@ -36,3 +36,6 @@
 ## Окружение
 - 2026-10-16 — S1: `nix build -L .#default` на чистом upstream (a3a8fe59) упал не из-за кода: quickshell 0.3.2 (input `quickshell`, нет в бинарном кэше) собирается из исходников и падает с `No space left on device`. На `/` (там же `/nix`, build-dir `/nix/var/nix/b`) свободно 650M из 125G. Нужно освободить место (решение человека: `nix-collect-garbage`, удаление старых поколений и т. п.), затем повторить сборку.
 - 2026-10-16 — Правки flake (devShell-инструменты, `checks.package`) вычисляются (`nix eval` ок); сборка не проверена.
+- 2026-10-16 — S1 закрыт: человек освободил место (на / 33G). `nix build .#default` (чистый upstream + правки flake) → `/nix/store/dv3mg159…-caelestia-shell-1.0.0`. `nix flake check -L` (x86_64-linux) — зелёный.
+- `nix flake check --all-systems` падает на `armv6l-linux`: «cannot bootstrap GHC» (quickshell → pipewire → … → pandoc → ghc). Проблема upstream/nixpkgs, не порта; гейт — только x86_64-linux. Предупреждение `unknown flake output 'homeManagerModules'` — из upstream, не трогаем.
+- devShell: niri 26.04 (nixpkgs), qmllint/qtdeclarative 6.11.2, clang-tools 21.1.8, cmake 4.4.3. Версия niri в живой сессии пользователя — записать по фикстурам (S2).

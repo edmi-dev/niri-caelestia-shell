@@ -10,9 +10,9 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 - [ ] Push `niri-v2` — см. STATE
 
 ## S1. Базовая сборка upstream (U01, U02)
-- [ ] `nix build -L .#default` на чистом upstream — BLOCKED(диск: на / свободно 650M) NEEDS-HUMAN
-- [ ] devShell: `niri`, `jq`, `ripgrep`, `libxml2`, `qt6.qtdeclarative`, `clang-tools` — WIP (nix eval ок, сборка не проверена)
-- [ ] `flake.nix → checks.<system>.package` — WIP (nix eval ок)
+- [x] `nix build -L .#default` на чистом upstream — DONE(L1)
+- [x] devShell: `niri`, `jq`, `ripgrep`, `libxml2`, `qt6.qtdeclarative`, `clang-tools` — DONE(L1)
+- [x] `flake.nix → checks.<system>.package` — DONE(L1), `nix flake check` зелёный (x86_64-linux)
 
 ## S2. Скрипты-проверки и фикстуры
 - [ ] `scripts/port/check-boundary.sh` + авто-allowlist — TODO
