@@ -31,8 +31,11 @@ Scope {
             lock.lock.locked = true;
         else if (action === "unlock")
             lock.lock.locked = false;
+        // NIRI-PORT(U56): niri has no generic dispatcher; only the DPMS actions map to niri actions
+        else if (action === "dpms off" || action === "dpms on")
+            Compositor.setDpms(action === "dpms on");
         else if (typeof action === "string")
-            Hypr.dispatch(Hypr.usingLua && ["dpms off", "dpms on"].includes(action) ? `hl.dsp.dpms({ action = "${action === "dpms off" ? "disable" : "enable"}" })` : action);
+            console.warn("caelestia.idle: unsupported compositor action on niri:", action);
         else if (!SessionManager.exec(action))
             Quickshell.execDetached(action);
     }

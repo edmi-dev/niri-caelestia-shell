@@ -86,3 +86,7 @@
 ## Бар: активное окно, статус, раскладки (S6c)
 - 2026-10-16 — U28: `KbLayoutModel` берёт список/индекс раскладок из niri (`Compositor.kbLayouts/kbLayoutIndex`), переключение — `SwitchLayout{Index}`. Разбор xkb XML через `xmllint /usr/share/X11/...` удалён: niri отдаёт полные имена, код — `Compositor.kbCode` (base.lst из `CAELESTIA_XKB_RULES_PATH`). Дедупликация убрана — индексы обязаны совпадать с индексами niri. fhs-allowlist → 0.
 - 2026-10-16 — U26: заголовок/иконка из `Compositor.activeToplevel` (`title`, `app_id`); живое превью скрыто флагом `supports.toplevelCapture` (false) до решения Q9.
+
+## S7: idle, яркость
+- VERIFIED(fixture outputs.json) — у выхода niri нет числового `id` (поля: name, make, model, serial, logical, modes, …). `Brightness.getMonitor("id:N")` на niri ничего не находит; `model:`/`serial:`/имя работают.
+- 2026-10-16 — U56: строковые idle-действия из конфига: `"dpms off"`/`"dpms on"` → `power-off-monitors`/`power-on-monitors`; прочие строки были командами диспетчера Hyprland — на niri предупреждение в лог, без действия. UNVERIFIED: `power-on-monitors` по `returnAction` (niri и так будит мониторы при вводе) → VERIFY.md.
