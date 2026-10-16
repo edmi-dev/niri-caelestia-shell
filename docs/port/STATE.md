@@ -20,5 +20,4 @@ boundary-allowlist: 29 files · fhs-allowlist: 1 file · flake check: green (pac
 - Рантайм шелла сломан до S4 (`services/Hypr.qml` → удалённый `HyprExtras`) — ожидаемо
 
 ## Needs human
-- `niri --version` в системе — сверить с 26.04 (фикстуры записаны на 26.04).
 - `git push -u origin niri-v2` — у агента нет прав на origin.
