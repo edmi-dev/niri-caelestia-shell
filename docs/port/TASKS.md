@@ -15,11 +15,11 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 - [x] `flake.nix → checks.<system>.package` — DONE(L1), `nix flake check` зелёный (x86_64-linux)
 
 ## S2. Скрипты-проверки и фикстуры
-- [ ] `scripts/port/check-boundary.sh` + авто-allowlist — TODO
-- [ ] `scripts/port/check-fhs.sh` — TODO
-- [ ] `scripts/port/divergence.sh` — TODO
-- [ ] `scripts/port/record-niri-fixtures.sh` — TODO
-- [ ] `checks.boundary`, `checks.fhs` во flake — TODO
+- [x] `scripts/port/check-boundary.sh` + авто-allowlist (33 файла) — DONE(L1)
+- [x] `scripts/port/check-fhs.sh` (+ `fhs-allowlist.txt`, 1 файл) — DONE(L1)
+- [x] `scripts/port/divergence.sh` — DONE(L0)
+- [x] `scripts/port/record-niri-fixtures.sh` — DONE(L0, не запускался: нет доступа к niri)
+- [x] `checks.boundary`, `checks.fhs` во flake — DONE(L1)
 - [ ] Записать фикстуры (idle, fullscreen, kb-switch, multi-monitor, overview) — NEEDS-HUMAN
 - [ ] Ответы по фикстурам: Q3, Q8, OutputsChanged, tile_pos_in_workspace_view, версия niri — TODO
 
