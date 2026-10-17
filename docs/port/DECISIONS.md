@@ -13,7 +13,7 @@
 - **Q7** — DECIDED — человек (2026-10-17) — Вариант «заменить»: `ignoredTags` → правила (regex) по `app_id`/`title`. Исходная формулировка: `ignoredTags`: убрать / заменить на regex по `app_id`/`title`. — Блокирует часть S6b.
 - **Q8** — PENDING — Какое событие приходит при переключении раскладки (`KeyboardLayoutSwitched`?). Решается по фикстуре `kb-switch`. По src 26.4.0 событие `KeyboardLayoutSwitched{idx}` есть; осталось подтвердить фикстурой, что niri шлёт именно его. — S3c, S6c.
 - **Q9** — PENDING — Живое превью окна (`ScreencopyView` по toplevel) на niri: превью / только иконка и заголовок. — Определяет `supports.toplevelCapture`, U26, U49.
-- **Q10** — PENDING — Запись экрана (U45): `caelestia` CLI / прямой `gpu-screen-recorder` / не переносить. Зависит от аудита CLI. — S7 (U45).
+- **Q10** — PENDING — Запись экрана (U45): `caelestia` CLI / прямой `gpu-screen-recorder` / не переносить. Зависит от аудита CLI. — S7 (U45). VERIFIED (caelestia-cli из flake.lock, `subcommands/record.py:74`): `caelestia record` при старте вызывает `hypr.message("monitors")` (сокет Hyprland) — на niri запуск записи упадёт; стоп/пауза работают через `pidof`/сигналы. Рекомендация: (b) шелл сам запускает `gpu-screen-recorder -w <выход>` / `-w region`.
 - **Q11** — PENDING — `quicktoggles` (F05) vs `utilities/cards/Toggles` (U46). — Только S10.
 - **Q12** — PENDING — Настройки: Nexus (upstream) или Control Center форка (F04). Рекомендация: Nexus. — Только S10.
 - **Q13** — PENDING — `windowinfo` (U49) и `NiriThing` (F03): объединить / оставить оба. — U49 в S7 (базовая часть не блокируется).
