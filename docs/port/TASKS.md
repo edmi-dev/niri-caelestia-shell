@@ -62,7 +62,8 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 - [x] README — DONE (раздел «niri port»)
 
 ## S9. Интеграция в систему пользователя
-- [ ] Путь к системному flake — NEEDS-HUMAN
+- [x] Путь к системному flake: `/home/edmi/nixos-config` (2026-10-17)
+- [x] Правки системного flake написаны, не собраны (по просьбе человека): см. STATE.md → «S9: что изменено»
 - [ ] `nixos-rebuild build --flake …#kurva-lenovo --override-input niri-caelestia-src path:$PWD` — TODO
 - [ ] switch + прогон VERIFY — NEEDS-HUMAN
 
