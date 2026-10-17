@@ -20,6 +20,7 @@
 - **Q14** — PENDING — `modules/keybinds` (F15): удалить / восстановить. — Только S10.
 - **Q15** — DECIDED — человек (2026-10-17) — (a) да: GameMode пишет генерируемый include-файл в `~/.config/niri/`. Исходно: GameMode (U47): допустимо ли писать файлы в `~/.config/niri/` (генерируемый include). Рекомендация: да. — Блокирует U47.
 - **Q16** — DECIDED — человек (2026-10-17) — Вариант (a): оставить `close-window`. Исходная формулировка: Кнопка «Kill» в windowinfo (U49): в niri нет принудительного kill (`niri msg action --help`). Варианты: (a) `close-window` — вежливое закрытие (сейчас так, не блокирует); (b) `kill -9 <pid>` из шелла. Рекомендация: (a), подпись кнопки не менять.
+- **Q17** — PENDING — Размытие под панелями шелла на niri. Правило layer-rule на весь слой `caelestia-drawers` непригодно (xray закрывает окна, см. «ОПРОВЕРГНУТО» ниже). Варианты: (a) без blur (сейчас так); (b) layer-rule с `xray false` (экспериментально в niri 26.04, пропадает при анимациях, дорого — но всё равно размывает весь экран, а не только панели → по сути непригодно); (c) фигурный blur через `ext-background-effect` из шелла (нужна поддержка в quickshell, отдельная задача S10). Рекомендация: (a) сейчас, (c) позже. Не блокирует.
 - **Q-NIX1** — DECIDED — человек (2026-10-17) — (c) оба режима через опцию модуля (managed — симлинк, seed — копия, если файла нет). Исходно: HM: `shell.json` через `xdg.configFile` (read-only симлинк) ломает сохранение из UI. Варианты: (a) как есть; (b) seed — активационный скрипт копирует JSON, только если файла нет; (c) оба через опцию. — Блокирует S8 (hm-module).
 - **Q-NIX2** — DECIDED — человек (2026-10-17) — конфиг niri пишется руками и подключается из системного flake (`hmArgs.niriConfig = ./hosts/kurva-lenovo/config/niri.kdl`); HM-модуль генерирует `~/.config/niri/caelestia.kdl`, пользователь добавляет `include "caelestia.kdl"` (VERIFIED: `include` есть в niri 26.04, `niri validate`). Исходно: Генерировать ли из HM-модуля KDL-сниппет биндов для `include` в конфиг niri, и как пользователь собирает конфиг niri. — Блокирует часть S8.
 
@@ -35,9 +36,9 @@
 - VERIFIED(src 26.4.0) — `ConfigLoaded{failed}` приходит при каждом подключении к event-stream и при перезагрузке конфига.
 - VERIFIED(src 26.4.0) — действия `PowerOffMonitors {}` и `PowerOnMonitors {}` есть; `Quit{skip_confirmation}`; `SwitchLayout{layout: "Next"|"Prev"|{"Index":N}}`; `FocusWorkspace{reference}`, `MoveWindowToWorkspace{window_id?, reference, focus}`, где `reference` — `{"Id":N}|{"Index":N}|{"Name":S}`; `FocusWorkspaceUp/Down {}`; `ToggleOverview {}`; `LoadConfigFile`.
 - VERIFIED(src 26.4.0) — ответ `Outputs` — словарь `имя → Output{name, make, model, serial?, physical_size?, modes, current_mode?, is_custom_mode, vrr_supported, vrr_enabled, logical?{x,y,width,height,scale,transform}}`.
-- UNVERIFIED — поведение `include` на отсутствующий файл.
-- UNVERIFIED — blur для layer-shell поверхностей.
-- UNVERIFIED — совпадает ли версия niri в сессии пользователя с 26.4.0.
+- VERIFIED (`niri validate` живого config.kdl, 2026-10-17) — отсутствующий `include optional=true` → только WARN «optional include not found», конфиг валиден.
+- ОПРОВЕРГНУТО (живая сессия kurva-lenovo 2026-10-17 + niri 26.04 `docs/wiki/Window-Effects.md` «Xray», `Configuration:-Layer-Rules.md` «background-effect») — blur для layer-shell через layer-rule работает, но включает xray по умолчанию и действует на всю поверхность. Слой `caelestia-drawers` на весь выход (Top) → все не полноэкранные окна закрыты размытыми обоями; полноэкранные видны (рисуются над Top). Правило удалено из `nix/niri/caelestia.kdl` (U53). Фигурный blur возможен только через `ext-background-effect` от самого шелла — см. Q17.
+- VERIFIED (живая сессия 2026-10-17, `niri msg --json version`) — `{"cli":"26.04 (Nixpkgs)","compositor":"26.04 (Nixpkgs)"}`, совпадает с фикстурами. Выходы: eDP-1 1920x1080 и DP-2 3440x1440 (второй монитор есть).
 
 ## Окружение
 - 2026-10-16 — S1: `nix build -L .#default` на чистом upstream (a3a8fe59) упал не из-за кода: quickshell 0.3.2 (input `quickshell`, нет в бинарном кэше) собирается из исходников и падает с `No space left on device`. На `/` (там же `/nix`, build-dir `/nix/var/nix/b`) свободно 650M из 125G. Нужно освободить место (решение человека: `nix-collect-garbage`, удаление старых поколений и т. п.), затем повторить сборку.
@@ -76,7 +77,7 @@
 ## Шорткаты (S5b)
 - VERIFIED(src niri-config 26.4.0, `binds.rs`) — у `Bind` нет триггера на отпускание клавиши. Upstream `launcher` (toggle on release + `launcherInterrupt`) на niri не воспроизводим → launcher по нажатию. Следствие вынужденное, не развилка.
 - VERIFIED(`niri validate`) — `nix/niri/caelestia.kdl` валиден для niri 26.04.
-- UNVERIFIED — `caelestia-shell ipc call …`: обёртка добавляет `-p <path>` перед подкомандой `ipc`; парсинг `qs -p X ipc --help` проходит, вызов в живом инстансе не проверен → VERIFY.md.
+- VERIFIED (живая сессия 2026-10-17) — `caelestia-shell ipc show` / `ipc call drawers list` / `isOpen launcher` попадают в запущенный инстанс сервиса.
 - 2026-10-16 — `drawers toggle sidebar|utilities` не блокируется при фуллскрине (upstream-шорткаты блокировали). Оставлено как в upstream IPC, отличие записано в COMPOSITOR_API.md.
 
 ## Focus grab (S5c, U21/U29)
@@ -101,7 +102,7 @@
 
 ## Упаковка (S8)
 - 2026-10-16 — `nix/default.nix`: `hyprland` убран из аргументов и runtimeDeps; `niri` в runtimeDeps не нужен — шелл не вызывает CLI niri, только сокет `$NIRI_SOCKET`. Замыкание `nix build .#default` не содержит путей hyprland (`nix path-info -r ./result`). `CAELESTIA_XKB_RULES_PATH` уже задаётся обёрткой.
-- VERIFIED(src niri 26.4.0 `src/main.rs:277-290`) — niri с feature `systemd` делает `systemctl --user import-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE NIRI_SOCKET`, поэтому user-сервис `caelestia` из hm-module получает `NIRI_SOCKET` без изменений модуля. UNVERIFIED: что niri из nixpkgs собран с `systemd` (проверить `systemctl --user show-environment | grep NIRI_SOCKET` в сессии) → VERIFY.md.
+- VERIFIED(src niri 26.4.0 `src/main.rs:277-290`) — niri с feature `systemd` делает `systemctl --user import-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE NIRI_SOCKET`, поэтому user-сервис `caelestia` из hm-module получает `NIRI_SOCKET` без изменений модуля. VERIFIED (живая сессия 2026-10-17): `systemctl --user show-environment` содержит `NIRI_SOCKET=/run/user/1000/niri.wayland-1.<pid>.sock`.
 
 ## Воркспейсы бара (S6b, по Q2=a, Q5=a, Q7)
 - 2026-10-17 — «Номер» воркспейса в баре = `idx` на выходе этого бара; клик фокусирует по `{Id}` (ссылка `{Index}` разрешается на сфокусированном выходе — для бара другого монитора было бы неверно); позиция за пределами существующих → последний (всегда пустой) воркспейс выхода. `SpecialWorkspaces.qml` удалён, оверлей спецворкспейсов убран; в Nexus скрыты «Per monitor» и «Windows on special workspaces».
@@ -120,7 +121,7 @@
 
 ## hm-module (S8, Q-NIX1 = c, Q-NIX2)
 - 2026-10-17 — `programs.caelestia.settingsMode = "managed" | "seed"` (по умолчанию managed — как upstream). seed: `home.activation.caelestiaSeedSettings` (после `linkGeneration`) копирует сгенерированный JSON, если файла нет; оставшийся симлинк в `/nix/store` от managed заменяется копией. Restart-trigger сервиса — только в managed.
-- 2026-10-17 — `programs.caelestia.niri.enable` пишет `~/.config/niri/caelestia.kdl` из `nix/niri/caelestia.kdl` (опция `niri.config` для своей версии); `spawn "caelestia-shell"` заменяется абсолютным путём бинаря пакета, чтобы IPC попадал в инстанс этого пакета. Внутри — бинды, layer-rule blur и последним `include optional=true "caelestia-gamemode.kdl"`. Пример перенесён из `docs/port/niri-binds.example.kdl` в `nix/niri/caelestia.kdl` (единый источник).
+- 2026-10-17 — `programs.caelestia.niri.enable` пишет `~/.config/niri/caelestia.kdl` из `nix/niri/caelestia.kdl` (опция `niri.config` для своей версии); `spawn "caelestia-shell"` заменяется абсолютным путём бинаря пакета, чтобы IPC попадал в инстанс этого пакета. Внутри — бинды (layer-rule blur удалён 2026-10-17, см. «ОПРОВЕРГНУТО» выше) и последним `include optional=true "caelestia-gamemode.kdl"`. Пример перенесён из `docs/port/niri-binds.example.kdl` в `nix/niri/caelestia.kdl` (единый источник).
 - VERIFIED(src niri-config 26.4.0 `lib.rs`: база include = `path.parent()` без canonicalize) — относительный include из симлинка `~/.config/niri/caelestia.kdl` ищется в `~/.config/niri`, а не в `/nix/store`.
 - VERIFIED(eval) — модуль вычислен в `home-manager` (github master) для обоих режимов; сгенерированный KDL проходит `niri validate`.
 - UNVERIFIED — gpu-screen-recorder на NixOS: захват монитора (`-w <выход>`) идёт через KMS и требует `gsr-kms-server` с capability; NixOS-модуль `programs.gpu-screen-recorder.enable = true` ставит wrapper. Без него вероятен отказ/запрос пароля. Проверить вживую (VERIFY.md → U45).
