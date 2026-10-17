@@ -54,3 +54,11 @@
 В HM-конфиге: `programs.caelestia = { enable = true; settingsMode = "seed"; niri.enable = true; };`, в конце `hosts/kurva-lenovo/config/niri.kdl`: `include "caelestia.kdl"`.
 - [ ] После `home-manager`/`nixos-rebuild switch`: `~/.config/niri/caelestia.kdl` — симлинк, `niri validate` без ошибок; `~/.config/caelestia/shell.json` — обычный файл (seed), сохранение настроек из Nexus работает.
 - [ ] `systemctl --user status caelestia` → active; бар, панели, воркспейсы на месте.
+
+## U45 — запись экрана (Q10 = b)
+- [ ] Утилиты → Record fullscreen: запись идёт с текущего монитора, уведомление «Recording started».
+- [ ] Стоп: файл появился в `~/Videos/Recordings/recording_*.mp4`, уведомление с Watch/Open/Delete работает.
+- [ ] Record region: открывается slurp; Esc отменяет без ошибки; выбранная область пишется.
+- [ ] With sound: в файле есть звук.
+- [ ] Пауза/продолжение.
+- [ ] Если старт падает (уведомление «Recording failed») — включить `programs.gpu-screen-recorder.enable = true` в NixOS-конфиге.
