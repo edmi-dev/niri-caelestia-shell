@@ -52,6 +52,7 @@
 | `isWindowFullscreen(winId)` | bool | `isWindowFullscreen(id)` (эвристика Q3; зависимость от `fullscreenOutputs`/`windows`) | `lastIpcObject.fullscreen` (U49) |
 | `workspaceById(wsId)` | Workspace\|null | поиск в `workspaces` | `client.workspace` (U49) |
 | `hasFullscreen(output?)` | bool | `hasFullscreen(output)`; без аргумента — `fullscreenOutputs.length>0` | разные `lastIpcObject.fullscreen > 1` |
+| `outputRefresh(output?)` | int | частота текущего режима выхода в Гц (`modes[current_mode].refresh_rate` / 1000); без аргумента — максимум по выходам; 0 — неизвестно | `monitors[].refreshRate` (было в caelestia-cli) |
 | `focusWorkspace(idx)` | void | `action("focus-workspace", [idx])` (Index на сфокусированном выходе) | `Hypr.focusWorkspace` |
 | `focusWorkspaceId(id)` | void | `action("focus-workspace", ["--id", id])` (Id-ссылка) | — |
 | `focusWorkspaceRelative(delta)` | void | `focus-workspace-up` / `focus-workspace-down` | `workspace r±1` |

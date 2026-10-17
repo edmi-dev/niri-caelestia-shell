@@ -2,7 +2,7 @@
 Upstream base: a3a8fe59aba2c0048ab02dc817748678f96076ff   Branch: niri-v2   Updated: 2026-10-17
 
 ## Current step
-S9 — интеграция в систему пользователя. Правки системного flake написаны, НЕ собраны (человек просил не билдить).
+S9 — интеграция. `nixos-rebuild build` для kurva-lenovo с локальной веткой — УСПЕШНО (2026-10-17, без switch).
 
 ## In progress
 - Системный flake `/home/edmi/nixos-config` — изменения лежат незакоммиченными в его рабочем дереве (это репо человека;
@@ -21,11 +21,9 @@ S9 — интеграция в систему пользователя. Прав
 - Проверено: `niri validate` (оба хоста) — valid; `nix-instantiate --parse` — ок. Сборки не было.
 
 ## Next action
-Дождаться от человека: (1) `git -C /home/edmi/nixos-config add modules/laptop/caelestia-niri-v2` (flake не видит untracked);
-(2) разрешения на сборку. Затем:
-`nixos-rebuild build --flake /home/edmi/nixos-config#kurva-lenovo --override-input niri-caelestia-src path:$PWD` (только build).
-Ошибки eval/сборки чинить в модуле `caelestia-niri-v2` или в `nix/hm-module.nix` порта. После `switch` (делает человек) — VERIFY.md → S9.
-Параллельно, если человек решит Q10 = b: U45 — `services/Recorder.qml` запускает `gpu-screen-recorder` напрямую (см. DECISIONS Q10).
+Ждать от человека `switch` и прогона VERIFY.md (S9, U45). Команда сборки (path: не годится — тащит старый build/):
+`nixos-rebuild build --flake /home/edmi/nixos-config#kurva-lenovo --override-input niri-caelestia-src "git+file://$PWD?ref=niri-v2"`.
+Собирается только закоммиченное. Ошибки рантайма — чинить по отчёту человека. Затем S11 (UPSTREAM_SYNC.md + пробный merge).
 
 Рецепт qmllint (в devShell нет QML-путей): собрать плагин `cmake -S . -B <scratch>/build -G Ninja -DCAELESTIA_BUILD_TESTS=ON`,
 затем `qmllint -I <qtdeclarative>/lib/qt-6/qml -I <quickshell-wrapped>/lib/qt-6/qml -I <scratch>/build/qml <file>`
@@ -38,11 +36,12 @@ boundary-allowlist: 0 · fhs-allowlist: 0 · flake check: green (package, bounda
 
 ## Blocked / pending decisions
 - Q9 (живое превью окна) — PENDING; превью выключено флагом `supports.toplevelCapture`
-- Q10 (Recorder, U45) — PENDING; `caelestia record` на niri падает при старте (зовёт Hyprland). Рекомендация (b)
+- Q10 — DECIDED (b), U45 сделан: `assets/record.sh`; вживую не проверен (VERIFY.md → U45)
 - Аудит caelestia-cli (U36/U53 setMode/U54) — человек; `scheme`/`wallpaper` в CLI пока не проверены на Hyprland-зависимость
 - Q4, Q6, Q11–Q14 — относятся к S10 (доработки форка), не блокируют
 
 ## Needs human
 - `git push -u origin niri-v2` — у агента нет прав на origin; затем `nix flake update niri-caelestia-src` в nixos-config.
 - `git add` нового модуля в nixos-config и разрешение на `nixos-rebuild build`.
-- Решения Q9, Q10; аудит caelestia-cli.
+- Решение Q9; аудит caelestia-cli.
+- `switch` и прогон VERIFY.md; возможно `programs.gpu-screen-recorder.enable = true` (см. DECISIONS).

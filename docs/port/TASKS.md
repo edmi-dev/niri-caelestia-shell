@@ -52,7 +52,7 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 - [x] U49 — windowinfo (Q13) — DONE базовая часть; превью BLOCKED(Q9), Kill — Q16
 - [x] U62 — areapicker — DONE (привязка только к плавающим окнам)
 - [ ] Аудит `caelestia-cli` для U53/U54/U36 — TODO (решение — человек)
-- [ ] U45 — Recorder (Q10) — TODO
+- [x] U45 — Recorder: `assets/record.sh` (gpu-screen-recorder напрямую, Q10 = b)
 - [x] U47 — GameMode (Q15) — DONE
 - [x] `boundary-allowlist.txt` пуст, `nix flake check` зелёный — DONE (2026-10-17)
 
@@ -64,7 +64,7 @@ ID — из `UPDATE_PLAN.md` (U01…U64, F01…F15, Q1…Q15). Шаги — из
 ## S9. Интеграция в систему пользователя
 - [x] Путь к системному flake: `/home/edmi/nixos-config` (2026-10-17)
 - [x] Правки системного flake написаны, не собраны (по просьбе человека): см. STATE.md → «S9: что изменено»
-- [ ] `nixos-rebuild build --flake …#kurva-lenovo --override-input niri-caelestia-src path:$PWD` — TODO
+- [x] `nixos-rebuild build --flake …#kurva-lenovo --override-input niri-caelestia-src git+file://…?ref=niri-v2` — OK (2026-10-17)
 - [ ] switch + прогон VERIFY — NEEDS-HUMAN
 
 ## S10. (Опционально) Доработки форка
