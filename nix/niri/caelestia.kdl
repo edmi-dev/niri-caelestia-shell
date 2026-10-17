@@ -39,14 +39,10 @@ binds {
     Mod+Shift+N { spawn "caelestia-shell" "ipc" "call" "notifs" "clear"; }
 }
 
-// Blur behind the shell's panels. niri layer rules are static, unlike the runtime rules the shell set on
-// Hyprland; keep it if transparency is enabled in the shell config.
-layer-rule {
-    match namespace="^caelestia-drawers$"
-    background-effect {
-        blur true
-    }
-}
+// No blur layer-rule for "caelestia-drawers": that layer covers the whole output, and a rule-enabled blur
+// applies to the full surface with xray on by default (niri 26.04 docs/wiki/Window-Effects.md), so every
+// non-fullscreen window would be hidden behind blurred wallpaper. Shaped blur needs ext-background-effect
+// from the shell itself.
 
 // Game mode overrides written by the shell (Compositor.setGameMode); must stay last to win over the rest.
 include optional=true "caelestia-gamemode.kdl"

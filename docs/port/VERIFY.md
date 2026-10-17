@@ -13,7 +13,7 @@
 ## S5b — шорткаты через IPC
 Подключить `nix/niri/caelestia.kdl` (через HM: `programs.caelestia.niri.enable = true`, в конце `niri.kdl` — `include "caelestia.kdl"`) и запустить шелл (`caelestia-shell`).
 
-- [ ] `caelestia-shell ipc show` → видны цели `drawers` (с `showAll`), `nexus`, `lock`, `picker`, `mpris`, `brightness` (с `increase`/`decrease`), `notifs`, `toaster`.
+- [x] `caelestia-shell ipc show` → видны цели `drawers` (с `showAll`), `nexus`, `lock`, `picker`, `mpris`, `brightness` (с `increase`/`decrease`), `notifs`, `toaster`. (2026-10-17, kurva-lenovo: все есть, плюс `wallpaper`, `audio`, `idleInhibitor`, `gameMode`; `drawers list` → bar/osd/session/launcher/dashboard/utilities/sidebar; `isOpen launcher` → 0)
 - [ ] `caelestia-shell ipc call drawers toggle launcher` → открывается/закрывается launcher на сфокусированном выходе.
 - [ ] Mod+Space из примера → то же самое, launcher переключается по нажатию.
 - [ ] XF86MonBrightnessUp/Down → яркость меняется на шаг из конфига.
@@ -40,7 +40,7 @@
 - [ ] windowinfo (detached popout из «активного окна»): детали окна корректны (id, размер, воркспейс, выход, pid, floating); «Move to workspace» показывает воркспейсы выхода окна и переносит окно; Float/Tile и Kill (вежливое закрытие) работают.
 
 ## S8 — упаковка
-- [ ] `systemctl --user show-environment | grep NIRI_SOCKET` в сессии niri → переменная есть (иначе сервису шелла нужен `programs.caelestia.systemd.environment`).
+- [x] `systemctl --user show-environment | grep NIRI_SOCKET` в сессии niri → переменная есть (иначе сервису шелла нужен `programs.caelestia.systemd.environment`). (2026-10-17: есть)
 - [ ] Воркспейсы бара: на каждом мониторе — свои воркспейсы; клик по номеру на баре несфокусированного монитора переключает воркспейс именно на нём; клик по номеру за последним воркспейсом → пустой воркспейс этого монитора.
 - [ ] `bar.workspaces.ignoredWindows: ["^steam_app_.*$"]` (пример) → такие окна не делают воркспейс «занятым» и не показываются иконками.
 
@@ -52,8 +52,9 @@
 
 ## S9 — интеграция (системный flake)
 В HM-конфиге: `programs.caelestia = { enable = true; settingsMode = "seed"; niri.enable = true; };`, в конце `hosts/kurva-lenovo/config/niri.kdl`: `include "caelestia.kdl"`.
-- [ ] После `home-manager`/`nixos-rebuild switch`: `~/.config/niri/caelestia.kdl` — симлинк, `niri validate` без ошибок; `~/.config/caelestia/shell.json` — обычный файл (seed), сохранение настроек из Nexus работает.
-- [ ] `systemctl --user status caelestia` → active; бар, панели, воркспейсы на месте.
+- [~] (2026-10-17: симлинк ✓, `niri validate` ✓, shell.json обычный файл ✓; сохранение из Nexus — не проверено) После `home-manager`/`nixos-rebuild switch`: `~/.config/niri/caelestia.kdl` — симлинк, `niri validate` без ошибок; `~/.config/caelestia/shell.json` — обычный файл (seed), сохранение настроек из Nexus работает.
+- [~] `systemctl --user status caelestia` → active; бар, панели, воркспейсы на месте. (2026-10-17: active ✓; БАГ — не полноэкранные окна не видны, вместо них размытые обои: layer-rule blur на весь слой drawers. Исправлено в U53, ждёт switch)
+- [ ] После switch без layer-rule blur: тайловые и плавающие окна видны, панели шелла поверх них.
 
 ## U45 — запись экрана (Q10 = b)
 - [ ] Утилиты → Record fullscreen: запись идёт с текущего монитора, уведомление «Recording started».
