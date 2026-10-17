@@ -79,6 +79,8 @@ if("shell" IN_LIST ENABLE_MODULES)
     endforeach()
 
     install(PROGRAMS assets/wrap_term_launch.sh DESTINATION "${INSTALL_QSCONFDIR}/assets")
+    # NIRI-PORT(U45): screen recorder script called by services/Recorder.qml
+    install(PROGRAMS assets/record.sh DESTINATION "${INSTALL_QSCONFDIR}/assets")
 
     file(READ shell.qml SHELL_QML)
     string(REPLACE "settings.watchFiles: true" "settings.watchFiles: false" SHELL_QML "${SHELL_QML}")

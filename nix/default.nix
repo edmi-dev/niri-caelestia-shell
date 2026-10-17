@@ -13,6 +13,15 @@
   wl-clipboard,
   libqalculate,
   bash,
+  gpu-screen-recorder,
+  slurp,
+  libnotify,
+  procps,
+  jq,
+  glib,
+  dbus,
+  xdg-utils,
+  util-linux,
   material-symbols,
   rubik,
   nerd-fonts,
@@ -48,6 +57,16 @@
       libqalculate
       bash
       # NIRI-PORT(S8): no compositor CLI at runtime; the shell talks to niri over $NIRI_SOCKET (Caelestia.Niri)
+      # NIRI-PORT(U45): assets/record.sh (recorder, region picker, notifications, pidof/pkill, cli.json, setsid)
+      gpu-screen-recorder
+      slurp
+      libnotify
+      procps
+      jq
+      glib
+      dbus
+      xdg-utils
+      util-linux
     ]
     ++ extraRuntimeDeps
     ++ lib.optional withCli caelestia-cli;

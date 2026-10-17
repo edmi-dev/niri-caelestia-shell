@@ -108,6 +108,18 @@ Singleton {
         return output ? fullscreenOutputs.includes(output) : fullscreenOutputs.length > 0;
     }
 
+    // Refresh rate of the output's current mode in Hz (niri reports mHz); "" means the highest over all outputs.
+    // Returns 0 when unknown (output disabled or not found).
+    function outputRefresh(output: string): int {
+        const rateOf = o => {
+            const mode = o?.modes?.[o?.current_mode ?? -1];
+            return mode ? Math.round(mode.refresh_rate / 1000) : 0;
+        };
+        if (output)
+            return rateOf(outputs[output]);
+        return Object.values(outputs).reduce((max, o) => Math.max(max, rateOf(o)), 0);
+    }
+
     function isWindowFullscreen(windowId: int): bool {
         void fullscreenOutputs; // Re-evaluate bindings on fullscreen changes
         void windows;
