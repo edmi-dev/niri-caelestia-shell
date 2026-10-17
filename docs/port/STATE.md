@@ -11,8 +11,10 @@ S9 — живая проверка на kurva-lenovo (niri 26.04, eDP-1 + DP-2).
   `caelestia-niri-v2` + `niri/config.kdl` из `niriConfig` хоста (как у edmi). `nixos-rebuild build #kurva-lenovo` — ок.
   desktop: edmi уже на v2 через `users/edmi.nix`, `hosts/desktop/config/niri.kdl` подключает `caelestia.kdl`;
   `nix eval` toplevel desktop — ок, сборка на desktop не делалась.
-- Погода: автоопределение через ip-api.com (HTTP) у человека не работает (причина не видна — нет доступа к журналу).
-  Обход: `services.weatherLocation` в shell.json (город или `lat,lon`).
+- Погода: «--» в dashboard — open-meteo 13:15 ответил 503, upstream не повторяет запрос до часового таймера (Q18).
+  Человеку объяснено: `services.weatherLocation = "Tel Aviv"`, `services.weatherUnits = "Celsius"` в
+  `programs.caelestia.settings` (seed: применяется только при отсутствии shell.json) или прямо в shell.json.
+  Ждём: применил ли человек и появилась ли погода.
 
 ## Ограничения окружения агента
 - Агент работает как `claude-agent` (uid 991): нет доступа к `$NIRI_SOCKET`, user-шине systemd, журналу edmi,
@@ -20,7 +22,9 @@ S9 — живая проверка на kurva-lenovo (niri 26.04, eDP-1 + DP-2).
 - Правки в `/home/edmi/nixos-config` агенту запрещены (классификатор) — давать человеку точный дифф.
 
 ## Next action
-Идти по VERIFY.md по одному шагу с человеком: S5b (Mod+D, яркость) → S5c → S6 → S7 → S8 → U47 → U45.
+Идти по VERIFY.md по одному шагу с человеком. Остановились на S5b, пункт «Mod+D» (в сниппете человека — Mod+D, не
+Mod+Space): ответа ещё нет. Дальше: яркость → S5c → S6 → S7 → S8 → U47 → U45. Живые данные — дамп от человека в
+`/tmp/*.txt` (агент не видит сокет/журнал edmi).
 Потом S11 (UPSTREAM_SYNC.md + пробный merge upstream/main), затем S10 по решениям Q4, Q6, Q9, Q11–Q14, Q17.
 Экран меняющие действия — только после «да» человека.
 
@@ -44,6 +48,7 @@ boundary-allowlist: 0 · fhs-allowlist: 0 · flake check: green (2026-10-17) · 
 
 ## Blocked / pending decisions
 - Q17 (blur под панелями) — PENDING; сейчас blur нет
+- Q18 (повтор запроса погоды после ошибки) — PENDING
 - Q9 (живое превью окна) — PENDING; превью выключено флагом `supports.toplevelCapture`
 - Аудит caelestia-cli (U36/U53 setMode/U54) — человек
 - Q4, Q6, Q11–Q14 — относятся к S10 (доработки форка), не блокируют
@@ -52,4 +57,4 @@ boundary-allowlist: 0 · fhs-allowlist: 0 · flake check: green (2026-10-17) · 
 - Удалить блок `layer-rule { match namespace="^caelestia-drawers$" … }` (и комментарий над ним) из
   `nixos-config/modules/laptop/caelestia-niri-v2/caelestia.kdl`, затем switch.
 - `git push origin niri-v2` (у агента нет прав).
-- Решения Q9, Q17; аудит caelestia-cli.
+- Решения Q9, Q17, Q18; аудит caelestia-cli.
