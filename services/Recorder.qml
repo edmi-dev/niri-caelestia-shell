@@ -32,6 +32,9 @@ Singleton {
         checkProc.running = true;
     }
 
+    // NIRI-PORT(U45): `caelestia record` asks Hyprland for monitors; the bundled script gets output and fps from niri (Q10 = b)
+    readonly property string script: `${Quickshell.shellDir}/assets/record.sh`
+
     PersistentProperties {
         id: props
 
@@ -51,14 +54,17 @@ Singleton {
             const running = code === 0;
 
             if (running && root.needsStop) {
-                commandProc.exec(["caelestia", "record"]);
+                commandProc.exec([root.script, "stop"]);
                 props.running = false;
                 props.paused = false;
             } else if (running && root.needsPause) {
-                commandProc.exec(["caelestia", "record", "-p"]);
+                commandProc.exec([root.script, "pause"]);
                 props.paused = !props.paused;
             } else if (!running && root.needsStart) {
-                commandProc.exec(["caelestia", "record", ...root.startArgs]);
+                // Region captures (-r) may span outputs, so cap fps at the fastest one like the CLI did
+                const region = root.startArgs.some(a => a.startsWith("-") && a.includes("r"));
+                const output = region ? "" : Compositor.focusedMonitor;
+                commandProc.exec([root.script, "start", "-o", output, "-f", String(Compositor.outputRefresh(output) || 60), ...root.startArgs]);
                 props.running = true;
                 props.paused = false;
                 props.elapsed = 0;
@@ -79,7 +85,7 @@ Singleton {
     Process {
         id: commandProc
 
-        // The command owns the transition: `caelestia record` blocks on slurp for
+        // The command owns the transition: the record script blocks on slurp for
         // region captures, and waits for the recorder to finalise the file when
         // stopping. Reconcile once it has actually finished.
         onExited: checkProc.running = true // qmllint disable signal-handler-parameters

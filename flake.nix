@@ -38,7 +38,8 @@
       pkgs = pkgsOf.${system};
     in rec {
       caelestia-shell = pkgs.callPackage ./nix {
-        rev = self.rev or self.dirtyRev;
+        # NIRI-PORT(S9): `path:` inputs (--override-input … path:$PWD) carry neither rev nor dirtyRev
+        rev = self.rev or self.dirtyRev or "unknown";
         stdenv = pkgs.clangStdenv;
         quickshell = inputs.quickshell.packages.${system}.default.override {
           withX11 = false;
