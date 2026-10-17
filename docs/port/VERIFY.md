@@ -53,8 +53,8 @@
 ## S9 — интеграция (системный flake)
 В HM-конфиге: `programs.caelestia = { enable = true; settingsMode = "seed"; niri.enable = true; };`, в конце `hosts/kurva-lenovo/config/niri.kdl`: `include "caelestia.kdl"`.
 - [~] (2026-10-17: симлинк ✓, `niri validate` ✓, shell.json обычный файл ✓; сохранение из Nexus — не проверено) После `home-manager`/`nixos-rebuild switch`: `~/.config/niri/caelestia.kdl` — симлинк, `niri validate` без ошибок; `~/.config/caelestia/shell.json` — обычный файл (seed), сохранение настроек из Nexus работает.
-- [~] `systemctl --user status caelestia` → active; бар, панели, воркспейсы на месте. (2026-10-17: active ✓; БАГ — не полноэкранные окна не видны, вместо них размытые обои: layer-rule blur на весь слой drawers. Исправлено в U53, ждёт switch)
-- [ ] После switch без layer-rule blur: тайловые и плавающие окна видны, панели шелла поверх них.
+- [~] `systemctl --user status caelestia` → active; бар, панели, воркспейсы на месте. (2026-10-17: active ✓; БАГ — не полноэкранные окна не видны, вместо них размытые обои: layer-rule blur на весь слой drawers. Исправлено в U53, проверено после switch)
+- [x] После switch без layer-rule blur: тайловые и плавающие окна видны, панели шелла поверх них. (2026-10-17, подтвердил человек)
 
 ## U45 — запись экрана (Q10 = b)
 - [ ] Утилиты → Record fullscreen: запись идёт с текущего монитора, уведомление «Recording started».
