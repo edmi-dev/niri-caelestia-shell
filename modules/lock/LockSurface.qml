@@ -19,7 +19,8 @@ WlSessionLockSurface {
     contentItem.Config.screen: screen.name
     contentItem.Tokens.screen: screen.name
 
-    color: "transparent"
+    // NIRI-PORT(U41): opaque base; through a transparent lock surface niri shows its red locked-session backdrop
+    color: Colours.palette.m3surface
 
     Connections {
         function onUnlock(): void {
@@ -172,7 +173,8 @@ WlSessionLockSurface {
 
         Loader {
             anchors.fill: parent
-            sourceComponent: Config.lock.useWallpaper ? wallpaperBackground : screencopyBackground
+            // NIRI-PORT(U41): screencopy of a locking output on niri stalls the lock surface (UNVERIFIED), use the wallpaper
+            sourceComponent: Config.lock.useWallpaper || !Compositor.supports.lockScreencopy ? wallpaperBackground : screencopyBackground
         }
     }
 
