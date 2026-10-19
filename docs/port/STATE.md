@@ -1,11 +1,12 @@
 # Port state
-Upstream base: a3a8fe59aba2c0048ab02dc817748678f96076ff   Branch: niri-v2   Updated: 2026-10-17
+Upstream base: a3a8fe59aba2c0048ab02dc817748678f96076ff   Branch: niri-v2   Updated: 2026-10-19
 
 ## Current step
 S9 — живая проверка на kurva-lenovo (niri 26.04, eDP-1 + DP-2). Система переключена (system-308), шелл работает
 как `caelestia.service`, QML в пакете = HEAD niri-v2 (кроме сборочных подстановок).
 
 ## In progress
+- U41-fix (лаги/красный экран блокировки после ~3 раз) — фон из обоев вместо screencopy, непрозрачная поверхность. Ждём: человек пересобирает и блокирует 5+ раз подряд.
 - U53-fix (blur на весь слой drawers) — исправлен, после switch окна видны. Ветка запушена, lock nixos-config = dbd51252.
 - nixos-config (по просьбе человека, не закоммичено агентом): `users/test.nix` — `caelestia-hyprland.nix` заменён на
   `caelestia-niri-v2` + `niri/config.kdl` из `niriConfig` хоста (как у edmi). `nixos-rebuild build #kurva-lenovo` — ок.

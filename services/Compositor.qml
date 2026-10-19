@@ -26,7 +26,9 @@ Singleton {
             // Heuristic (Q3 = a): window size equals the output's logical size; windowed fullscreen is invisible
             fullscreenFlag: true,
             // UNVERIFIED (Q9): toplevel capture via ScreencopyView on niri
-            toplevelCapture: false
+            toplevelCapture: false,
+            // UNVERIFIED (U41): ScreencopyView of an output while the session is locking stalls the lock screen
+            lockScreencopy: false
         })
 
     // Workspace: {id, idx, name, output, is_active, is_focused, is_urgent, active_window_id}
