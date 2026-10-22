@@ -56,16 +56,25 @@ StyledRect {
 
             StyledText {
                 Layout.fillWidth: true
-                text: IdleInhibitor.enabled ? Tr.trCtx("Preventing sleep mode", "idle inhibitor") : Tr.trCtx("Normal power management", "idle inhibitor")
+                // NIRI-PORT(F16): subtitle per keep awake mode
+                text: {
+                    if (IdleInhibitor.mode === "noLock")
+                        return Tr.trCtx("Preventing screen lock", "idle inhibitor");
+                    if (IdleInhibitor.mode === "noSleep")
+                        return Tr.trCtx("Preventing sleep mode", "idle inhibitor");
+                    return Tr.trCtx("Normal power management", "idle inhibitor");
+                }
                 color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.body.small
                 elide: Text.ElideRight
             }
         }
 
-        StyledSwitch {
-            checked: IdleInhibitor.enabled
-            onToggled: IdleInhibitor.enabled = checked
+        // NIRI-PORT(F16): three-position switch (off / no sleep / no lock) instead of an on/off switch
+        TriStateSwitch {
+            position: Math.max(0, IdleInhibitor.modes.indexOf(IdleInhibitor.mode))
+            icons: ["bedtime", "bedtime_off", "lock_open"]
+            onMoved: pos => IdleInhibitor.mode = IdleInhibitor.modes[pos]
         }
     }
 
