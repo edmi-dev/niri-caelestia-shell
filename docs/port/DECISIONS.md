@@ -127,3 +127,13 @@
 - VERIFIED(eval) — модуль вычислен в `home-manager` (github master) для обоих режимов; сгенерированный KDL проходит `niri validate`.
 - UNVERIFIED — gpu-screen-recorder на NixOS: захват монитора (`-w <выход>`) идёт через KMS и требует `gsr-kms-server` с capability; NixOS-модуль `programs.gpu-screen-recorder.enable = true` ставит wrapper. Без него вероятен отказ/запрос пароля. Проверить вживую (VERIFY.md → U45).
 - 2026-10-19 — U41: после ~3 блокировок экран блокировки «лагает»: значок замка застревает в начальной анимации, фон пустой, сквозь прозрачную поверхность виден красный фон заблокированной сессии niri (niri FAQ). Исправление агента: поверхность блокировки непрозрачная (`m3surface`), фон на niri — обои вместо `ScreencopyView` (`Compositor.supports.lockScreencopy: false`). UNVERIFIED — причина зависания: захват экрана, который Quickshell запрашивает до подтверждения блокировки (`session_lock.cpp`, `updateSurfaces(false)` перед `manager->lock()`); журнал человека не смотрели. Проверить: 5+ блокировок подряд без лагов. Если лаги останутся — нужен `journalctl --user -u caelestia`.
+
+## Keep awake на три положения (F16, просьба человека 2026-10-22)
+- 2026-10-22 — `IdleInhibitor.mode = "off" | "noSleep" | "noLock"` (PersistentProperties). `noLock` = Wayland
+  idle-inhibitor (как прежний `enabled`): не срабатывают таймауты с `respectInhibitors` и собственный idle niri.
+  `noSleep` (и `noLock`) — `IdleMonitors` выключает таймауты, чей `idleAction` — suspend/suspendThenHibernate/
+  hibernate/hybrid-sleep (имена как в `SessionManager::exec`, в т.ч. `systemctl suspend`); блокировка и DPMS остаются.
+  Произвольные скрипты, которые усыпляют систему, не распознаются.
+- `enabled` теперь только для чтения (= mode ≠ off); IPC `toggle/enable/disable` сохранены, включение → `noLock`.
+  Новые IPC: `getMode`, `setMode <mode>`, `cycle`. UI — новый `components/controls/TriStateSwitch.qml` (стиль StyledSwitch).
+- В `IdleMonitors.qml` сервис берётся через `import qs.services as Services`: `Quickshell.Wayland` тоже экспортирует тип `IdleInhibitor`.

@@ -8,6 +8,8 @@ import Quickshell.Services.UPower
 import Caelestia.Config
 import Caelestia.Services
 import qs.services
+// NIRI-PORT(F16): qualified, Quickshell.Wayland also exports an IdleInhibitor type
+import qs.services as Services
 
 Scope {
     id: root
@@ -21,6 +23,15 @@ Scope {
         if (GlobalConfig.general.idle.inhibitWhenCharging && isCharging)
             return false;
         return true;
+    }
+
+    // NIRI-PORT(F16): keep awake "noSleep" skips idle timeouts whose action suspends or hibernates
+    function isSleepAction(action: var): bool {
+        let cmd = typeof action === "string" ? action.trim().split(/\s+/) : Array.from(action ?? []);
+        if ((cmd[0] === "systemctl" || cmd[0] === "loginctl") && cmd.length === 2)
+            cmd = cmd.slice(1);
+        const name = String(cmd[0] ?? "").replace(/[-_]/g, "").toLowerCase();
+        return ["suspend", "suspendthenhibernate", "hibernate", "hybridsleep"].includes(name);
     }
 
     function handleIdleAction(action: var): void {
@@ -69,6 +80,8 @@ Scope {
                 if (modelData.inhibitWhenAudio && root.hasPlayer)
                     return false;
                 if (modelData.inhibitWhenCharging && root.isCharging)
+                    return false;
+                if (Services.IdleInhibitor.preventSleep && root.isSleepAction(modelData.idleAction))
                     return false;
                 return true;
             }
