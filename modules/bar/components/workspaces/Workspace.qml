@@ -3,6 +3,8 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+// NIRI-PORT(F18): IconImage for app icons in the window list
+import Quickshell.Widgets
 import M3Shapes
 import Caelestia.Components
 import Caelestia.Config
@@ -219,16 +221,17 @@ Item {
                     }
                 }
 
-                delegate: MaterialIcon {
+                // NIRI-PORT(F18): the app's own icon from its desktop entry (human request); the category glyph
+                // stays as the fallback for windows without one
+                delegate: Item {
                     id: win
 
                     required property var modelData
                     required property int index // Needed, LazyListView will fail to set it if it doesn't exist
+                    readonly property string appIcon: DesktopEntries.heuristicLookup(modelData.app_id)?.icon ?? ""
+                    readonly property string iconSource: appIcon ? Quickshell.iconPath(appIcon, true) : ""
 
-                    grade: 0
-                    horizontalAlignment: Text.AlignHCenter
-                    text: Icons.getAppCategoryIcon(modelData.app_id, "terminal")
-                    color: root.onOtherMonitor ? root.offMonitorColour : Colours.palette.m3onSurfaceVariant
+                    implicitHeight: glyph.implicitHeight
 
                     opacity: LazyListView.adding || LazyListView.removing ? 0 : 1
 
@@ -240,6 +243,28 @@ Item {
 
                     Behavior on y {
                         Anim {}
+                    }
+
+                    MaterialIcon {
+                        id: glyph
+
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        visible: !win.iconSource
+
+                        grade: 0
+                        horizontalAlignment: Text.AlignHCenter
+                        text: Icons.getAppCategoryIcon(win.modelData.app_id, "terminal")
+                        color: root.onOtherMonitor ? root.offMonitorColour : Colours.palette.m3onSurfaceVariant
+                    }
+
+                    IconImage {
+                        anchors.centerIn: parent
+                        visible: !!win.iconSource
+
+                        asynchronous: true
+                        implicitSize: glyph.implicitHeight - Tokens.padding.extraSmall
+                        source: win.iconSource
                     }
                 }
             }
