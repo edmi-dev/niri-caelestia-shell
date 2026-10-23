@@ -137,3 +137,19 @@
 - `enabled` теперь только для чтения (= mode ≠ off); IPC `toggle/enable/disable` сохранены, включение → `noLock`.
   Новые IPC: `getMode`, `setMode <mode>`, `cycle`. UI — новый `components/controls/TriStateSwitch.qml` (стиль StyledSwitch).
 - В `IdleMonitors.qml` сервис берётся через `import qs.services as Services`: `Quickshell.Wayland` тоже экспортирует тип `IdleInhibitor`.
+
+## Профили питания через power-switch (F17, просьба человека 2026-10-23)
+- 2026-10-23 — на ноутбуке вместо power-profiles-daemon (его там нет, стоит TLP) поповер батареи переключает профили
+  `power-switch` (input `power-switch` в nixos-config, 4 профиля: supersave/powersave/balanced/stationary).
+  Новый сервис `services/PowerSwitch.qml` общается только с CLI: `power-switch list` (метки + текущий «▸»),
+  `power-switch <профиль>`; после применения — повторный `list`. Доступен, только если CLI есть в PATH **и**
+  `UPower.displayDevice.isLaptopBattery` → на desktop остаётся upstream-переключатель на 3 кнопки.
+- Конфликт 3/4 кнопок: upstream-пилюля не трогается (только `visible`), рядом новая
+  `modules/bar/popouts/PowerSwitchProfiles.qml` в том же стиле (Repeater, индикатор едет по x, промежуток
+  `spacing.large` вместо `largeIncreased`, чтобы 4 кнопки влезли в `batteryWidth` 250). Под пилюлей — метка профиля.
+  Иконки: supersave `energy_savings_leaf`, powersave `eco`, balanced `balance`, stationary `power`; неизвестные — `tune` в конце.
+- IPC: `powerSwitch get | set <профиль> | list`.
+- UNVERIFIED — формат `power-switch list` в текущей ревизии (182a8471; в store desktop только старая версия с hypridle,
+  исходник по git+ssh агенту недоступен): разбор `^\s*(▸)?\s*имя:\s*метка`.
+- UNVERIFIED — `sudo power-tlp-apply` без пароля из шелла (без tty); в старой версии так и вызывался из биндов.
+- UNVERIFIED — PATH сервиса `caelestia.service` содержит `/run/current-system/sw/bin` и `/run/wrappers/bin` (sudo).

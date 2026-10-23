@@ -1,11 +1,12 @@
 # Port state
-Upstream base: a3a8fe59aba2c0048ab02dc817748678f96076ff   Branch: niri-v2   Updated: 2026-10-19
+Upstream base: a3a8fe59aba2c0048ab02dc817748678f96076ff   Branch: niri-v2   Updated: 2026-10-23
 
 ## Current step
 S9 — живая проверка на kurva-lenovo (niri 26.04, eDP-1 + DP-2). Система переключена (system-308), шелл работает
 как `caelestia.service`, QML в пакете = HEAD niri-v2 (кроме сборочных подстановок).
 
 ## In progress
+- F17 (power-switch вместо power-profiles-daemon на ноутбуке, 4 кнопки, просьба человека 2026-10-23) — сделано, ждём живой проверки (VERIFY.md → F17).
 - F16 (keep awake на 3 положения, просьба человека 2026-10-22) — сделано, ждём живой проверки (VERIFY.md → F16).
 - U41-fix (лаги/красный экран блокировки после ~3 раз) — фон из обоев вместо screencopy, непрозрачная поверхность. Ждём: человек пересобирает и блокирует 5+ раз подряд.
 - U53-fix (blur на весь слой drawers) — исправлен, после switch окна видны. Ветка запушена, lock nixos-config = dbd51252.
