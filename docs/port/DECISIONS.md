@@ -153,3 +153,9 @@
   исходник по git+ssh агенту недоступен): разбор `^\s*(▸)?\s*имя:\s*метка`.
 - UNVERIFIED — `sudo power-tlp-apply` без пароля из шелла (без tty); в старой версии так и вызывался из биндов.
 - UNVERIFIED — PATH сервиса `caelestia.service` содержит `/run/current-system/sw/bin` и `/run/wrappers/bin` (sudo).
+
+## Иконки приложений в списке окон рабочих столов (F18, просьба человека 2026-10-23)
+- 2026-10-23 — upstream рисует под рабочим столом Material-глиф категории (`Icons.getAppCategoryIcon`, запасной —
+  `terminal`), поэтому у разных приложений одинаковые значки. Порт: делегат в `Workspace.qml` показывает иконку из
+  .desktop (`DesktopEntries.heuristicLookup(app_id).icon` → `Quickshell.iconPath(…, true)`), глиф — только если
+  иконка не найдена в теме. Правила `bar.workspaces.windowIcons` теперь влияют только на запасной глиф.
