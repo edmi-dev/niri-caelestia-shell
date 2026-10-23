@@ -137,6 +137,15 @@ Column {
         }
     }
 
+    // NIRI-PORT(F17): power-switch (TLP) profiles replace power-profiles-daemon on the laptop
+    Loader {
+        anchors.horizontalCenter: parent.horizontalCenter
+        active: PowerSwitch.available
+        visible: active
+
+        sourceComponent: PowerSwitchProfiles {}
+    }
+
     StyledRect {
         id: profiles
 
@@ -149,6 +158,8 @@ Column {
             return balance.icon;
         }
 
+        // NIRI-PORT(F17): hidden while the power-switch pill above is shown
+        visible: !PowerSwitch.available
         anchors.horizontalCenter: parent.horizontalCenter
 
         implicitWidth: saver.implicitHeight + balance.implicitHeight + perf.implicitHeight + Tokens.padding.medium * 2 + Tokens.spacing.largeIncreased * 2
