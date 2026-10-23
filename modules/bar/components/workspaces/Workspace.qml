@@ -1,14 +1,15 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+// NIRI-PORT(F18): IconImage + MultiEffect for app icons in the window list
+import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Widgets
 import M3Shapes
 import Caelestia.Components
 import Caelestia.Config
 import qs.components
-// NIRI-PORT(F18): ColouredIcon for app icons in the window list
-import qs.components.effects
 import qs.services
 import qs.utils
 
@@ -215,7 +216,8 @@ Item {
 
                 model: ScriptModel {
                     values: {
-                        const windows = root.toplevels;
+                        // NIRI-PORT(F18): one icon per app, not per window (human request)
+                        const windows = root.toplevels.filter((w, i, all) => all.findIndex(o => o.app_id === w.app_id) === i);
                         const maxIcons = root.Config.bar.workspaces.maxWindowIcons;
                         return maxIcons > 0 ? windows.slice(0, maxIcons) : windows;
                     }
@@ -258,14 +260,21 @@ Item {
                         color: root.onOtherMonitor ? root.offMonitorColour : Colours.palette.m3onSurfaceVariant
                     }
 
-                    // Recoloured to the theme like the glyph it replaces
-                    ColouredIcon {
+                    // Greyscale tinted to the glyph colour: keeps the icon's shading, unlike the flat Colouriser
+                    IconImage {
                         anchors.centerIn: parent
                         visible: !!win.iconSource
 
-                        colour: glyph.color
-                        implicitSize: glyph.implicitHeight - Tokens.padding.extraSmall
+                        asynchronous: true
+                        implicitSize: glyph.implicitHeight
                         source: win.iconSource
+
+                        layer.enabled: true
+                        layer.effect: MultiEffect {
+                            saturation: -1
+                            colorization: 0.5
+                            colorizationColor: glyph.color
+                        }
                     }
                 }
             }

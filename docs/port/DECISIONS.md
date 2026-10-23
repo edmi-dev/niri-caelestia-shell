@@ -157,6 +157,7 @@
 ## Иконки приложений в списке окон рабочих столов (F18, просьба человека 2026-10-23)
 - 2026-10-23 — upstream рисует под рабочим столом Material-глиф категории (`Icons.getAppCategoryIcon`, запасной —
   `terminal`), поэтому у разных приложений одинаковые значки. Порт: делегат в `Workspace.qml` показывает иконку из
-  .desktop (`DesktopEntries.heuristicLookup(app_id).icon` → `Quickshell.iconPath(…, true)`), перекрашенную в
-  `m3onSurfaceVariant` через `ColouredIcon` (как иконки трея, Colouriser по доминирующему цвету), глиф — только если
+  .desktop (`DesktopEntries.heuristicLookup(app_id).icon` → `Quickshell.iconPath(…, true)`), обесцвеченную и
+  тонированную в цвет глифа (`MultiEffect`: saturation -1, colorization 0.5; `ColouredIcon` трея давал плоский
+  силуэт — человек: «не читаемые»). Одна иконка на приложение (дедупликация по `app_id`), `maxWindowIcons` — по приложениям, глиф — только если
   иконка не найдена в теме. Правила `bar.workspaces.windowIcons` теперь влияют только на запасной глиф.
