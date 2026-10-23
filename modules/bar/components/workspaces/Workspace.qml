@@ -3,12 +3,12 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-// NIRI-PORT(F18): IconImage for app icons in the window list
-import Quickshell.Widgets
 import M3Shapes
 import Caelestia.Components
 import Caelestia.Config
 import qs.components
+// NIRI-PORT(F18): ColouredIcon for app icons in the window list
+import qs.components.effects
 import qs.services
 import qs.utils
 
@@ -221,8 +221,8 @@ Item {
                     }
                 }
 
-                // NIRI-PORT(F18): the app's own icon from its desktop entry (human request); the category glyph
-                // stays as the fallback for windows without one
+                // NIRI-PORT(F18): the app's own icon from its desktop entry (human request), recoloured to the theme;
+                // the category glyph stays as the fallback for windows without one
                 delegate: Item {
                     id: win
 
@@ -258,11 +258,12 @@ Item {
                         color: root.onOtherMonitor ? root.offMonitorColour : Colours.palette.m3onSurfaceVariant
                     }
 
-                    IconImage {
+                    // Recoloured to the theme like the glyph it replaces
+                    ColouredIcon {
                         anchors.centerIn: parent
                         visible: !!win.iconSource
 
-                        asynchronous: true
+                        colour: glyph.color
                         implicitSize: glyph.implicitHeight - Tokens.padding.extraSmall
                         source: win.iconSource
                     }
