@@ -6,6 +6,9 @@ S9 — живая проверка на kurva-lenovo (niri 26.04, eDP-1 + DP-2).
 как `caelestia.service`, QML в пакете = HEAD niri-v2 (кроме сборочных подстановок).
 
 ## In progress
+- Яркость внешнего монитора на ноутбуке не работает (2026-10-23): в nixos-config `./ddcci.nix` закомментирован (7d0342a) →
+  нет `hardware.i2c.enable` → нет `/dev/i2c-*` и группы i2c → `ddcutil detect` пуст → шелл шлёт `brightnessctl` (подсветка eDP).
+  Человеку дан дифф: `hardware.i2c.enable = true;` в `modules/nixos/workstation.nix`. Ждём проверку `ddcutil detect --brief`.
 - F18 (иконки приложений вместо глифов категорий под рабочими столами, просьба 2026-10-23) — сделано, ждём живой проверки (VERIFY.md → F18).
 - F17 (power-switch вместо power-profiles-daemon на ноутбуке, 4 кнопки, просьба человека 2026-10-23) — сделано, ждём живой проверки (VERIFY.md → F17).
 - F16 (keep awake на 3 положения, просьба человека 2026-10-22) — сделано, ждём живой проверки (VERIFY.md → F16).
