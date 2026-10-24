@@ -161,3 +161,18 @@
   тонированную в цвет глифа (`MultiEffect`: saturation -1, colorization 0.5; `ColouredIcon` трея давал плоский
   силуэт — человек: «не читаемые»). Одна иконка на приложение (дедупликация по `app_id`), `maxWindowIcons` — по приложениям, глиф — только если
   иконка не найдена в теме. Правила `bar.workspaces.windowIcons` теперь влияют только на запасной глиф.
+
+## Таймауты простоя из профилей power-switch (F19, просьба человека 2026-10-24)
+- 2026-10-24 — экран и сон конфликтовали: старый power-switch держал таймауты на профиль в hypridle (свой процесс,
+  перезапускался при переключении), а шелл одновременно выполнял таймауты из shell.json. Решение человека: таймауты задаёт
+  профиль power-switch, выполняет только шелл, keep awake (F16) их перебивает.
+- power-switch (с ревизии с `idle`) хранит у профиля `idle = { lock; dpms; sleep; }` (сек, 0 — выкл.) и отдаёт их
+  `power-switch idle` → `lock=N dpms=N sleep=N` (пусто — у профиля нет таймаутов). `PowerSwitch.idleTimeouts` строит из
+  них список в формате `general.idle.timeouts` (lock → `"lock"`, dpms → `"dpms off"`/`"dpms on"`, sleep → `["suspend"]`,
+  как `systemctl suspend` в старом hypridle). `IdleMonitors` берёт его вместо shell.json, если сервис доступен и таймауты есть;
+  иначе — shell.json, как в upstream. Глобальные `inhibitWhenAudio`/`inhibitWhenCharging` и keep awake действуют как прежде:
+  `noSleep` пропускает sleep, `noLock` (Wayland inhibitor) — все три.
+- Обновление: после `power-switch <профиль>` из шелла; из CLI/биндов — FileView на `/var/lib/power-profiles/current`.
+  UNVERIFIED — FileView продолжает следить после замены файла через rename (power-tlp-apply пишет `current.tmp` → `mv`);
+  запасной путь — refresh при открытии поповера.
+- Яркость (dim из старого hypridle) не переносилась: в шелле нет такого idle-действия.

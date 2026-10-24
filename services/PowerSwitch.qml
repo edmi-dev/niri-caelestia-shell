@@ -10,6 +10,9 @@ import Quickshell.Services.UPower
 // `power-switch list` prints one profile per line ("▸ name: label" for the current one, "  name: label"
 // otherwise), `power-switch <name>` applies a profile. Available only when the CLI answers and the
 // machine has a laptop battery, so desktops keep the upstream PowerProfiles switch.
+// NIRI-PORT(F19): `power-switch idle` gives the current profile's idle timeouts ("lock=N dpms=N sleep=N",
+// seconds, 0 = never; empty when the profile has none). IdleMonitors uses them instead of the shell.json
+// timeouts, so the shell is the only idle manager and keep awake still overrides them.
 Singleton {
     id: root
 
@@ -26,9 +29,45 @@ Singleton {
     readonly property bool available: profiles.length > 0 && UPower.displayDevice.isLaptopBattery
     readonly property bool busy: apply.running
     readonly property var currentProfile: profiles.find(p => p.name === current) ?? null
+    property var idle: null // { lock, dpms, sleep } in seconds, null when the profile sets none
+    // Same shape as GlobalConfig.general.idle.timeouts; null keeps the shell.json timeouts
+    readonly property var idleTimeouts: {
+        if (!available || !idle)
+            return null;
+        const t = [];
+        if (idle.lock > 0)
+            t.push({
+                timeout: idle.lock,
+                idleAction: "lock"
+            });
+        if (idle.dpms > 0)
+            t.push({
+                timeout: idle.dpms,
+                idleAction: "dpms off",
+                returnAction: "dpms on"
+            });
+        if (idle.sleep > 0)
+            t.push({
+                timeout: idle.sleep,
+                idleAction: ["suspend"]
+            });
+        return t;
+    }
 
     function refresh(): void {
         list.running = true;
+        idleProc.running = true;
+    }
+
+    function parseIdle(text: string): void {
+        const t = {};
+        for (const m of text.matchAll(/(lock|dpms|sleep)=(\d+)/g))
+            t[m[1]] = parseInt(m[2]);
+        idle = Object.keys(t).length > 0 ? {
+            lock: t.lock ?? 0,
+            dpms: t.dpms ?? 0,
+            sleep: t.sleep ?? 0
+        } : null;
     }
 
     function set(name: string): void {
@@ -76,6 +115,27 @@ Singleton {
         id: apply
 
         onExited: root.refresh()
+    }
+
+    Process {
+        id: idleProc
+
+        command: ["sh", "-c", "command -v power-switch >/dev/null && exec power-switch idle"]
+        stdout: StdioCollector {
+            onStreamFinished: root.parseIdle(text)
+        }
+    }
+
+    // NIRI-PORT(F19): profile switched from the CLI or a keybind. power-tlp-apply replaces the file by rename;
+    // UNVERIFIED that FileView keeps watching after that (see DECISIONS.md F19), the popout still refreshes on open
+    FileView {
+        path: "/var/lib/power-profiles/current"
+        watchChanges: true
+        printErrors: false
+        onFileChanged: {
+            reload();
+            root.refresh();
+        }
     }
 
     IpcHandler {

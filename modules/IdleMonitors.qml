@@ -69,7 +69,8 @@ Scope {
     }
 
     Variants {
-        model: GlobalConfig.general.idle.timeouts.values
+        // NIRI-PORT(F19): the current power-switch profile's timeouts replace shell.json on the laptop
+        model: Services.PowerSwitch.idleTimeouts ?? GlobalConfig.general.idle.timeouts.values
 
         IdleMonitor {
             required property var modelData

@@ -1,11 +1,13 @@
 # Port state
-Upstream base: a3a8fe59aba2c0048ab02dc817748678f96076ff   Branch: niri-v2   Updated: 2026-10-23
+Upstream base: a3a8fe59aba2c0048ab02dc817748678f96076ff   Branch: niri-v2   Updated: 2026-10-24
 
 ## Current step
 S9 — живая проверка на kurva-lenovo (niri 26.04, eDP-1 + DP-2). Система переключена (system-308), шелл работает
 как `caelestia.service`, QML в пакете = HEAD niri-v2 (кроме сборочных подстановок).
 
 ## In progress
+- F19 (таймауты экрана/сна из профиля power-switch, keep awake их перебивает; просьба 2026-10-24) — сделано. Нужны
+  power-switch с `idle` и `idle` в профилях nixos-config (дифф дан человеку); ждём живой проверки (VERIFY.md → F19).
 - Яркость внешнего монитора на ноутбуке не работает (2026-10-23): в nixos-config `./ddcci.nix` закомментирован (7d0342a) →
   нет `hardware.i2c.enable` → нет `/dev/i2c-*` и группы i2c → `ddcutil detect` пуст → шелл шлёт `brightnessctl` (подсветка eDP).
   Человеку дан дифф: `hardware.i2c.enable = true;` в `modules/nixos/workstation.nix`. Ждём проверку `ddcutil detect --brief`.

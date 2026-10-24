@@ -75,6 +75,13 @@
 - [ ] Клик по кнопке: индикатор переезжает, приходит уведомление power-switch, `power-switch status` показывает новый профиль (без запроса пароля).
 - [ ] Профиль сменён из терминала → при следующем открытии поповера подсвечен он.
 - [ ] Desktop: прежняя пилюля на 3 кнопки (power-profiles-daemon).
+
+## F19 — Таймауты простоя из профиля power-switch (2026-10-24)
+- [ ] `pgrep -a hypridle` пусто (второго idle-менеджера нет).
+- [ ] `power-switch idle` печатает `lock=… dpms=… sleep=…` текущего профиля; `caelestia-shell ipc call powerSwitch get` — тот же профиль.
+- [ ] Профиль supersave (экран 2м): без ввода экран гаснет через ~2 мин, блокировка и сон — по его таймаутам, а не по shell.json.
+- [ ] `power-switch balanced` из терминала → таймауты сменились без перезапуска шелла (FileView, UNVERIFIED).
+- [ ] Keep awake «no sleep»: экран гаснет и блокируется, но сна нет. «no lock»: ничего не происходит.
 - [ ] `caelestia-shell ipc call powerSwitch list` / `get` / `set powersave`.
 
 ## F18 — Иконки приложений под рабочими столами (2026-10-23)
