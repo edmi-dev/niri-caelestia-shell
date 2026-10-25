@@ -19,7 +19,7 @@
 - [ ] XF86MonBrightnessUp/Down → яркость меняется на шаг из конфига.
 
 ## S5c — эмуляция focus grab
-- [ ] Открыть launcher (`caelestia-shell ipc call drawers toggle launcher`) → можно сразу печатать, без клика.
+- [x] Открыть launcher (`caelestia-shell ipc call drawers toggle launcher`) → можно сразу печатать, без клика. (2026-10-25 ✓)
 - [ ] Клик по окну приложения при открытом launcher/sidebar/session → панель закрывается (сам клик в окно не попадает — ожидаемо).
 - [ ] Клик внутри открытой панели (кнопки sidebar, поле launcher) → панель не закрывается.
 - [ ] После закрытия панели фокус клавиатуры возвращается окну приложения.
