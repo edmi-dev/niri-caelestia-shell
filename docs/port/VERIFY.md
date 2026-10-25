@@ -14,8 +14,8 @@
 Подключить `nix/niri/caelestia.kdl` (через HM: `programs.caelestia.niri.enable = true`, в конце `niri.kdl` — `include "caelestia.kdl"`) и запустить шелл (`caelestia-shell`).
 
 - [x] `caelestia-shell ipc show` → видны цели `drawers` (с `showAll`), `nexus`, `lock`, `picker`, `mpris`, `brightness` (с `increase`/`decrease`), `notifs`, `toaster`. (2026-10-17, kurva-lenovo: все есть, плюс `wallpaper`, `audio`, `idleInhibitor`, `gameMode`; `drawers list` → bar/osd/session/launcher/dashboard/utilities/sidebar; `isOpen launcher` → 0)
-- [ ] `caelestia-shell ipc call drawers toggle launcher` → открывается/закрывается launcher на сфокусированном выходе.
-- [ ] Mod+Space из примера → то же самое, launcher переключается по нажатию.
+- [x] `caelestia-shell ipc call drawers toggle launcher` → открывается/закрывается launcher на сфокусированном выходе. (2026-10-25, через Mod+D)
+- [x] Mod+Space из примера → то же самое, launcher переключается по нажатию. (2026-10-25: у человека Mod+D — работает)
 - [ ] XF86MonBrightnessUp/Down → яркость меняется на шаг из конфига.
 
 ## S5c — эмуляция focus grab
