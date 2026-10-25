@@ -6,6 +6,12 @@ S9 — живая проверка на kurva-lenovo (niri 26.04, eDP-1 + DP-2).
 как `caelestia.service`, QML в пакете = HEAD niri-v2 (кроме сборочных подстановок).
 
 ## In progress
+- Ползунок яркости не двигается от клавиш (2026-10-25): в `hosts/kurva-lenovo/config/niri.kdl:433-434` клавиши зовут
+  `brightnessctl` напрямую, шелл читает яркость только при старте → не знает об изменении. Человеку дан дифф:
+  раскомментировать строки 35-36 в `modules/laptop/caelestia-niri-v2/caelestia.kdl` (IPC `brightness increase/decrease`).
+  VERIFIED (`niri validate`, 26.04): одинаковый бинд в основном файле и в include — валидно (в одном файле — ошибка).
+  Попутно: при фокусе на DP-2 без DDC «active» = монитор DP-2, но `brightnessctl` меняет eDP → ползунок eDP не сдвинется
+  (upstream-поведение; уйдёт после `hardware.i2c.enable`).
 - F19 (таймауты экрана/сна из профиля power-switch, keep awake их перебивает; просьба 2026-10-24) — сделано. Нужны
   power-switch с `idle` и `idle` в профилях nixos-config (дифф дан человеку); ждём живой проверки (VERIFY.md → F19).
 - Яркость внешнего монитора на ноутбуке не работает (2026-10-23): в nixos-config `./ddcci.nix` закомментирован (7d0342a) →
