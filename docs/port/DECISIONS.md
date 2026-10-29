@@ -137,6 +137,14 @@
 - `enabled` теперь только для чтения (= mode ≠ off); IPC `toggle/enable/disable` сохранены, включение → `noLock`.
   Новые IPC: `getMode`, `setMode <mode>`, `cycle`. UI — новый `components/controls/TriStateSwitch.qml` (стиль StyledSwitch).
 - В `IdleMonitors.qml` сервис берётся через `import qs.services as Services`: `Quickshell.Wayland` тоже экспортирует тип `IdleInhibitor`.
+- 2026-10-29 — жалоба человека: «не блокировать» иногда не работает, экран гаснет. VERIFIED(src niri v26.04
+  `src/niri.rs` `refresh_idle_inhibit`): niri учитывает inhibitor, только если у его поверхности есть
+  `surface_primary_scanout_output`, т.е. она реально выводится; наша поверхность — прозрачная 0×0 PanelWindow, и под
+  полноэкранным окном (видео, игра) inhibitor перестаёт действовать. Исправление: в `noLock` `IdleMonitors` сам
+  выключает все таймауты (шелл — единственный idle-менеджер, F19); Wayland-inhibitor оставлен для внешних клиентов.
+  UNVERIFIED — что именно полноэкранное окно было причиной у человека (журнал не смотрели).
+- Известно: режим в PersistentProperties переживает только hot-reload QML, после перезапуска `caelestia.service`
+  сбрасывается в `off` (upstream-поведение). Хранить в файле — не делали, ждёт решения человека.
 
 ## Профили питания через power-switch (F17, просьба человека 2026-10-23)
 - 2026-10-23 — на ноутбуке вместо power-profiles-daemon (его там нет, стоит TLP) поповер батареи переключает профили

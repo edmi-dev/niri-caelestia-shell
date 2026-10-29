@@ -78,6 +78,11 @@ Scope {
             enabled: {
                 if (!root.enabled || !(modelData.enabled ?? true))
                     return false;
+                // NIRI-PORT(F16): keep awake "noLock" skips every timeout itself; niri honours the Wayland
+                // inhibitor only while its surface is scanned out (src/niri.rs refresh_idle_inhibit), so it
+                // stops working e.g. under a fullscreen window
+                if (Services.IdleInhibitor.preventLock)
+                    return false;
                 if (modelData.inhibitWhenAudio && root.hasPlayer)
                     return false;
                 if (modelData.inhibitWhenCharging && root.isCharging)
