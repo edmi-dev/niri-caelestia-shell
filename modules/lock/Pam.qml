@@ -126,7 +126,8 @@ Scope {
         id: fprint
 
         config: "fprint"
-        availCommand: ["sh", "-c", "fprintd-list $USER"]
+        // NIRI-PORT: fprintd-list exits 0 even with no enrolled fingers, then pam_fprintd fails with "FP ERROR"
+        availCommand: ["sh", "-c", "fprintd-list $USER | grep -q '#[0-9]'"]
         retryOnFail: true
         enabled: GlobalConfig.lock.enableFprint
         maxTries: GlobalConfig.lock.maxFprintTries

@@ -61,7 +61,10 @@ Singleton {
 
     function parseIdle(text: string): void {
         const t = {};
-        for (const m of text.matchAll(/(lock|dpms|sleep)=(\d+)/g))
+        // NIRI-PORT(F19): String.prototype.matchAll is missing in the QML JS engine
+        const re = /(lock|dpms|sleep)=(\d+)/g;
+        let m;
+        while ((m = re.exec(text)) !== null)
             t[m[1]] = parseInt(m[2]);
         idle = Object.keys(t).length > 0 ? {
             lock: t.lock ?? 0,
